@@ -3,7 +3,7 @@
 import sys
 
 def load_csv(path, cols):
-    rows = []
+    data = { }
     with open(path, "r") as f:
         for line in f:
             line = line.strip()
@@ -12,12 +12,18 @@ def load_csv(path, cols):
             parts = line.split(",")
             if len(parts) != cols:
                 sys.exit("Error: Column number mismatch file: " + path)
-                continue
             row = []
-            
-            rows.append([float(p) for p in parts])
-    return rows
+            key = 0
+            for i, x in enumerate(parts):
+                if i == 0:
+                    key = int(x)
+                    continue
+                row.append(float(x))
+            if key in data:
+                sys.exit("Error: Duplicate wavelength: " + path)
+            data[key] = row
+    return data
 
 
 spec = load_csv("./CIE_std_illum_D65.csv", 2)
-print(spec)
+cmf = load_csv("./CIE_xyz_1931_2deg.csv", 4)

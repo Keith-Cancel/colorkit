@@ -17,6 +17,7 @@ pub enum ChannelBound {
     Unbounded,
 }
 
+/// This trait provides information about a color space.
 pub trait ColorSpace: Copy {
     /// Number of Channels
     type Channels: Number;

@@ -1,3 +1,4 @@
+mod rgb;
 mod xyz;
 use std::ops::Index;
 use std::ops::IndexMut;

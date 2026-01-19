@@ -52,4 +52,10 @@ impl<S: ColorSpace> Color<S> {
     pub const fn as_mut_slice(&mut self) -> &mut [f32] {
         return self.0.as_mut_slice();
     }
+
+    /// Creates a color by filling all channels with the given value.
+    pub(crate) const fn crate_new(values: <S::Channels as Number>::Arr<f32>) -> Self {
+        let _ = Self::COLOR_ASSERT;
+        return Self(ColorInner(values));
+    }
 }

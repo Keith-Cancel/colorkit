@@ -54,10 +54,24 @@ def xyz_to_xyY(c):
     return (x, y, Y)
 
 def print_white_point(name, xyz, xyY):
+    xyz_block = (
+        "White Point XYZ\n"
+        "    const X: f32 = {:.16f};\n"
+        "    const Z: f32 = {:.16f};\n"
+        "    const Y: f32 = {:.16f};"
+    ).format(xyz[0], xyz[2], xyz[1])
+
+    xy_block = (
+        "White Point Chromaticity\n"
+        "    const x_i: f32 = {:.16f};\n"
+        "    const y_i: f32 = {:.16f};\n"
+        "    const Y:   f32 = {:.16f};"
+    ).format(xyY[0], xyY[1], xyY[2])
+
     print("~~~~~~~ " + name + " ~~~~~~~")
     print("================================")
-    print("White Point XYZ\n    X: {:.16f}\n    Y: {:.16f}\n    Z: {:.16f}".format(xyz[0], xyz[1], xyz[2]))
-    print("White Point Chromaticity\n    x: {:.16f}\n    y: {:.16f}\n    Y: {:.16f}".format(xyY[0], xyY[1], xyY[2]))
+    print(xyz_block)
+    print(xy_block)
 
 
 # https://cie.co.at/datatable/cie-standard-illuminant-d65

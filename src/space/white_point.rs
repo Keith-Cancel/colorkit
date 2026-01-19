@@ -56,8 +56,8 @@ const fn white_point_z<W: WhitePoint>(y: f32) -> f32 {
     return tmp * y;
 }
 
+/// D65 White point 2 Degree FOV
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-/// D65 White point 2 Degrees
 pub struct D65;
 // Used the data here and my script tools/spectrum_xyz.py to derive these
 // so the X, Y, Z and x_i and y_i match up better.
@@ -77,4 +77,17 @@ impl WhitePoint_xy for D65 {
 impl WhitePoint for D65 {
     const X: f32 = 0.9504705586542831;
     const Z: f32 = 1.0888287363958840;
+}
+
+/// D65 White point 10 Degree FOV
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct D65Deg10;
+impl WhitePoint_xy for D65Deg10 {
+    const FOV: u8 = 10;
+    const x_i: f32 = 0.3138236469387096;
+    const y_i: f32 = 0.3309989854899336;
+}
+impl WhitePoint for D65Deg10 {
+    const X: f32 = 0.9481106006237403;
+    const Z: f32 = 1.0730466954321181;
 }

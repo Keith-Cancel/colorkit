@@ -21,6 +21,10 @@ pub trait ArrayLike<T>:
     AsRef<[T]> + AsMut<[T]> + Borrow<[T]> + BorrowMut<[T]> + Index<usize, Output = T> + IndexMut<usize, Output = T>
 {
     /// Length, but as a constant.
+    #[cfg(feature = "type_const")]
+    #[type_const]
+    const LEN: usize;
+    #[cfg(not(feature = "type_const"))]
     const LEN: usize;
     /// Gets a reference to the array.
     ///
@@ -52,6 +56,10 @@ pub trait ArrayLike<T>:
 }
 
 impl<T, const N: usize> ArrayLike<T> for [T; N] {
+    #[cfg(feature = "type_const")]
+    #[type_const]
+    const LEN: usize = N;
+    #[cfg(not(feature = "type_const"))]
     const LEN: usize = N;
 
     fn as_array<const N2: usize>(&self) -> Option<&[T; N2]> {

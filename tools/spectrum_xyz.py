@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
+import math
 
 def load_csv(path, cols):
     data = { }
@@ -18,6 +19,9 @@ def load_csv(path, cols):
                 if i == 0:
                     key = int(x)
                     continue
+                x = float(x)
+                if math.isnan(x):
+                    x = 0.0
                 row.append(float(x))
             if key in data:
                 sys.exit("Error: Duplicate wavelength: " + path)
@@ -63,3 +67,9 @@ cmf = load_csv("./CIE_xyz_1931_2deg.csv", 4)
 xyz = calc(spec, cmf)
 xyY = xyz_to_xyY(xyz)
 print_white_point("D65 2 Degree FOV", xyz, xyY)
+
+# https://cie.co.at/datatable/cie-1964-colour-matching-functions-10-degree-observer
+cmf = load_csv("./CIE_xyz_1964_10deg.csv", 4)
+xyz = calc(spec, cmf)
+xyY = xyz_to_xyY(xyz)
+print_white_point("D65 10 Degree FOV", xyz, xyY)

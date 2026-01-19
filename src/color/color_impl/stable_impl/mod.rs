@@ -54,6 +54,7 @@ impl<S: ColorSpace> Color<S> {
     }
 
     /// Creates a color by filling all channels with the given value.
+    #[inline]
     pub(crate) const fn crate_new(values: <S::Channels as Number>::Arr<f32>) -> Self {
         let _ = Self::COLOR_ASSERT;
         return Self(ColorInner(values));

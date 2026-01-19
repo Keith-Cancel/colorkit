@@ -10,7 +10,7 @@ use super::macros::color_inner;
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 #[repr(transparent)]
-pub struct ColorInner<N: Number>(N::Arr<f32>);
+pub struct ColorInner<N: Number>(pub(crate) N::Arr<f32>);
 
 // Manually handle each number so I can have const methods.
 with_nums!(color_inner!);

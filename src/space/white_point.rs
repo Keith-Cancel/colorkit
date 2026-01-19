@@ -38,7 +38,7 @@ pub trait WhitePoint: WhitePoint_xy {
 /// Calculate the `X` value using a different `Y`
 /// using the white point [`WhitePoint_xy::x_i`]
 /// and [`WhitePoint_xy::y_i`] values.
-const fn white_point_x<W: WhitePoint>(y: f32) -> f32 {
+pub const fn white_point_x<W: WhitePoint>(y: f32) -> f32 {
     if W::y_i == 0.0 {
         panic!("White point y_i is zero");
     }
@@ -48,7 +48,7 @@ const fn white_point_x<W: WhitePoint>(y: f32) -> f32 {
 /// Calculate the `Z` value using a different `Y`
 /// using the white point [`WhitePoint_xy::x_i`]
 /// and [`WhitePoint_xy::y_i`] values.
-const fn white_point_z<W: WhitePoint>(y: f32) -> f32 {
+pub const fn white_point_z<W: WhitePoint>(y: f32) -> f32 {
     if W::y_i == 0.0 {
         panic!("White point y_i is zero");
     }

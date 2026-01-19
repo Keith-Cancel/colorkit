@@ -6,6 +6,9 @@ use colorkit::utils::*;
 use inner::ColorInner;
 use macros::color_fn_new;
 
+/// Represention of a color using [`f32`] values.
+///
+/// The number channels is specified by the color space
 #[derive(Copy, Clone, Debug, PartialEq)]
 #[repr(transparent)]
 pub struct Color<S: ColorSpace>(pub(crate) ColorInner<S::Channels>);

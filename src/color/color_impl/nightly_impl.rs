@@ -1,6 +1,9 @@
 use colorkit::space::ColorSpace;
 use colorkit::utils::Number;
 
+/// Represention of a color using [`f32`] values.
+///
+/// The number channels is specified by the color space
 #[derive(Copy, Clone, Debug, PartialEq)]
 #[repr(transparent)]
 pub struct Color<S: ColorSpace>(pub(crate) [f32; <S::Channels as Number>::N]);

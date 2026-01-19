@@ -6,8 +6,7 @@ use colorkit::utils::Number;
 
 #[rustfmt::skip]
 pub use srgb::Srgb;
-pub use white_point::D65;
-pub use white_point::WhitePoint;
+pub use white_point::*;
 
 /// Defines the a bound on a color space channel
 #[derive(Debug, Clone, Copy, PartialEq)]

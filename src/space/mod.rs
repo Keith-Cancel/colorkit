@@ -7,6 +7,7 @@ use colorkit::utils::N3;
 use colorkit::utils::Number;
 
 #[rustfmt::skip]
+pub use srgb::LinSrgb;
 pub use srgb::Srgb;
 pub use white_point::*;
 pub use xyz::Xyz;

@@ -28,3 +28,27 @@ impl ColorSpace for Srgb {
         return ChannelBound::Included(0.0);
     }
 }
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Default)]
+pub struct LinSrgb;
+
+impl RgbLike for LinSrgb {}
+impl ColorSpace for LinSrgb {
+    type Channels = N3;
+    type WhitePoint = D65;
+    const LINEAR: bool = true;
+    const CHANNEL_MAX: &'static [ChannelBound] = &[ChannelBound::Included(1.0); 3];
+    const CHANNEL_MIN: &'static [ChannelBound] = &[ChannelBound::Included(0.0); 3];
+
+    #[inline(always)]
+    fn channel_max(i: usize) -> ChannelBound {
+        debug_assert!(i < 3);
+        return ChannelBound::Included(1.0);
+    }
+
+    #[inline(always)]
+    fn channel_min(i: usize) -> ChannelBound {
+        debug_assert!(i < 3);
+        return ChannelBound::Included(0.0);
+    }
+}

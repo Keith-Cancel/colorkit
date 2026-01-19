@@ -57,7 +57,7 @@ const fn white_point_z<W: WhitePoint>(y: f32) -> f32 {
 }
 
 /// D65 White point 2 Degree FOV
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub struct D65;
 // Used the data here and my script tools/spectrum_xyz.py to derive these
 // so the X, Y, Z and x_i and y_i match up better.
@@ -80,7 +80,7 @@ impl WhitePoint for D65 {
 }
 
 /// D65 White point 10 Degree FOV
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub struct D65Deg10;
 impl WhitePoint_xy for D65Deg10 {
     const FOV: u8 = 10;
@@ -93,7 +93,7 @@ impl WhitePoint for D65Deg10 {
 }
 
 /// D50 White point 2 Degree FOV
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub struct D50;
 impl WhitePoint_xy for D50 {
     const FOV: u8 = 2;
@@ -106,7 +106,7 @@ impl WhitePoint for D50 {
 }
 
 /// D50 White point 10 Degree FOV
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub struct D50Deg10;
 impl WhitePoint_xy for D50Deg10 {
     const FOV: u8 = 10;
@@ -119,7 +119,7 @@ impl WhitePoint for D50Deg10 {
 }
 
 /// D55 White point 2 Degree FOV
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub struct D55;
 impl WhitePoint_xy for D55 {
     const FOV: u8 = 2;
@@ -132,7 +132,7 @@ impl WhitePoint for D55 {
 }
 
 /// D55 White point 10 Degree FOV
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub struct D55Deg10;
 impl WhitePoint_xy for D55Deg10 {
     const FOV: u8 = 10;
@@ -145,7 +145,7 @@ impl WhitePoint for D55Deg10 {
 }
 
 /// D75 White point 2 Degree FOV
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub struct D75;
 impl WhitePoint_xy for D75 {
     const FOV: u8 = 2;
@@ -158,7 +158,7 @@ impl WhitePoint for D75 {
 }
 
 /// D75 White point 10 Degree FOV
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub struct D75Deg10;
 impl WhitePoint_xy for D75Deg10 {
     const FOV: u8 = 10;

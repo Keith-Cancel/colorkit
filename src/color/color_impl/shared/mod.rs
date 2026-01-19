@@ -1,9 +1,8 @@
 use std::ops::Index;
 use std::ops::IndexMut;
 
-use colorkit::space::ChannelBound;
-use colorkit::space::ColorSpace;
-use colorkit::utils::Number;
+use colorkit::space::*;
+use colorkit::utils::*;
 
 use super::Color;
 

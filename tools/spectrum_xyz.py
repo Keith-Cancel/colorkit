@@ -68,8 +68,14 @@ def print_white_point(name, xyz, xyY):
         "    const Y:   f32 = {:.16f};"
     ).format(xyY[0], xyY[1], xyY[2])
 
-    print("~~~~~~~ " + name + " ~~~~~~~")
-    print("================================")
+    spacer = "~"
+    name   = f" { name } "
+    fill   = 40 - len(name)
+    left   = fill // 2
+    right  = fill - left
+    header = f"{ spacer * left }{ name }{ spacer * right }"
+    print(header)
+    print("=" * len(header))
     print(xyz_block)
     print(xy_block)
 

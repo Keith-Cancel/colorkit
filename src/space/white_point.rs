@@ -1,5 +1,5 @@
 #[allow(non_camel_case_types)]
-/// The `*x*`, *y*` and FOV of a white point.
+/// The *`x`*, *`y`* chromaticity and FOV of a white point.
 pub trait WhitePoint_xy: Copy {
     /// Field of View Angle
     const FOV: u8;

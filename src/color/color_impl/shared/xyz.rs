@@ -33,3 +33,38 @@ impl<W: WhitePoint> Color<Xyz<W>> {
         self.0.as_mut_slice()[2] = value;
     }
 }
+
+#[cfg(test)]
+mod test {
+    use colorkit::space::*;
+
+    use super::*;
+    #[test]
+    fn new_xyz() {
+        let mut c = Color::<Xyz<D65>>::new_xyz(0.2, 0.3, 0.4);
+        assert_eq!(c.channels(), 3);
+        assert_eq!(c.x(), 0.2);
+        assert_eq!(c.y(), 0.3);
+        assert_eq!(c.z(), 0.4);
+        assert_eq!(c[0], 0.2);
+        assert_eq!(c[1], 0.3);
+        assert_eq!(c[2], 0.4);
+
+        c.set_x(0.5);
+        assert_eq!(c.x(), 0.5);
+        assert_eq!(c.y(), 0.3);
+        assert_eq!(c.z(), 0.4);
+        assert_eq!(c[0], 0.5);
+        assert_eq!(c[1], 0.3);
+        assert_eq!(c[2], 0.4);
+
+        c.set_y(0.6);
+        c.set_z(0.7);
+        assert_eq!(c.x(), 0.5);
+        assert_eq!(c.y(), 0.6);
+        assert_eq!(c.z(), 0.7);
+        assert_eq!(c[0], 0.5);
+        assert_eq!(c[1], 0.6);
+        assert_eq!(c[2], 0.7);
+    }
+}

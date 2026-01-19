@@ -71,12 +71,10 @@ pub struct D65;
 // to be more accurate.
 impl WhitePoint_xy for D65 {
     const FOV: u8 = 2;
-    const x_i: f32 = 0.31272;
-    const y_i: f32 = 0.32903;
+    const x_i: f32 = 0.3127268710265648;
+    const y_i: f32 = 0.3290232066412840;
 }
-impl WhitePoint for D65 {}
-
-#[test]
-fn hmm() {
-    println!("X: {}, Y: {}, Z: {}", D65::X, D65::Y, D65::Z);
+impl WhitePoint for D65 {
+    const X: f32 = 0.9504705586542831;
+    const Z: f32 = 1.0888287363958840;
 }

@@ -32,6 +32,14 @@ impl<W: WhitePoint> Color<Xyz<W>> {
     pub const fn set_z(&mut self, value: f32) {
         self.0.as_mut_slice()[2] = value;
     }
+    /// Change the white point of the XYZ color without
+    /// any chromatic adaptation.
+    ///
+    /// All numeric values are left unchanged.
+    #[inline]
+    pub const fn change_white_point<Wp: WhitePoint>(self) -> Color<Xyz<Wp>> {
+        return Color(self.0);
+    }
 }
 
 #[cfg(test)]

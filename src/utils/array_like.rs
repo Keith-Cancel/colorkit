@@ -1,9 +1,9 @@
-use std::array::from_fn;
-use std::array::repeat;
-use std::borrow::Borrow;
-use std::borrow::BorrowMut;
-use std::ops::Index;
-use std::ops::IndexMut;
+use core::array::from_fn;
+use core::array::repeat;
+use core::borrow::Borrow;
+use core::borrow::BorrowMut;
+use core::ops::Index;
+use core::ops::IndexMut;
 
 /// Trait for types that behave like a fixed-size array (`[T; N]`).
 ///

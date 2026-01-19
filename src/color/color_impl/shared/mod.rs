@@ -1,7 +1,7 @@
 mod rgb;
 mod xyz;
-use std::ops::Index;
-use std::ops::IndexMut;
+use core::ops::Index;
+use core::ops::IndexMut;
 
 use colorkit::space::*;
 use colorkit::utils::*;

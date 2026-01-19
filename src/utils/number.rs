@@ -1,6 +1,6 @@
-use std::fmt::Debug;
-use std::mem::ManuallyDrop;
-use std::ptr;
+use core::fmt::Debug;
+use core::mem::ManuallyDrop;
+use core::ptr;
 
 use super::ArrayLike;
 

@@ -1,6 +1,6 @@
-use std::ops::Index;
-use std::ops::IndexMut;
-use std::slice;
+use core::ops::Index;
+use core::ops::IndexMut;
+use core::slice;
 
 use colorkit::space::ColorSpace;
 use colorkit::utils::*;

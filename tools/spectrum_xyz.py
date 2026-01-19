@@ -80,16 +80,47 @@ def print_white_point(name, xyz, xyY):
     print(xy_block)
 
 
+# https://cie.co.at/datatable/cie-1931-colour-matching-functions-2-degree-observer
+cmf2 = load_csv("./CIE_xyz_1931_2deg.csv", 4)
+# https://cie.co.at/datatable/cie-1964-colour-matching-functions-10-degree-observer
+cmf10 = load_csv("./CIE_xyz_1964_10deg.csv", 4)
+
 # https://cie.co.at/datatable/cie-standard-illuminant-d65
 spec = load_csv("./CIE_std_illum_D65.csv", 2)
-# https://cie.co.at/datatable/cie-1931-colour-matching-functions-2-degree-observer
-cmf = load_csv("./CIE_xyz_1931_2deg.csv", 4)
-xyz = calc(spec, cmf)
+xyz = calc(spec, cmf2)
 xyY = xyz_to_xyY(xyz)
 print_white_point("D65 2 Degree FOV", xyz, xyY)
 
-# https://cie.co.at/datatable/cie-1964-colour-matching-functions-10-degree-observer
-cmf = load_csv("./CIE_xyz_1964_10deg.csv", 4)
-xyz = calc(spec, cmf)
+xyz = calc(spec, cmf10)
 xyY = xyz_to_xyY(xyz)
 print_white_point("D65 10 Degree FOV", xyz, xyY)
+
+# https://cie.co.at/datatable/cie-standard-illuminant-d50
+spec = load_csv("./CIE_std_illum_D50.csv", 2)
+xyz = calc(spec, cmf2)
+xyY = xyz_to_xyY(xyz)
+print_white_point("D50 2 Degree FOV", xyz, xyY)
+
+xyz = calc(spec, cmf10)
+xyY = xyz_to_xyY(xyz)
+print_white_point("D50 10 Degree FOV", xyz, xyY)
+
+# https://cie.co.at/datatable/relative-spectral-power-distributions-cie-illuminant-d55
+spec = load_csv("./CIE_illum_D55.csv", 2)
+xyz = calc(spec, cmf2)
+xyY = xyz_to_xyY(xyz)
+print_white_point("D55 2 Degree FOV", xyz, xyY)
+
+xyz = calc(spec, cmf10)
+xyY = xyz_to_xyY(xyz)
+print_white_point("D55 10 Degree FOV", xyz, xyY)
+
+# https://cie.co.at/datatable/relative-spectral-power-distributions-cie-illuminant-d55
+spec = load_csv("./CIE_illum_D75.csv", 2)
+xyz = calc(spec, cmf2)
+xyY = xyz_to_xyY(xyz)
+print_white_point("D75 2 Degree FOV", xyz, xyY)
+
+xyz = calc(spec, cmf10)
+xyY = xyz_to_xyY(xyz)
+print_white_point("D75 10 Degree FOV", xyz, xyY)

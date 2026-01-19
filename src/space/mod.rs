@@ -3,6 +3,7 @@ mod srgb;
 mod white_point;
 mod xyz;
 
+use colorkit::utils::N3;
 use colorkit::utils::Number;
 
 #[rustfmt::skip]
@@ -45,3 +46,6 @@ pub trait ColorSpace: Copy {
         return Self::CHANNEL_MIN[ch_num];
     }
 }
+
+/// Marker trait for RGB like colorspaces.
+pub trait RgbLike: ColorSpace<Channels = N3> {}

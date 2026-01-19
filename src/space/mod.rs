@@ -1,12 +1,14 @@
 //! Color Spaces
 mod srgb;
 mod white_point;
+mod xyz;
 
 use colorkit::utils::Number;
 
 #[rustfmt::skip]
 pub use srgb::Srgb;
 pub use white_point::*;
+pub use xyz::Xyz;
 
 /// Defines the a bound on a color space channel
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -27,13 +29,8 @@ pub trait ColorSpace: Copy {
     /// Lower or min bound of each channel.
     const CHANNEL_MIN: &'static [ChannelBound];
 
-    /*
-    /// Color Spaces White point
-    const WHITE_POINT: Option<WhitePoint>;
-
     // what else to add?
-    // white point?
-    // primaries?*/
+    // primaries?
 
     /// Get Max value for a given channel in the color space
     #[inline(always)]

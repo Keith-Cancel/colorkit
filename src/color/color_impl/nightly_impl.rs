@@ -67,4 +67,9 @@ impl<S: ColorSpace> Color<S> {
     pub const fn as_mut_slice(&mut self) -> &mut [f32] {
         return &mut self.0;
     }
+
+    #[inline]
+    pub(crate) const fn crate_new(values: [f32; <S::Channels as Number>::N]) -> Self {
+        return Self::from_array(values);
+    }
 }

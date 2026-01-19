@@ -4,20 +4,20 @@ pub trait WhitePoint_xy: Copy {
     /// Field of View Angle
     const FOV: u8;
     #[allow(non_upper_case_globals)]
-    /// Whites points chromaticity `*x*` value.
+    /// Whites points chromaticity *`x`* value.
     const x_i: f32;
     #[allow(non_upper_case_globals)]
-    /// White points chromaticity `*y*` value.
+    /// White points chromaticity *`y`* value.
     const y_i: f32;
 }
 
 /// The reference white point for a color space.
 pub trait WhitePoint: WhitePoint_xy {
-    /// White point `X` in range [0, 1.0]
+    /// White point `X`
     const X: f32 = white_point_x::<Self>(1.0);
     /// White point `Y` in range [0, 1.0]
     const Y: f32 = 1.0;
-    /// White point `Z`` in range [0, 1.0]
+    /// White point `Z`
     const Z: f32 = white_point_z::<Self>(1.0);
 
     /// Calculate the `X` value using a different `Y`

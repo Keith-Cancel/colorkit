@@ -3,10 +3,12 @@ use colorkit::utils::N3;
 use super::ChannelBound;
 use super::ColorSpace;
 use super::D65;
+use super::RgbLike;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Default)]
 pub struct Srgb;
 
+impl RgbLike for Srgb {}
 impl ColorSpace for Srgb {
     type Channels = N3;
     type WhitePoint = D65;

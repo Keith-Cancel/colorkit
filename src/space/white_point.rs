@@ -91,3 +91,29 @@ impl WhitePoint for D65Deg10 {
     const X: f32 = 0.9481106006237403;
     const Z: f32 = 1.0730466954321181;
 }
+
+/// D50 White point 2 Degree FOV
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct D50;
+impl WhitePoint_xy for D50 {
+    const FOV: u8 = 2;
+    const x_i: f32 = 0.3456842223226256;
+    const y_i: f32 = 0.3585040259042516;
+}
+impl WhitePoint for D50 {
+    const X: f32 = 0.9642408378837846;
+    const Z: f32 = 0.8251281168377381;
+}
+
+/// D50 White point 10 Degree FOV
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct D50Deg10;
+impl WhitePoint_xy for D50Deg10 {
+    const FOV: u8 = 10;
+    const x_i: f32 = 0.3477476825870566;
+    const y_i: f32 = 0.3595360243755528;
+}
+impl WhitePoint for D50Deg10 {
+    const X: f32 = 0.9672123487236909;
+    const Z: f32 = 0.8141501078947077;
+}

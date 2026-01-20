@@ -1,5 +1,6 @@
 const F32_BIAS: i32 = 127;
 const F32_MSK_EXP: u32 = 0x7f800000;
+const F32_MSK_MAN: u32 = 0x007fffff;
 
 #[inline]
 const fn exponent(bits: u32) -> i8 {
@@ -16,7 +17,7 @@ const fn exponent_div_5(bits: u32) -> u32 {
     // Now add the fractional bit.
     // 508 / 5 ~= 0x65.999999 in a fixed point u32 with 24 bit fraction
     // shift right 1 and it's then 0x32cccccc
-    let d = if e < 0x40000000 {
+    let d = if e <= (127u32 << 23) {
         d + 0x32cccccc + 0x666666 + 2
     } else {
         d + 0x32cccccc + 1
@@ -25,23 +26,40 @@ const fn exponent_div_5(bits: u32) -> u32 {
 }
 
 /// Computes the quintic root or 5th root.
-pub const fn quirt(x: f32) -> f32 {
+pub fn quirt(x: f32) -> f32 {
+    // table 2^(x/5) for f32
+    const TWO_OVER_5: [f32; 5] = [
+        1.0,
+        1.1486983549970350, // 2^(1/5)
+        1.3195079107728943, // 2^(2/5)
+        1.5157165665103981, // 2^(3/5)
+        1.7411011265922483, // 2^(4/5)
+    ];
+
     let bits = x.to_bits();
+    let neg = bits & 0x80000000;
     let abs = bits & 0x7fffffff;
+    let exp = exponent(bits);
 
     // Either inifnity or NaN
     if abs >= F32_MSK_EXP {
         return x;
     }
 
-    // TODO
-    // for rough first guess
+    // For rough first guess
     // * divide f32 exponent by 5
     // * apply some linear/cheap approx to m^(1/5) of the mantissa.
     // * This is because a f32 is basiclly m * 2^k and (m * 2^k)^(1/5)
     //   is m^(1/5) * 2^(k/5)
-    // Apply some number of rounds of Newton's or Halley's method
-    todo!();
+    let q = ((exp / 5) as i32 + F32_BIAS) as u32;
+    let r = exp % 5;
+    let frac = TWO_OVER_5[r.abs() as usize]; // Fractional exponent after dividing by 5
+
+    println!("\nQ: {}", f32::from_bits(q << 23) + frac);
+    println!("Q: {}", f32::from_bits(q << 23) * frac);
+    println!("Q: {}", f32::from_bits(q << 23));
+
+    return 0.0;
 }
 #[cfg(test)]
 mod test {
@@ -65,7 +83,7 @@ mod test {
 
     #[test]
     fn exp_div_5() {
-        let mut v: f32 = 1.0;
+        let mut v: f32 = 1.53125;
         for _ in 0..128 {
             let bits = v.to_bits();
             let e_i = (exponent(bits) / 5) as i32;
@@ -75,7 +93,7 @@ mod test {
             v *= 2.0;
         }
 
-        v = 1.0;
+        v = 1.53125;
         for _ in 0..127 {
             let bits = v.to_bits();
             let e_i = (exponent(bits) / 5) as i32;
@@ -84,5 +102,11 @@ mod test {
             assert_eq!(e_r1, e_r2);
             v *= 0.5;
         }
+    }
+
+    #[test]
+    fn hmm() {
+        quirt(0.25);
+        quirt(100.0);
     }
 }

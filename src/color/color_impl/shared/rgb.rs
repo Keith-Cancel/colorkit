@@ -1,11 +1,13 @@
+use colorkit::space::LinSrgb;
 use colorkit::space::RgbLike;
+use colorkit::space::Srgb;
 
 use super::Color;
 
 impl<S: RgbLike> Color<S> {
     /// Create a new color from R, G, B values.
-    pub const fn new_rgb(x: f32, y: f32, z: f32) -> Self {
-        return Self::crate_new([x, y, z]);
+    pub const fn new_rgb(r: f32, g: f32, b: f32) -> Self {
+        return Self::crate_new([r, g, b]);
     }
     /// Get `Red` value.
     pub const fn red(&self) -> f32 {
@@ -32,6 +34,25 @@ impl<S: RgbLike> Color<S> {
         self.0.as_mut_slice()[2] = value;
     }
 }
+/*
+// https://entropymine.com/imageworsener/srgbformula/
+fn linear(s: f32) -> f32 {
+    // 0.04045 old
+    let l = if s <= 0.0404482362771082 {
+        s / 12.92
+    } else {
+        //((s + 0.055) / 1.055).powf(2.4)
+    };
+    return l;
+}
+
+impl Color<Srgb> {
+    pub const fn into_linear(self) -> Color<LinSrgb> {
+        let [r, g, b] = self.clamp().0.0;
+        todo!();
+    }
+}
+*/
 
 #[cfg(test)]
 mod test {
@@ -39,7 +60,7 @@ mod test {
 
     use super::*;
     #[test]
-    fn new_xyz() {
+    fn new_rgb() {
         let mut c = Color::<Srgb>::new_rgb(0.2, 0.3, 0.4);
         assert_eq!(c.channels(), 3);
         assert_eq!(c.red(), 0.2);
@@ -51,8 +72,8 @@ mod test {
 
         c.set_red(0.5);
         assert_eq!(c.red(), 0.5);
-        assert_eq!(c.blue(), 0.3);
-        assert_eq!(c.red(), 0.4);
+        assert_eq!(c.green(), 0.3);
+        assert_eq!(c.blue(), 0.4);
         assert_eq!(c[0], 0.5);
         assert_eq!(c[1], 0.3);
         assert_eq!(c[2], 0.4);

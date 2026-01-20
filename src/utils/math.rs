@@ -1,8 +1,22 @@
 const F32_BIAS: i32 = 127;
+const F32_MSK_EXP: u32 = 0x7f800000;
 
+#[inline]
 const fn exponent(bits: u32) -> i8 {
     let e = ((bits >> 23) & 0xff) as i32 - F32_BIAS;
     return e as i8;
+}
+
+/// Mask the floats exponent and divide it by.
+#[inline]
+const fn exponent_div_5(bits: u32) -> u32 {
+    let e = bits & F32_MSK_EXP;
+    // ((e - 127) / 5) + 127 = (e / 5) + (508 / 5)
+    let e = e / 5;
+    // 508 / 5 ~= 0x65.999999 in a fixed point u32 with 24 bit fraction
+    // Shift right 1 and it's 0x32cccccc
+    let e = e + 0x32cccccc + 1;
+    return e >> 23;
 }
 
 /// Computes the quintic root or 5th root.
@@ -18,7 +32,6 @@ pub const fn quirt(x: f32) {
     //   is m^(1/5) * 2^(k/5)
     // Apply some number of rounds of Newton's or Halley's method
 }
-
 #[cfg(test)]
 mod test {
     use super::*;
@@ -36,6 +49,34 @@ mod test {
         for i in 1..=127 {
             v *= 0.5;
             assert_eq!(exponent(v.to_bits()), (-i));
+        }
+    }
+
+    #[test]
+    fn exp_div_5() {
+        let mut v: f32 = 1.0;
+        for _ in 0..128 {
+            let bits = v.to_bits();
+            let e_i = exponent(bits) as i32;
+            let e_r1 = ((e_i / 5) + 127) as u32;
+            let e_r2 = exponent_div_5(bits);
+            assert_eq!(e_r1, e_r2);
+            v *= 2.0;
+        }
+
+        // hmmm gonna go for a walk and think a little.
+        v = 0.5 * 0.5 * 0.5 * 0.5 * 0.5 * 0.5 * 0.5 * 0.5 * 0.5 * 0.5 * 0.5 * 0.5 * 0.5 * 0.5;
+        for _ in 0..127 {
+            let bits = v.to_bits();
+            println!("{}", exponent(bits));
+            let e_i = exponent(bits) as i32;
+            let e_r1 = ((e_i / 5) + 127) as u32;
+            println!("\nr1: {} {:x}", (e_r1 as i32) - 127, e_r1 << 23);
+            let e_r2 = exponent_div_5(bits);
+            println!("\nr2: {} {:x}", (e_r2 as i32) - 127, e_r2 << 23);
+            assert_eq!(e_r1, e_r2);
+
+            v *= 0.5;
         }
     }
 }

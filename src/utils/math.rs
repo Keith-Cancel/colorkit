@@ -7,18 +7,21 @@ const fn exponent(bits: u32) -> i8 {
     return e as i8;
 }
 
-/// Mask the floats exponent and divide it by.
+/// Mask the floats exponent and divide it by 5.
 #[inline]
 const fn exponent_div_5(bits: u32) -> u32 {
     let e = bits & F32_MSK_EXP;
     // ((e - 127) / 5) + 127 = (e / 5) + (508 / 5)
-    let e = e / 5;
+    let d = e / 5;
+    // Now add the fractional bit.
     // 508 / 5 ~= 0x65.999999 in a fixed point u32 with 24 bit fraction
-    // Shift right 1 and it's 0x32cccccc
-    // Neg
-    // let e = e + 0x32cccccc + 0x666666 + 2;
-    let e = e + 0x32cccccc + 1;
-    return e >> 23;
+    // shift right 1 and it's then 0x32cccccc
+    let d = if e < 0x40000000 {
+        d + 0x32cccccc + 0x666666 + 2
+    } else {
+        d + 0x32cccccc + 1
+    };
+    return d >> 23;
 }
 
 /// Computes the quintic root or 5th root.
@@ -60,30 +63,25 @@ mod test {
         }
     }
 
-    //#[test]
+    #[test]
     fn exp_div_5() {
         let mut v: f32 = 1.0;
         for _ in 0..128 {
             let bits = v.to_bits();
-            let e_i = exponent(bits) as i32;
-            let e_r1 = ((e_i / 5) + 127) as u32;
+            let e_i = (exponent(bits) / 5) as i32;
+            let e_r1 = (e_i + 127) as u32;
             let e_r2 = exponent_div_5(bits);
             assert_eq!(e_r1, e_r2);
             v *= 2.0;
         }
 
-        // hmmm gonna go for a walk and think a little.
         v = 1.0;
         for _ in 0..127 {
             let bits = v.to_bits();
-            //println!("{}", exponent(bits));
-            let e_i = exponent(bits) as i32;
-            let e_r1 = ((e_i / 5) + 127) as u32;
-            //println!("\nr1: {} {:x}", (e_r1 as i32) - 127, e_r1 << 23);
+            let e_i = (exponent(bits) / 5) as i32;
+            let e_r1 = (e_i + 127) as u32;
             let e_r2 = exponent_div_5(bits);
-            //println!("\nr2: {} {:x}", (e_r2 as i32) - 127, e_r2 << 23);
             assert_eq!(e_r1, e_r2);
-
             v *= 0.5;
         }
     }

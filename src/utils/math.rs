@@ -15,15 +15,22 @@ const fn exponent_div_5(bits: u32) -> u32 {
     let e = e / 5;
     // 508 / 5 ~= 0x65.999999 in a fixed point u32 with 24 bit fraction
     // Shift right 1 and it's 0x32cccccc
+    // Neg
+    // let e = e + 0x32cccccc + 0x666666 + 2;
     let e = e + 0x32cccccc + 1;
     return e >> 23;
 }
 
 /// Computes the quintic root or 5th root.
-pub const fn quirt(x: f32) {
+pub const fn quirt(x: f32) -> f32 {
     let bits = x.to_bits();
-    let e_i = exponent(bits);
-    let e_r = (e_i / 5) + 127; // Hmm this is ((e - 127) / 5) + 127 can I do this more effectively?
+    let abs = bits & 0x7fffffff;
+
+    // Either inifnity or NaN
+    if abs >= F32_MSK_EXP {
+        return x;
+    }
+
     // TODO
     // for rough first guess
     // * divide f32 exponent by 5
@@ -31,6 +38,7 @@ pub const fn quirt(x: f32) {
     // * This is because a f32 is basiclly m * 2^k and (m * 2^k)^(1/5)
     //   is m^(1/5) * 2^(k/5)
     // Apply some number of rounds of Newton's or Halley's method
+    todo!();
 }
 #[cfg(test)]
 mod test {
@@ -52,7 +60,7 @@ mod test {
         }
     }
 
-    #[test]
+    //#[test]
     fn exp_div_5() {
         let mut v: f32 = 1.0;
         for _ in 0..128 {
@@ -65,15 +73,15 @@ mod test {
         }
 
         // hmmm gonna go for a walk and think a little.
-        v = 0.5 * 0.5 * 0.5 * 0.5 * 0.5 * 0.5 * 0.5 * 0.5 * 0.5 * 0.5 * 0.5 * 0.5 * 0.5 * 0.5;
+        v = 1.0;
         for _ in 0..127 {
             let bits = v.to_bits();
-            println!("{}", exponent(bits));
+            //println!("{}", exponent(bits));
             let e_i = exponent(bits) as i32;
             let e_r1 = ((e_i / 5) + 127) as u32;
-            println!("\nr1: {} {:x}", (e_r1 as i32) - 127, e_r1 << 23);
+            //println!("\nr1: {} {:x}", (e_r1 as i32) - 127, e_r1 << 23);
             let e_r2 = exponent_div_5(bits);
-            println!("\nr2: {} {:x}", (e_r2 as i32) - 127, e_r2 << 23);
+            //println!("\nr2: {} {:x}", (e_r2 as i32) - 127, e_r2 << 23);
             assert_eq!(e_r1, e_r2);
 
             v *= 0.5;

@@ -8,7 +8,8 @@ const fn exponent(bits: u32) -> i8 {
 /// Computes the quintic root or 5th root.
 pub const fn quirt(x: f32) {
     let bits = x.to_bits();
-    let e = exponent(bits);
+    let e_i = exponent(bits);
+    let e_r = (e_i / 5) + 127; // Hmm this is ((e - 127) / 5) + 127 can I do this more effectively?
     // TODO
     // for rough first guess
     // * divide f32 exponent by 5

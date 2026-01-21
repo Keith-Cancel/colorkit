@@ -2,6 +2,7 @@ use std::f32::consts;
 use std::hint::black_box;
 use std::time::Instant;
 
+use super::Ansi;
 use crate::tests::MathFn;
 
 pub struct Perf {
@@ -51,8 +52,7 @@ impl Perf {
     }
 
     pub fn run<F: MathFn>(&self) {
-        /*let arr = self.values.as_slice();
-
+        /*
         Self::touch(arr);
         let now = Instant::now();
         for x in arr {
@@ -75,6 +75,7 @@ impl Perf {
         println!("Candidate: {:.3?}", now.elapsed());*/
 
         const RUNS: usize = 113; // 113 is prime.
+        let arr = self.values.as_slice();
         self.run_case::<RUNS>("Baseline", |x| black_box(x), arr);
         self.run_case::<RUNS>("Reference", F::std_f32_impl, arr);
         self.run_case::<RUNS>("Candidate", F::test_f32_impl, arr);
@@ -125,8 +126,15 @@ impl Perf {
         let call_ns = mean / (arr.len() as f64);
 
         println!(
-            "{:<10} {:>10.3} {:>12.3} {:>10.3} {:>10.3} {:>10.3}",
-            name, mean_us, call_ns, min_us, max_us, std_us
+            "{}{:<10}{} {:>10.3} {:>12.3} {:>10.3} {:>10.3} {:>10.3}",
+            Ansi::BOLD,
+            name,
+            Ansi::RESET,
+            mean_us,
+            call_ns,
+            min_us,
+            max_us,
+            std_us
         );
     }
 

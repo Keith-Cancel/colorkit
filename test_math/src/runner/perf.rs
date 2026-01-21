@@ -77,12 +77,18 @@ impl Perf {
         const RUNS: usize = 353; // 353 is prime.
         let arr = self.values.as_slice();
         self.run_case::<RUNS>("Baseline", |x| black_box(x), arr);
-        self.run_case::<RUNS>("Reference", F::std_f32_impl, arr);
-        self.run_case::<RUNS>("Candidate", F::test_f32_impl, arr);
+        let r = self.run_case::<RUNS>("Reference", F::std_f32_impl, arr);
+        let c = self.run_case::<RUNS>("Candidate", F::test_f32_impl, arr);
+
+        let color = if c <= r { Ansi::GREEN } else { Ansi::RED };
+        let delta = c - r;
+        let per = (delta / r) * 100.0;
+
+        println!("    Canidate vs Reference: {}{:.2}%{}", color, per, Ansi::RESET);
     }
 
     #[inline(never)]
-    fn run_case<const RUNS: usize>(&self, name: &str, func: fn(f32) -> f32, arr: &[f32]) {
+    fn run_case<const RUNS: usize>(&self, name: &str, func: fn(f32) -> f32, arr: &[f32]) -> f64 {
         let mut times: [u64; RUNS] = [0; RUNS];
 
         for i in 0..RUNS {
@@ -136,6 +142,7 @@ impl Perf {
             max_us,
             std_us
         );
+        return sum;
     }
 
     #[inline(never)]

@@ -1,5 +1,6 @@
 mod quirt;
 
+pub use quirt::Quirt;
 use rug::Float;
 
 /// Single Agrument Math functions
@@ -8,5 +9,5 @@ pub trait MathFn {
     fn new() -> Self;
     fn test_f32_impl(x: f32) -> f32;
     fn std_f32_impl(x: f32) -> f32;
-    fn rug_impl(x: f32) -> Float;
+    fn rug_impl(prec: u32, x: f32) -> Float;
 }

@@ -80,11 +80,22 @@ impl Perf {
         let r = self.run_case::<RUNS>("Reference", F::std_f32_impl, arr);
         let c = self.run_case::<RUNS>("Candidate", F::test_f32_impl, arr);
 
-        let color = if c <= r { Ansi::GREEN } else { Ansi::RED };
+        let (color, sign) = if c <= r {
+            (Ansi::GREEN, "")
+        } else {
+            (Ansi::RED, "+")
+        };
         let delta = c - r;
         let per = (delta / r) * 100.0;
-
-        println!("    Canidate vs Reference: {}{:.2}%{}", color, per, Ansi::RESET);
+        println!(
+            "    {}Canidate vs Reference:{} {}{}{:.2}%{} Delta",
+            Ansi::DIM,
+            Ansi::RESET,
+            color,
+            sign,
+            per,
+            Ansi::RESET
+        );
     }
 
     #[inline(never)]

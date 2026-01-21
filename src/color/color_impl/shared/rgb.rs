@@ -90,4 +90,12 @@ mod test {
         assert_eq!(c[1], 0.6);
         assert_eq!(c[2], 0.7);
     }
+
+    #[test]
+    fn linear() {
+        let c = Color::<Srgb>::new_rgb(0.34117647058, 0.89019607843, 0.53725490196);
+        let c = c.into_linear();
+        assert!(c[0] >= 0.0953074);
+        assert!(c[0] <= 0.0953075);
+    }
 }

@@ -1,6 +1,7 @@
 use colorkit::space::LinSrgb;
 use colorkit::space::RgbLike;
 use colorkit::space::Srgb;
+use colorkit::utils::math::quirt;
 
 use super::Color;
 
@@ -34,25 +35,28 @@ impl<S: RgbLike> Color<S> {
         self.0.as_mut_slice()[2] = value;
     }
 }
+
 /*
+impl Color<Srgb> {
+    pub const fn into_linear(self) -> Color<LinSrgb> {
+        let [r, g, b] = self.clamp().0;
+        todo!();
+    }
+}*/
+
 // https://entropymine.com/imageworsener/srgbformula/
-fn linear(s: f32) -> f32 {
+const fn linear(s: f32) -> f32 {
     // 0.04045 old
     let l = if s <= 0.0404482362771082 {
         s / 12.92
     } else {
-        //((s + 0.055) / 1.055).powf(2.4)
+        let x = (s + 0.055) / 1.055;
+        let r = quirt(x);
+        // Equals x.powf(2.4)
+        x * x * r * r
     };
     return l;
 }
-
-impl Color<Srgb> {
-    pub const fn into_linear(self) -> Color<LinSrgb> {
-        let [r, g, b] = self.clamp().0.0;
-        todo!();
-    }
-}
-*/
 
 #[cfg(test)]
 mod test {

@@ -8,6 +8,7 @@ const fn exponent(bits: u32) -> i8 {
     return e as i8;
 }
 
+/*
 /// Mask the floats exponent and divide it by 5.
 #[inline]
 const fn exponent_div_5(bits: u32) -> u32 {
@@ -23,7 +24,7 @@ const fn exponent_div_5(bits: u32) -> u32 {
         d + 0x32cccccc + 1
     };
     return d >> 23;
-}
+}*/
 
 /// Computes the quintic root or 5th root.
 pub fn quirt(x: f32) -> f32 {
@@ -45,10 +46,14 @@ pub fn quirt(x: f32) -> f32 {
     if abs >= F32_MSK_EXP {
         return x;
     }
+    // TODO?
+    // Try to come up with a better method
+    // for the intital guess, that is a bit
+    // smaller generate code wise.
 
     // For rough first guess
     // * divide f32 exponent by 5
-    // * apply some linear/cheap approx to m^(1/5) of the mantissa.
+    // * apply some linear/cheap approx to m^(1/5) of the mantissa. (not currently doing)
     // * This is because a f32 is basiclly m * 2^k and (m * 2^k)^(1/5)
     //   is m^(1/5) * 2^(k/5)
     let q = exp.div_euclid(5);
@@ -60,12 +65,18 @@ pub fn quirt(x: f32) -> f32 {
 
     let a = x as f64;
     let mut v = v as f64;
-    println!("\nV: {:.32}", v);
-    for _ in 0..3 {
-        let n = 4.0 * v + (a / (v * v * v * v));
-        v = n / 5.0;
-    }
+    // Newtons Method
+    //for _ in 0..4 {
+    //    let n = 4.0 * v + (a / (v.powi(4)));
+    //    v = n / 5.0;
+    //}
 
+    // Halley's method
+    for _ in 0..2 {
+        let n = 2.0 * v;
+        let n = n + (5.0 * a * v) / (2.0 * a + 3.0 * v.powi(5));
+        v = n / 3.0;
+    }
     return v as f32;
 }
 #[cfg(test)]
@@ -88,6 +99,46 @@ mod test {
         }
     }
 
+    extern crate std;
+    //#[test]
+    fn outputs() {
+        println!("{:.32}", quirt(0.00001026104));
+        println!("{:.32}", f32::powf(0.00001026104, 0.2));
+        println!("{:.32}", quirt(0.125));
+        println!("{:.32}", f32::powf(0.125, 0.2));
+        println!("{:.32}", quirt(0.25));
+        println!("{:.32}", f32::powf(0.25, 0.2));
+        println!("{:.32}", quirt(100.0));
+        println!("{:.32}", f32::powf(100.0, 0.2));
+        println!("{:.32}", quirt(513479.0));
+        println!("{:.32}", f32::powf(513479.0, 0.2));
+        println!("{:.32}", quirt(77098997.0));
+        println!("{:.32}", f32::powf(77098997.0, 0.2));
+
+        //0.10051671415567398071289062500000
+        //0.1005167125008695867761629582612968140014949168940283661226248090...
+        //0.10051670670509338378906250000000
+
+        //2.51188635826110839843750000000000
+        //2.5118864315095801110850320677993273941585181007824754286798884209...
+        //2.51188635826110839843750000000000
+
+        //13.87089633941650390625000000000000
+        //13.870896696932448919916278887221704989674558691001695883592078542...
+        //13.87089729309082031250000000000000
+
+        //37.79285812377929687500000000000000
+        //37.792858865422987497487438270521833999746461437347417976071421339...
+        //37.79286193847656250000000000000000
+
+        println!("{:.32}", 99.5f32.powi(2) * quirt(99.5) * quirt(99.5));
+        println!("{:.32}", f32::powf(99.5, 2.4));
+        //62341.23828125000000000000000000000000
+        //62341.233887482210265920394695423536341177546877454744395927487293...
+        //62341.26171875000000000000000000000000
+    }
+
+    /*
     #[test]
     fn exp_div_5() {
         let mut v: f32 = 1.53125;
@@ -109,27 +160,5 @@ mod test {
             assert_eq!(e_r1, e_r2);
             v *= 0.5;
         }
-    }
-    extern crate std;
-    #[test]
-    fn hmm() {
-        println!("{:.32}", quirt(0.125));
-        println!("{:.32}", f32::powf(0.125, 0.2));
-        println!("{:.32}", quirt(0.25));
-        println!("{:.32}", f32::powf(0.25, 0.2));
-        println!("{:.32}", quirt(100.0));
-        println!("{:.32}", f32::powf(100.0, 0.2));
-        println!("{:.32}", quirt(513479.0));
-        println!("{:.32}", f32::powf(513479.0, 0.2));
-        println!("{:.32}", quirt(77098997.0));
-        println!("{:.32}", f32::powf(77098997.0, 0.2));
-
-        //13.87089633941650390625000000000000
-        //13.870896696932448919916278887221704989674558691001695883592078542...
-        //13.87089729309082031250000000000000
-
-        //37.79285812377929687500000000000000
-        //37.792858865422987497487438270521833999746461437347417976071421339...
-        //37.79286193847656250000000000000000
-    }
+    }*/
 }

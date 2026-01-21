@@ -1,4 +1,5 @@
 mod math_fn;
+mod tests;
 
 use colorkit::utils::math;
 pub use math_fn::MathFn;

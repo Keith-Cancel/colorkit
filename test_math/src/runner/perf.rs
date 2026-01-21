@@ -76,6 +76,22 @@ impl Perf {
     }
 
     #[inline(never)]
+    fn run_case<F: MathFn, const RUNS: usize>(&self, name: &str, func: fn(f32) -> f32, arr: &[f32], n: f64) {
+        let mut times_ns: [u64; RUNS] = [0; RUNS];
+
+        for i in 0..RUNS {
+            Self::touch(arr);
+
+            let start = Instant::now();
+            for &x in arr {
+                black_box(func(x));
+            }
+            let elapsed = start.elapsed();
+            times_ns[i] = elapsed.as_nanos() as u64;
+        }
+    }
+
+    #[inline(never)]
     fn touch(arr: &[f32]) {
         for x in arr {
             black_box(*x);

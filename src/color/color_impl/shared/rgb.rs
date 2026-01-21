@@ -36,13 +36,12 @@ impl<S: RgbLike> Color<S> {
     }
 }
 
-/*
 impl Color<Srgb> {
     pub const fn into_linear(self) -> Color<LinSrgb> {
-        let [r, g, b] = self.clamp().0;
-        todo!();
+        let [r, g, b] = self.clamp().crate_inner();
+        return Color::crate_new([linear(r), linear(g), linear(b)]);
     }
-}*/
+}
 
 // https://entropymine.com/imageworsener/srgbformula/
 const fn linear(s: f32) -> f32 {

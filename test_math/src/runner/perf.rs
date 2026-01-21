@@ -103,6 +103,15 @@ impl Perf {
         }
 
         let mean = sum / (RUNS as f64);
+
+        let mut var_sum = 0.0;
+        for &t in &times {
+            let t = t as f64;
+            let d = t - mean;
+            var_sum += d * d;
+        }
+        let variance = var_sum / (RUNS as f64);
+        let std_dev = variance.sqrt();
     }
 
     #[inline(never)]

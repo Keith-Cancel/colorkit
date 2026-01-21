@@ -77,18 +77,32 @@ impl Perf {
 
     #[inline(never)]
     fn run_case<F: MathFn, const RUNS: usize>(&self, name: &str, func: fn(f32) -> f32, arr: &[f32], n: f64) {
-        let mut times_ns: [u64; RUNS] = [0; RUNS];
+        let mut times: [u64; RUNS] = [0; RUNS];
 
         for i in 0..RUNS {
             Self::touch(arr);
-
             let start = Instant::now();
             for &x in arr {
                 black_box(func(x));
             }
             let elapsed = start.elapsed();
-            times_ns[i] = elapsed.as_nanos() as u64;
+            times[i] = elapsed.as_nanos() as u64;
         }
+
+        // statistics
+        let mut sum = 0.0f64;
+        let mut min = f64::INFINITY;
+        let mut max = f64::NEG_INFINITY;
+
+        // Compute sum, and find min and max.
+        for &t in &times {
+            let t = t as f64;
+            sum += t;
+            min = min.min(t);
+            max = max.max(t);
+        }
+
+        let mean = sum / (RUNS as f64);
     }
 
     #[inline(never)]

@@ -76,7 +76,7 @@ impl Perf {
     }
 
     #[inline(never)]
-    fn run_case<F: MathFn, const RUNS: usize>(&self, name: &str, func: fn(f32) -> f32, arr: &[f32], n: f64) {
+    fn run_case<const RUNS: usize>(&self, name: &str, func: fn(f32) -> f32, arr: &[f32]) {
         let mut times: [u64; RUNS] = [0; RUNS];
 
         for i in 0..RUNS {
@@ -112,6 +112,17 @@ impl Perf {
         }
         let variance = var_sum / (RUNS as f64);
         let std_dev = variance.sqrt();
+
+        let mean_us = mean / 1000.0;
+        let min_us = min / 1000.0;
+        let max_us = max / 1000.0;
+        let std_us = std_dev / 1000.0;
+        let call_ns = mean / (arr.len() as f64);
+
+        println!(
+            "{:<10} {:>10.3} {:>12.3} {:>10.3} {:>10.3} {:>10.3}",
+            name, mean_us, call_ns, min_us, max_us, std_us
+        );
     }
 
     #[inline(never)]

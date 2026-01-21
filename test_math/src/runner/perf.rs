@@ -52,30 +52,18 @@ impl Perf {
     }
 
     pub fn run<F: MathFn>(&self) {
-        /*
-        Self::touch(arr);
-        let now = Instant::now();
-        for x in arr {
-            black_box(*x);
-        }
-        println!("Baseline: {:.3?}", now.elapsed());
-
-        Self::touch(arr);
-        let now = Instant::now();
-        for x in arr {
-            black_box(F::std_f32_impl(*x));
-        }
-        println!("Reference: {:.3?}", now.elapsed());
-
-        Self::touch(arr);
-        let now = Instant::now();
-        for x in arr {
-            black_box(F::test_f32_impl(*x));
-        }
-        println!("Candidate: {:.3?}", now.elapsed());*/
-
         const RUNS: usize = 353; // 353 is prime.
         let arr = self.values.as_slice();
+
+        println!(
+            "\n=== {}Perf{}: {} | elements = {}, runs = {} ===",
+            Ansi::BOLD,
+            Ansi::RESET,
+            F::NAME,
+            arr.len(),
+            RUNS
+        );
+
         self.run_case::<RUNS>("Baseline", |x| black_box(x), arr);
         let r = self.run_case::<RUNS>("Reference", F::std_f32_impl, arr);
         let c = self.run_case::<RUNS>("Candidate", F::test_f32_impl, arr);

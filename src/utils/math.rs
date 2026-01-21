@@ -52,14 +52,18 @@ pub fn quirt(x: f32) -> f32 {
     // * This is because a f32 is basiclly m * 2^k and (m * 2^k)^(1/5)
     //   is m^(1/5) * 2^(k/5)
     let q = ((exp / 5) as i32 + F32_BIAS) as u32;
-    let r = exp % 5;
-    let frac = TWO_OVER_5[r.abs() as usize]; // Fractional exponent after dividing by 5
+    //let r = exp % 5;
+    //let frac = TWO_OVER_5[r.abs() as usize]; // Fractional exponent after dividing by 5
 
-    println!("\nQ: {}", f32::from_bits(q << 23) + frac);
-    println!("Q: {}", f32::from_bits(q << 23) * frac);
-    println!("Q: {}", f32::from_bits(q << 23));
+    let a = x as f64;
+    let mut v = f32::from_bits(neg | (q << 23)) as f64;
+    println!("\nV: {:.32}", v);
+    for _ in 0..9 {
+        let n = 4.0 * v + (a / (v * v * v * v));
+        v = n / 5.0;
+    }
 
-    return 0.0;
+    return v as f32;
 }
 #[cfg(test)]
 mod test {
@@ -103,10 +107,19 @@ mod test {
             v *= 0.5;
         }
     }
-
+    extern crate std;
     #[test]
     fn hmm() {
-        quirt(0.25);
-        quirt(100.0);
+        println!("{:.32}", quirt(0.125));
+        println!("{:.32}", f32::powf(0.125, 0.2));
+        println!("{:.32}", quirt(0.25));
+        println!("{:.32}", f32::powf(0.25, 0.2));
+        println!("{:.32}", quirt(100.0));
+        println!("{:.32}", f32::powf(100.0, 0.2));
+        println!("{:.32}", quirt(513479.0));
+        println!("{:.32}", f32::powf(513479.0, 0.2));
+        //13.87089633941650390625000000000000
+        //13.870896696932448919916278887221704989674558691001695883592078542...
+        //13.87089729309082031250000000000000
     }
 }

@@ -2,8 +2,8 @@ mod perf;
 
 pub use perf::Perf;
 
-pub struct AnsiColors;
-impl AnsiColors {
+pub struct Ansi;
+impl Ansi {
     pub const RESET: &'static str = "\x1b[0m";
     pub const BOLD: &'static str = "\x1b[1m";
     pub const DIM: &'static str = "\x1b[2m";

@@ -51,7 +51,7 @@ impl Perf {
     }
 
     pub fn run<F: MathFn>(&self) {
-        let arr = self.values.as_slice();
+        /*let arr = self.values.as_slice();
 
         Self::touch(arr);
         let now = Instant::now();
@@ -72,7 +72,12 @@ impl Perf {
         for x in arr {
             black_box(F::test_f32_impl(*x));
         }
-        println!("Candidate: {:.3?}", now.elapsed());
+        println!("Candidate: {:.3?}", now.elapsed());*/
+
+        const RUNS: usize = 113; // 113 is prime.
+        self.run_case::<RUNS>("Baseline", |x| black_box(x), arr);
+        self.run_case::<RUNS>("Reference", F::std_f32_impl, arr);
+        self.run_case::<RUNS>("Candidate", F::test_f32_impl, arr);
     }
 
     #[inline(never)]

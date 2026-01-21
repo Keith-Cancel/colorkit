@@ -6,3 +6,5 @@ edition = "2024"
 
 [dependencies]
 colorkit = { path = "../../colorkit" }
+# Use rug's MPFR for ground truth values
+rug = "1.28.1"

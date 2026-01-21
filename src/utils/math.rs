@@ -1,6 +1,6 @@
 const F32_BIAS: i32 = 127;
 const F32_MSK_EXP: u32 = 0x7f800000;
-const F32_MSK_MAN: u32 = 0x007fffff;
+//const F32_MSK_MAN: u32 = 0x007fffff;
 
 #[inline]
 const fn exponent(bits: u32) -> i8 {
@@ -27,7 +27,7 @@ const fn exponent_div_5(bits: u32) -> u32 {
 }*/
 
 /// Computes the quintic root or 5th root.
-pub fn quirt(x: f32) -> f32 {
+pub const fn quirt(x: f32) -> f32 {
     // table 2^(x/5) for f32
     const TWO_OVER_5: [f32; 5] = [
         1.0,
@@ -64,21 +64,26 @@ pub fn quirt(x: f32) -> f32 {
     let v = f32::from_bits(neg | (q << 23)) * frac;
 
     let a = x as f64;
-    let mut v = v as f64;
-    // Newtons Method
-    //for _ in 0..4 {
-    //    let n = 4.0 * v + (a / (v.powi(4)));
-    //    v = n / 5.0;
-    //}
-
+    let mut x = v as f64;
+    let mut i = 0;
     // Halley's method
-    for _ in 0..2 {
-        let n = 2.0 * v;
-        let n = n + (5.0 * a * v) / (2.0 * a + 3.0 * v.powi(5));
-        v = n / 3.0;
+    while i < 2 {
+        let pow = x * x * x * x * x;
+        let n = 2.0 * x;
+        let n = n + (5.0 * a * x) / (2.0 * a + 3.0 * pow);
+        x = n / 3.0;
+        i += 1;
     }
-    return v as f32;
+    // Newtons Method
+    //while i < 4 {
+    //    let pow = x * x * x * x;
+    //    let n = 4.0 * x + (a / pow);
+    //    x = n / 5.0;
+    //    i += 1;
+    //}
+    return x as f32;
 }
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -98,9 +103,9 @@ mod test {
             assert_eq!(exponent(v.to_bits()), (-i));
         }
     }
-
+    /*
     extern crate std;
-    //#[test]
+    #[test]
     fn outputs() {
         println!("{:.32}", quirt(0.00001026104));
         println!("{:.32}", f32::powf(0.00001026104, 0.2));
@@ -138,7 +143,6 @@ mod test {
         //62341.26171875000000000000000000000000
     }
 
-    /*
     #[test]
     fn exp_div_5() {
         let mut v: f32 = 1.53125;

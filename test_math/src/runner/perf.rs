@@ -74,7 +74,7 @@ impl Perf {
         }
         println!("Candidate: {:.3?}", now.elapsed());*/
 
-        const RUNS: usize = 113; // 113 is prime.
+        const RUNS: usize = 353; // 353 is prime.
         let arr = self.values.as_slice();
         self.run_case::<RUNS>("Baseline", |x| black_box(x), arr);
         self.run_case::<RUNS>("Reference", F::std_f32_impl, arr);

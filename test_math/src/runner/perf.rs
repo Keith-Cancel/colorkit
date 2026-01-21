@@ -56,12 +56,18 @@ impl Perf {
         let arr = self.values.as_slice();
 
         println!(
-            "\n=== {}Perf{}: {} | elements = {}, runs = {} ===",
+            "\n=== {}Perf{}: {}{}{} | elements = {}{}{}, runs = {}{}{} ===",
             Ansi::BOLD,
             Ansi::RESET,
+            Ansi::CYAN,
             F::NAME,
+            Ansi::RESET,
+            Ansi::BOLD,
             arr.len(),
-            RUNS
+            Ansi::RESET,
+            Ansi::BOLD,
+            RUNS,
+            Ansi::RESET
         );
 
         self.run_case::<RUNS>("Baseline", |x| black_box(x), arr);

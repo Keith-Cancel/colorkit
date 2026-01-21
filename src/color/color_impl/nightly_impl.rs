@@ -75,4 +75,9 @@ impl<S: ColorSpace> Color<S> {
     pub(crate) const fn crate_new(values: [f32; <S::Channels as Number>::N]) -> Self {
         return Self::from_array(values);
     }
+
+    #[inline]
+    pub(crate) const fn crate_inner(self) -> [f32; <S::Channels as Number>::N] {
+        return self.0;
+    }
 }

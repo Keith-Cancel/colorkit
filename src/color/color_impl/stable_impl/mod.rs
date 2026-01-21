@@ -62,4 +62,9 @@ impl<S: ColorSpace> Color<S> {
         let _ = Self::COLOR_ASSERT;
         return Self(ColorInner(values));
     }
+
+    #[inline]
+    pub(crate) const fn crate_inner(self) -> <S::Channels as Number>::Arr<f32> {
+        return self.0.0;
+    }
 }

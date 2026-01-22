@@ -13,7 +13,14 @@ pub struct Relative {
 }
 
 impl Relative {
+    /// Precision to use to use for rug
     const PREC: u32 = 128;
+    /// Relative error above which we consider the sample less than ideal
+    pub const ERR_LIMIT: f64 = 1e-6;
+    /// When the number of [`Relative::ERR_LIM`] exceeds this ration warn.
+    pub const ERR_RATIO: f64 = 1e-4;
+    /// Any error above this value is bad.
+    pub const ERR_BAD: f64 = 1e-5;
 
     pub fn new() -> Self {
         let mut v = Vec::<f32>::with_capacity(100);
@@ -30,7 +37,9 @@ impl Relative {
     }
 
     pub fn run<F: MathFn>(&self) {
-        let i = PowersF32::new().chain(PRIMES.iter().copied());
+        let i = PowersF32::new()
+            .chain(PRIMES.iter().copied())
+            .chain(self.values.iter().copied());
         self.run_case::<F, _>(i);
     }
 
@@ -40,6 +49,9 @@ impl Relative {
         let mut std_to_rug = Vec::<f64>::new();
 
         for x in iter {
+            if !x.is_finite() {
+                continue;
+            }
             let rug = F::rug_impl(Self::PREC, x);
             let std = F::std_f32_impl(x) as f64;
             let fun = F::test_f32_impl(x) as f64;
@@ -65,6 +77,17 @@ impl Relative {
         std_to_rug.sort_by(|a, b| a.partial_cmp(b).unwrap());
 
         println!(
+            "\n=========== {}Relative Error{}: {}{}{} | Samples = {}{}{} ===========",
+            Ansi::BOLD,
+            Ansi::RESET,
+            Ansi::CYAN,
+            F::NAME,
+            Ansi::RESET,
+            Ansi::BOLD,
+            imp_to_rug.len(),
+            Ansi::RESET,
+        );
+        println!(
             "{:<11} {}{:>9} {:>9} {:>9} {:>9} {:>9} {:>9} {:>9}{}",
             "Case",
             Ansi::BLUE,
@@ -81,9 +104,50 @@ impl Relative {
         Self::print_stats("Impl => Std", &imp_to_std);
         Self::print_stats("Impl => Ref", &imp_to_rug);
         Self::print_stats("Std  => Ref", &std_to_rug);
+
+        let mut cnt = 0usize;
+        for &x in imp_to_rug.as_slice() {
+            if x > Self::ERR_LIMIT {
+                cnt += 1;
+            }
+            if x > Self::ERR_BAD {
+                println!(
+                    "{}Error:{} '{}' has a relative error exceeding {:.3e} > {:.3e}",
+                    Ansi::RED,
+                    Ansi::RESET,
+                    F::NAME,
+                    x,
+                    Self::ERR_BAD
+                );
+                return;
+            }
+        }
+        let ratio = (cnt as f64) / (imp_to_rug.len() as f64);
+        if ratio > Self::ERR_RATIO {
+            println!(
+                "{}Warning:{} '{}' has {:.4}% > {} relative-error limit",
+                Ansi::RED,
+                Ansi::RESET,
+                F::NAME,
+                ratio * 100.0,
+                Self::ERR_LIMIT
+            );
+        }
     }
 
     fn print_stats(name: &str, data: &[f64]) {
+        if data.is_empty() {
+            println!(
+                "{}{:<12}{} {}(no samples){}",
+                Ansi::BOLD,
+                name,
+                Ansi::RESET,
+                Ansi::YELLOW,
+                Ansi::RESET
+            );
+            return;
+        }
+
         let mut sum = 0.0f64;
         let mut min = f64::INFINITY;
         let mut max = f64::NEG_INFINITY;

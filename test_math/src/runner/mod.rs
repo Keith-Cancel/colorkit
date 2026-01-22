@@ -46,17 +46,19 @@ impl RandomF32 {
         let low = seed >> 32;
         let hi = seed & 0xffffffff;
 
-        return Self(
+        let mut ret = Self(
             [
                 0x6a09e667f3bcc908 ^ low,
                 0xbb67ae8584caa73b ^ hi,
             ],
             cnt,
         );
+        ret.next_u32();
+        return ret;
     }
 
     /// xorshift128p
-    fn next_u32(&mut self) -> u32 {
+    const fn next_u32(&mut self) -> u32 {
         let s = self.0[1];
         let mut t = self.0[0];
         self.0[0] = s;

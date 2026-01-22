@@ -39,6 +39,16 @@ impl Relative {
             v.push(x.sqrt());
             x *= 1.5;
         }
+
+        for i in 2..1000u32 {
+            let mut f = i as f32;
+            for _ in 0..6 {
+                v.push(f);
+                v.push(f.recip());
+                f *= i as f32;
+            }
+        }
+
         return Relative {
             values: v
         };

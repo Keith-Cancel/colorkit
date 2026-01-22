@@ -64,6 +64,20 @@ impl Relative {
         imp_to_std.sort_by(|a, b| a.partial_cmp(b).unwrap());
         std_to_rug.sort_by(|a, b| a.partial_cmp(b).unwrap());
 
+        println!(
+            "{:<11} {}{:>9} {:>9} {:>9} {:>9} {:>9} {:>9} {:>9}{}",
+            "Case",
+            Ansi::BLUE,
+            "Mean Err",
+            "Min Err",
+            "Max Err",
+            "Std Dev",
+            "p50",
+            "p90",
+            "p99",
+            Ansi::RESET
+        );
+
         Self::print_stats("Impl => Std", &imp_to_std);
         Self::print_stats("Impl => Ref", &imp_to_rug);
         Self::print_stats("Std  => Ref", &std_to_rug);
@@ -103,7 +117,7 @@ impl Relative {
         let p99 = percent(data, 0.99);
 
         println!(
-            "{}{:<10}{} {:>9.3e} {:>9.3e} {:>9.3e} {:>9.3e} {:>9.3e} {:>9.3e} {:>9.3e}",
+            "{}{:<11}{} {:>9.3e} {:>9.3e} {:>9.3e} {:>9.3e} {:>9.3e} {:>9.3e} {:>9.3e}",
             Ansi::BOLD,
             name,
             Ansi::RESET,

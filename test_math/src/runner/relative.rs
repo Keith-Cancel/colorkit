@@ -1,10 +1,12 @@
 use std::f32::consts;
 
+use rand::RngCore;
 use rug::Float;
 
 use super::Ansi;
 use super::PRIMES;
 use super::PowersF32;
+use super::RandomF32;
 use crate::tests::MathFn;
 
 pub struct Relative {
@@ -23,6 +25,7 @@ impl Relative {
 
     pub fn new() -> Self {
         let mut v = Vec::<f32>::with_capacity(100);
+        v.push(0.0);
         v.push(consts::E);
         v.push(consts::PI);
         v.push(consts::FRAC_1_PI);
@@ -30,13 +33,21 @@ impl Relative {
         v.push(consts::SQRT_2);
         v.push(consts::FRAC_1_SQRT_2);
         v.push(consts::LN_2);
+        let mut x = 0.0000000001f32;
+        for _ in 0..80 {
+            v.push(x);
+            v.push(x.sqrt());
+            x *= 1.5;
+        }
         return Relative {
             values: v
         };
     }
 
     pub fn run<F: MathFn>(&self) {
+        let s = rand::rng().next_u64();
         let i = PowersF32::new()
+            .chain(RandomF32::new(20000, s))
             .chain(PRIMES.iter().copied())
             .chain(self.values.iter().copied());
         self.run_case::<F, _>(i);

@@ -69,6 +69,17 @@ impl Perf {
             RUNS,
             Ansi::RESET
         );
+        println!(
+            "{:<10} {}{:>10} {:>12} {:>10} {:>10} {:>10}{}",
+            "Case",
+            Ansi::BLUE,
+            "Mean µs",
+            "Per-call ns",
+            "Min µs",
+            "Max µs",
+            "Std µs",
+            Ansi::RESET
+        );
 
         self.run_case::<RUNS>("Baseline", |x| black_box(x), arr);
         let r = self.run_case::<RUNS>("Reference", F::std_f32_impl, arr);

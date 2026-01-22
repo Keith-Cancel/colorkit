@@ -12,3 +12,4 @@ codegen-units = 1
 colorkit = { path = "../../colorkit" }
 # Use rug's MPFR for ground truth values
 rug = "1.28.1"
+rand = "0.9.2"

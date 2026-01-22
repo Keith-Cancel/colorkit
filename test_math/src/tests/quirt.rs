@@ -9,7 +9,8 @@ pub struct Quirt;
 
 impl MathFn for Quirt {
     const NAME: &'static str = "5th Root (Quintic Root)";
-
+    const ALLOW_NEG: bool = true;
+    const ALLOW_ZERO: bool = true;
     fn test_f32_impl(x: f32) -> f32 {
         return quirt(x);
     }

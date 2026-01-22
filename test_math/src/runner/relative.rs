@@ -17,7 +17,7 @@ impl Relative {
     const PREC: u32 = 128;
     /// Relative error above which we consider the sample less than ideal
     pub const ERR_LIMIT: f64 = 1e-6;
-    /// When the number of [`Relative::ERR_LIM`] exceeds this ration warn.
+    /// When the number of [`Relative::ERR_LIM`] exceeds this ratio warn.
     pub const ERR_RATIO: f64 = 1e-4;
     /// Any error above this value is bad.
     pub const ERR_BAD: f64 = 1e-5;

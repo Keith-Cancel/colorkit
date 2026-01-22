@@ -2,6 +2,7 @@ const F32_BIAS: i32 = 127;
 const F32_MSK_EXP: u32 = 0x7f800000;
 //const F32_MSK_MAN: u32 = 0x007fffff;
 
+#[allow(unused)]
 #[inline]
 const fn exponent(bits: u32) -> i8 {
     let e = ((bits >> 23) & 0xff) as i32 - F32_BIAS;
@@ -29,7 +30,7 @@ const fn exponent_div_5(bits: u32) -> u32 {
 /// Computes the quintic root or 5th root.
 #[inline]
 pub const fn quirt(x: f32) -> f32 {
-    // table 2^(x/5) for f32
+    /*// table 2^(x/5) for f32
     const TWO_OVER_5: [f32; 5] = [
         1.0,
         1.1486983549970350, // 2^(1/5)
@@ -37,11 +38,11 @@ pub const fn quirt(x: f32) -> f32 {
         1.5157165665103981, // 2^(3/5)
         1.7411011265922483, // 2^(4/5)
     ];
-
+    let exp = exponent(bits);
+    */
     let bits = x.to_bits();
     let neg = bits & 0x80000000;
     let abs = bits & 0x7fffffff;
-    let exp = exponent(bits);
 
     // Either inifnity or NaN
     if abs >= F32_MSK_EXP {
@@ -52,6 +53,7 @@ pub const fn quirt(x: f32) -> f32 {
     // for the intital guess, that is a bit
     // smaller generate code wise.
 
+    /*
     // For rough first guess
     // * divide f32 exponent by 5
     // * apply some linear/cheap approx to m^(1/5) of the mantissa. (not currently doing)
@@ -63,6 +65,12 @@ pub const fn quirt(x: f32) -> f32 {
 
     let q = (q as i32 + F32_BIAS) as u32;
     let v = f32::from_bits(neg | (q << 23)) * frac;
+    */
+    // This seems to work well and is faster.
+    let q = abs; // Abs or mask?
+    let q = q / 5;
+    let q = q + 0x32cccccc + 1;
+    let v = f32::from_bits(neg | q);
 
     let a = x as f64;
     let mut x = v as f64;

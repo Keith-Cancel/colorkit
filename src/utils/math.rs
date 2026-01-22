@@ -29,10 +29,11 @@ pub const fn quirt(x: f32) -> f32 {
             return x;
         }
         // Got this idea of adding to the exponent by looking at some cbrt
-        // implementations.
-        let x1p24 = f32::from_bits(0x4b800000); // the exponent is 24
+        // implementations to get back precision when working with
+        // a subnormal.
+        const P24: f32 = f32::from_bits(0x4b800000); // the exponent is 24
         // Essentially add 24 to the exponent
-        q = (x1p24 * x).to_bits() & 0x7fffffff;
+        q = (P24 * x).to_bits() & 0x7fffffff;
         // So we need to:
         // x = (e - 127 - 24)/5 + 127
         // x = (e - 127 - 24)/5 + 635/5

@@ -67,13 +67,42 @@ pub const fn quirt(x: f32) -> f32 {
     let v = f32::from_bits(neg | (q << 23)) * frac;
     */
     // This seems to work well and is faster.
-    let q = abs; // Abs or mask?
-    let q = q / 5;
-    let q = q + 0x32cccccc + 1;
-    let v = f32::from_bits(neg | q);
+    let mut q = abs; // Abs or mask?
+    // Is the number zero or sub-normal
+    if q < 0x00800000 {
+        if q == 0 {
+            return x;
+        }
+        // Got this add of adding the exponenot looking at some cbrt
+        // implemntations.
+        let x1p24 = f32::from_bits(0x4b800000); // the exponent is 24
+        // Essentially add 24 to the exponent
+        q = (x1p24 * x).to_bits() & 0x7fffffff;
+        // So we need to:
+        // x = (e - 127 - 24)/5 + 127
+        // x = (e - 127 - 24)/5 + 635/5
+        // x = e/5 - 151/5 + 635/5
+        // x = e/5 + 484/5
+        // 484 / 5  ~= 0x60.cccccc in fix point u32 with 24 bit fraction
+        // shift right 1 and its then 0x30666666
+        // no bit shifted off so do not need to add 1
+        q /= 5;
+        q += 0x30666666;
+    } else {
+        // So we need to:
+        // x = (e - 127)/5 + 127
+        // x = (e - 127)/5 + 635/5
+        // x = e/5 - 127/5 + 635/5
+        // x = e/5 + 508/5
+        // 508 / 5 ~= 0x65.999999 in a fixed point u32 with 24 bit fraction
+        // shift right 1 and it's then 0x32cccccc
+        // and add 1 acount for the shifted off bit.
+        q /= 5;
+        q += 0x32cccccc + 1;
+    }
 
     let a = x as f64;
-    let mut x = v as f64;
+    let mut x = f32::from_bits(neg | q) as f64;
 
     // THis subnormal is not as accurate as I would like it.
     // 0.000000000000000000000000000000000000003128651

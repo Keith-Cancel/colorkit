@@ -1,6 +1,8 @@
 mod perf;
+mod relative;
 
 pub use perf::Perf;
+pub use relative::Relative;
 
 pub struct Ansi;
 impl Ansi {

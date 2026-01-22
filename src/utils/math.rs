@@ -74,6 +74,16 @@ pub const fn quirt(x: f32) -> f32 {
 
     let a = x as f64;
     let mut x = v as f64;
+
+    // THis subnormal is not as accurate as I would like it.
+    // 0.000000000000000000000000000000000000003128651
+    // Doing a newton before hand fixes, but that makes
+    // but that makes it the function slower
+    // maybe I can do something else.
+    //let p = x * x;
+    //let p = p * p;
+    //x = 0.8 * x + (0.2 * a / p);
+
     let mut i = 0;
     // Halley's method
     while i < 2 {
@@ -86,6 +96,7 @@ pub const fn quirt(x: f32) -> f32 {
         x = n1 + n2;
         i += 1;
     }
+
     // Newtons Method
     //let a = 0.2 * a;
     //while i < 4 {

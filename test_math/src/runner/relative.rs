@@ -1,4 +1,3 @@
-use core::f64;
 use std::f32::consts;
 
 use rug::Float;
@@ -52,6 +51,11 @@ impl Relative {
             if !x.is_finite() {
                 continue;
             }
+            if !F::ALLOW_ZERO && x == 0.0 {
+                continue;
+            }
+            let x = if !F::ALLOW_NEG && x < 0.0 { x.abs() } else { x };
+
             let rug = F::rug_impl(Self::PREC, x);
             let std = F::std_f32_impl(x) as f64;
             let fun = F::test_f32_impl(x) as f64;

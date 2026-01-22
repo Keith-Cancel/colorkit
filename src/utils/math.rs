@@ -87,13 +87,13 @@ pub const fn quirt(x: f32) -> f32 {
         i += 1;
     }
     // Newtons Method
+    //let a = 0.2 * a;
     //while i < 4 {
     //    // x^4
     //    let p = x * x;
     //    let p = p * p;
     //
-    //    let n = 4.0 * x + (a / p);
-    //    x = n * 0.2;
+    //    x = 0.8 * x + (a / p);
     //    i += 1;
     //}
     return x as f32;

@@ -1,4 +1,5 @@
 mod perf;
+mod primes;
 mod relative;
 
 pub use perf::Perf;

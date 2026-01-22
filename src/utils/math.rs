@@ -9,37 +9,9 @@ const fn exponent(bits: u32) -> i8 {
     return e as i8;
 }
 
-/*
-/// Mask the floats exponent and divide it by 5.
-#[inline]
-const fn exponent_div_5(bits: u32) -> u32 {
-    let e = bits & F32_MSK_EXP;
-    // ((e - 127) / 5) + 127 = (e / 5) + (508 / 5)
-    let d = e / 5;
-    // Now add the fractional bit.
-    // 508 / 5 ~= 0x65.999999 in a fixed point u32 with 24 bit fraction
-    // shift right 1 and it's then 0x32cccccc
-    let d = if e <= (127u32 << 23) {
-        d + 0x32cccccc + 0x666666 + 2
-    } else {
-        d + 0x32cccccc + 1
-    };
-    return d >> 23;
-}*/
-
 /// Computes the quintic root or 5th root.
 #[inline]
 pub const fn quirt(x: f32) -> f32 {
-    /*// table 2^(x/5) for f32
-    const TWO_OVER_5: [f32; 5] = [
-        1.0,
-        1.1486983549970350, // 2^(1/5)
-        1.3195079107728943, // 2^(2/5)
-        1.5157165665103981, // 2^(3/5)
-        1.7411011265922483, // 2^(4/5)
-    ];
-    let exp = exponent(bits);
-    */
     let bits = x.to_bits();
     let neg = bits & 0x80000000;
     let abs = bits & 0x7fffffff;
@@ -48,24 +20,7 @@ pub const fn quirt(x: f32) -> f32 {
     if abs >= F32_MSK_EXP {
         return x;
     }
-    // TODO?
-    // Try to come up with a better method
-    // for the intital guess, that is a bit
-    // smaller generate code wise.
 
-    /*
-    // For rough first guess
-    // * divide f32 exponent by 5
-    // * apply some linear/cheap approx to m^(1/5) of the mantissa. (not currently doing)
-    // * This is because a f32 is basiclly m * 2^k and (m * 2^k)^(1/5)
-    //   is m^(1/5) * 2^(k/5)
-    let q = exp.div_euclid(5);
-    let r = exp.rem_euclid(5);
-    let frac = TWO_OVER_5[r as usize]; // Fractional exponent after dividing by 5
-
-    let q = (q as i32 + F32_BIAS) as u32;
-    let v = f32::from_bits(neg | (q << 23)) * frac;
-    */
     // This seems to work well and is faster.
     let mut q = abs; // Abs or mask?
     // Is the number zero or sub-normal
@@ -73,8 +28,8 @@ pub const fn quirt(x: f32) -> f32 {
         if q == 0 {
             return x;
         }
-        // Got this add of adding the exponenot looking at some cbrt
-        // implemntations.
+        // Got this idea of adding to the exponent by looking at some cbrt
+        // implementations.
         let x1p24 = f32::from_bits(0x4b800000); // the exponent is 24
         // Essentially add 24 to the exponent
         q = (x1p24 * x).to_bits() & 0x7fffffff;
@@ -103,22 +58,6 @@ pub const fn quirt(x: f32) -> f32 {
 
     let a = x as f64;
     let mut x = f32::from_bits(neg | q) as f64;
-
-    // THis subnormal is not as accurate as I would like it.
-    // 0.000000000000000000000000000000000000003128651
-    // Doing a newton before hand fixes, but that makes
-    // but that makes it the function slower
-    // maybe I can do something else.
-    //let p = x * x;
-    //let p = p * p;
-    //x = 0.8 * x + (0.2 * a / p);
-    // So after looking around at some other libaries, I could not
-    // find a 5th root, but I have found some cbrt impls that do
-    // something similar to exponenet like I am. Although they
-    // do something else, but similar with in the case of a
-    // subnormal. I'll need to ponder that probably any other
-    // day when I am less tired.
-
     let mut i = 0;
     // Halley's method
     while i < 2 {

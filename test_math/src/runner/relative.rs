@@ -94,8 +94,16 @@ impl Relative {
         let variance = var_sum / (data.len() as f64);
         let std_dev = variance.sqrt();
 
+        let percent = |dat: &[f64], p: f64| -> f64 {
+            let idx = ((dat.len() as f64) * p).floor() as usize;
+            dat[idx.min(dat.len() - 1)]
+        };
+        let p50 = percent(data, 0.50);
+        let p90 = percent(data, 0.90);
+        let p99 = percent(data, 0.99);
+
         println!(
-            "{}{:<15}{} {:>12.4e} {:>12.4e} {:>12.4e} {:>12.4e}",
+            "{}{:<10}{} {:>9.3e} {:>9.3e} {:>9.3e} {:>9.3e} {:>9.3e} {:>9.3e} {:>9.3e}",
             Ansi::BOLD,
             name,
             Ansi::RESET,
@@ -103,6 +111,9 @@ impl Relative {
             min,
             max,
             std_dev,
+            p50,
+            p90,
+            p99,
         );
     }
 }

@@ -57,7 +57,7 @@ impl Relative {
     pub fn run<F: MathFn>(&self) {
         let s = rand::rng().next_u64();
         let i = PowersF32::new()
-            .chain(RandomF32::new(20000, s))
+            .chain(RandomF32::new(25000, s))
             .chain(PRIMES.iter().copied())
             .chain(self.values.iter().copied());
         self.run_case::<F, _>(i);

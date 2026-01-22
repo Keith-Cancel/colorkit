@@ -83,6 +83,12 @@ pub const fn quirt(x: f32) -> f32 {
     //let p = x * x;
     //let p = p * p;
     //x = 0.8 * x + (0.2 * a / p);
+    // So after looking around at some other libaries, I could not
+    // find a 5th root, but I have found some cbrt impls that do
+    // something similar to exponenet like I am. Although they
+    // do something else, but similar with in the case of a
+    // subnormal. I'll need to ponder that probably any other
+    // day when I am less tired.
 
     let mut i = 0;
     // Halley's method

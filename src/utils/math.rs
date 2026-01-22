@@ -81,9 +81,9 @@ pub const fn quirt(x: f32) -> f32 {
         let p = x * x;
         let p = p * p * x;
 
-        let n = 2.0 * x;
-        let n = n + (5.0 * a * x) / (2.0 * a + 3.0 * p);
-        x = n * (1.0 / 3.0);
+        let n1 = (2.0 / 3.0) * x;
+        let n2 = ((2.5 / 3.0) * a * x) / (a + 1.5 * p);
+        x = n1 + n2;
         i += 1;
     }
     // Newtons Method

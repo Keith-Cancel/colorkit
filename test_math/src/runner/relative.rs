@@ -135,7 +135,7 @@ impl Relative {
             if x > Self::ERR_LIMIT {
                 cnt += 1;
             }
-            if x > Self::ERR_BAD {
+            if x >= Self::ERR_BAD {
                 println!(
                     "{}Error:{} '{}' has a relative error exceeding {:.3e} > {:.3e}",
                     Ansi::RED,

@@ -1,0 +1,15 @@
+
+=== [1mPerf[0m: [36m5th Root (Quintic Root)[0m | elements = [1m50148[0m, runs = [1m353[0m ===
+Case       [34m   Mean µs  Per-call ns     Min µs     Max µs     Std µs[0m
+[1mBaseline  [0m     84.316        1.681     66.108    576.461     58.299
+[1mReference [0m    404.228        8.061    353.232   1078.987    103.367
+[1mCandidate [0m    327.449        6.530    324.567    472.267     11.553
+    [2mCanidate vs Reference:[0m [32m-18.99%[0m Delta
+
+=========== [1mRelative Error[0m: [36m5th Root (Quintic Root)[0m | Samples = [1m39397[0m ===========
+Case        [34m Mean Err   Min Err   Max Err   Std Dev       p50       p90       p99[0m
+[1mImpl => Std[0m  1.048e-7   0.000e0  3.574e-7  8.204e-8  9.368e-8  2.227e-7  2.967e-7
+[1mImpl => Ref[0m  2.081e-8   0.000e0  5.954e-8  1.341e-8  1.981e-8  3.961e-8  5.267e-8
+[1mStd  => Ref[0m  1.063e-7   0.000e0  3.149e-7  7.585e-8  8.969e-8  2.229e-7  2.810e-7
+2
+3

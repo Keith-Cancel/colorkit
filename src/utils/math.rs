@@ -27,6 +27,7 @@ const fn exponent_div_5(bits: u32) -> u32 {
 }*/
 
 /// Computes the quintic root or 5th root.
+#[inline]
 pub const fn quirt(x: f32) -> f32 {
     // table 2^(x/5) for f32
     const TWO_OVER_5: [f32; 5] = [
@@ -68,17 +69,23 @@ pub const fn quirt(x: f32) -> f32 {
     let mut i = 0;
     // Halley's method
     while i < 2 {
-        let pow = x * x * x * x * x;
+        // x^5
+        let p = x * x;
+        let p = p * p * x;
+
         let n = 2.0 * x;
-        let n = n + (5.0 * a * x) / (2.0 * a + 3.0 * pow);
-        x = n / 3.0;
+        let n = n + (5.0 * a * x) / (2.0 * a + 3.0 * p);
+        x = n * (1.0 / 3.0);
         i += 1;
     }
     // Newtons Method
     //while i < 4 {
-    //    let pow = x * x * x * x;
-    //    let n = 4.0 * x + (a / pow);
-    //    x = n / 5.0;
+    //    // x^4
+    //    let p = x * x;
+    //    let p = p * p;
+    //
+    //    let n = 4.0 * x + (a / p);
+    //    x = n * 0.2;
     //    i += 1;
     //}
     return x as f32;

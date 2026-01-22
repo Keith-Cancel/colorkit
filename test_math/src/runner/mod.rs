@@ -81,9 +81,8 @@ impl Iterator for RandomF32 {
             let bits = self.next_u32();
             let exp = (bits >> 23) & 0xff;
             // reject:
-            // exp == 0   → subnormal or zero
-            // exp == 255 → NaN / Inf
-            if exp == 0 || exp == 0xff {
+            // exp == 255 -> NaN / Inf
+            if exp == 0xff {
                 continue;
             }
             return Some(f32::from_bits(bits));

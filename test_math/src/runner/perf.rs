@@ -13,11 +13,12 @@ impl Perf {
     pub fn new() -> Self {
         let l1 = 70;
         let l2 = 10000;
-        let cap = 4 + l1 * 2 + l2 * 5;
+        let cap = 5 + l1 * 2 + l2 * 5;
         // Generate a bunch floats to use for testing.
         let mut v = Vec::<f32>::with_capacity(cap);
         v.push(consts::E);
         v.push(consts::PI);
+        v.push(consts::TAU);
         v.push(consts::SQRT_2);
         v.push(541.0); // 100th prime
 

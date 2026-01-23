@@ -8,6 +8,7 @@ fn ulp_diff(ref_: f64, b: f32) -> f64 {
             f64::INFINITY
         };
     }
+    let int_ulp = (ref_ as f32).ulp_int_diff(b);
 
     todo!();
 }

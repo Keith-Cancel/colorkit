@@ -11,7 +11,7 @@ const fn exponent(bits: u32) -> i8 {
 
 /// Computes the quintic root or 5th root.
 #[inline]
-pub const fn quirt_f32(x: f32) -> f32 {
+pub const fn quirtf(x: f32) -> f32 {
     let bits = x.to_bits();
     let neg = bits & 0x80000000;
     let abs = bits & 0x7fffffff;

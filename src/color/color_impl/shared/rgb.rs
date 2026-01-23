@@ -1,7 +1,7 @@
 use colorkit::space::LinSrgb;
 use colorkit::space::RgbLike;
 use colorkit::space::Srgb;
-use colorkit::utils::math::quirt_f32;
+use colorkit::utils::math::quirtf;
 
 use super::Color;
 
@@ -50,7 +50,7 @@ const fn linear(s: f32) -> f32 {
         s / 12.92
     } else {
         let x = (s + 0.055) / 1.055;
-        let r = quirt_f32(x);
+        let r = quirtf(x);
         // Equals x.powf(2.4)
         x * x * r * r
     };

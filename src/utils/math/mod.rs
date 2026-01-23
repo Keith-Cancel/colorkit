@@ -1,7 +1,7 @@
 mod quirt;
 mod ulp;
 
-pub use quirt::quirt_f32;
+pub use quirt::quirtf;
 pub use ulp::ulp_int_diff_f32;
 
 /// Common math functions
@@ -22,7 +22,7 @@ pub trait MathFuncs {
 
 impl MathFuncs for f32 {
     fn quirt(self) -> f32 {
-        return quirt_f32(self);
+        return quirtf(self);
     }
 
     fn ulp_int_diff(self, other: f32) -> u32 {

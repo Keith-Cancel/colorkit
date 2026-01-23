@@ -20,7 +20,10 @@ fn ulp_diff(ref_d: f64, x: f32) -> f64 {
     // Integer part of the ulp.
     let ulp_i = ref_f.ulp_int_diff(x);
 
-    // Simplere if these are all possitive
+    // Simpler if these are all possitive.
+    // Also ulp_int_diff will account for any
+    // difference in sign we just need the
+    // the fractional part.
     let ref_d = ref_d.abs();
     let ref_f = ref_d.abs();
     let x = x.abs();

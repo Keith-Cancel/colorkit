@@ -2,6 +2,18 @@ mod arch;
 mod quirt;
 mod ulp;
 
+// TODO: arch and const fns
+// Ideally all the math functions would be `const fn`, but that means
+// I can't use hardware features =(
+//
+// If this gets stabilized:
+// https://github.com/rust-lang/rust/issues/124625
+// update my impls to take advantage of it, although not
+// likely anytime time soon since the rfc is not even done
+// at the time of writing this sighs....
+// I guess in the mean time just add const version that
+// that calls the universal implementation.
+
 pub use quirt::quirtf;
 pub use ulp::ulp_int_diff_f32;
 

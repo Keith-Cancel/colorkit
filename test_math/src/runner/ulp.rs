@@ -52,3 +52,15 @@ fn ulp_diff(ref_d: f64, x: f32) -> f64 {
     // Add the fractional part to Integer part of the ulp
     return ulp_i as f64 + frac;
 }
+
+#[cfg(test)]
+mod test {
+
+    use super::ulp_diff;
+
+    #[test]
+    fn uld_ref_diff() {
+        let ep = f32::EPSILON as f64;
+        assert_eq!(ulp_diff(1.0 + (ep / 2.0), 1.0), 0.5);
+    }
+}

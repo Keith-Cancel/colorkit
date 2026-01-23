@@ -1,6 +1,5 @@
-const F32_BIAS: i32 = 127;
-const F32_MSK_EXP: u32 = 0x7f800000;
-//const F32_MSK_MAN: u32 = 0x007fffff;
+use super::F32_BIAS;
+use super::F32_MSK_EXP;
 
 #[allow(unused)]
 #[inline]

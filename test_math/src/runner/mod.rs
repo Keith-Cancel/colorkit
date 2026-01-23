@@ -2,9 +2,11 @@ mod perf;
 mod primes;
 mod relative;
 mod ulp;
+
 pub use perf::Perf;
 pub use primes::PRIMES;
 pub use relative::Relative;
+pub use ulp::Ulp;
 
 pub struct Ansi;
 impl Ansi {

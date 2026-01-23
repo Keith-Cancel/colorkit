@@ -1,6 +1,6 @@
 use std::f32::consts;
 
-use colorkit::utils::math::MathFuncs;
+use colorkit::math::MathFuncs;
 use rand::RngCore;
 
 use super::Ansi;

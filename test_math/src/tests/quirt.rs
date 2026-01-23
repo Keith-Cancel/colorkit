@@ -1,4 +1,4 @@
-use colorkit::utils::math::MathFuncs;
+use colorkit::math::MathFuncs;
 use rug::Float;
 use rug::ops::Pow;
 

@@ -1,6 +1,6 @@
 mod quirt;
 
-pub use quirt::quirt;
+pub use quirt::quirt_f32;
 
 /// Common math functions
 ///
@@ -14,6 +14,6 @@ pub trait MathFuncs {
 
 impl MathFuncs for f32 {
     fn quirt(self) -> Self {
-        return quirt(self);
+        return quirt_f32(self);
     }
 }

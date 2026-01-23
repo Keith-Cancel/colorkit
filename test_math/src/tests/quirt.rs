@@ -1,4 +1,4 @@
-use colorkit::utils::math::quirt;
+use colorkit::utils::math::quirt_f32;
 use rug::Float;
 use rug::ops::Pow;
 
@@ -12,7 +12,7 @@ impl MathFn for Quirt {
     const ALLOW_NEG: bool = true;
     const ALLOW_ZERO: bool = true;
     fn test_f32_impl(x: f32) -> f32 {
-        return quirt(x);
+        return quirt_f32(x);
     }
 
     fn std_f32_impl(x: f32) -> f32 {

@@ -7,7 +7,8 @@ pub fn sqrtf(x: f32) -> f32 {
         asm!(
             "sqrtss {r}, {r}",
             r = inout(xmm_reg) ret,
-            options(nomem, nostack),
+            // https://doc.rust-lang.org/rust-by-example/unsafe/asm.html#options
+            options(nomem, nostack, pure),
         )
     };
     return ret;

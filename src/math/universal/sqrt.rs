@@ -3,7 +3,8 @@ use super::F32_MSK_EXP;
 /// Computes the square root
 #[inline]
 pub const fn sqrtf(x: f32) -> f32 {
-    // Copying the logic over from quirtf.
+    // Copying the logic over from quirtf()
+    // There might be a faster way but this works.
 
     let bits = x.to_bits();
     let neg = bits & 0x80000000;
@@ -39,15 +40,15 @@ pub const fn sqrtf(x: f32) -> f32 {
         q += 0x30666666;
     } else {
         // So we need to:
-        // x = (e - 127)/5 + 127
-        // x = (e - 127)/5 + 635/5
-        // x = e/5 - 127/5 + 635/5
-        // x = e/5 + 508/5
-        // 508 / 5 ~= 0x65.999999 in a fixed point u32 with 24 bit fraction
-        // shift right 1 and it's then 0x32cccccc
+        // x = (e - 127)/2 + 127
+        // x = (e - 127)/2 + 254/2
+        // x = e/2 - 127/2 + 254/2
+        // x = e/5 + 127/2
+        // 127 / 2 = 0x3f.800000 in a fixed point u32 with 24 bit fraction
+        // shift right 1 and it's then 0x1fc00000
         // and add 1 acount for the shifted off bit.
-        q /= 5;
-        q += 0x32cccccc + 1;
+        q /= 2;
+        q += 0x1fc00000;
     }
 
     let a = x as f64;

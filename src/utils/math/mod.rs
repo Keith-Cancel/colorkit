@@ -1,6 +1,8 @@
 mod arch;
-mod quirt;
-mod ulp;
+mod universal;
+
+pub use universal::quirtf;
+pub use universal::ulp_int_diff_f32;
 
 // TODO: arch and const fns
 // Ideally all the math functions would be `const fn`, but that means
@@ -13,9 +15,6 @@ mod ulp;
 // at the time of writing this sighs....
 // I guess in the mean time just add const version that
 // that calls the universal implementation.
-
-pub use quirt::quirtf;
-pub use ulp::ulp_int_diff_f32;
 
 /// Common math functions
 ///
@@ -35,10 +34,10 @@ pub trait MathFuncs {
 
 impl MathFuncs for f32 {
     fn quirt(self) -> f32 {
-        return quirtf(self);
+        return universal::quirtf(self);
     }
 
     fn ulp_int_diff(self, other: f32) -> u32 {
-        return ulp_int_diff_f32(self, other);
+        return universal::ulp_int_diff_f32(self, other);
     }
 }

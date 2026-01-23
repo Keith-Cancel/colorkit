@@ -80,6 +80,26 @@ impl Ulp {
             cnt += 1;
         }
 
+        println!(
+            "\n===== {}ULP Difference{}: {}{}{} | Samples = {}{}{} =====",
+            Ansi::BOLD,
+            Ansi::RESET,
+            Ansi::CYAN,
+            F::NAME,
+            Ansi::RESET,
+            Ansi::BOLD,
+            cnt,
+            Ansi::RESET,
+        );
+        println!(
+            "{:<11} {}{:>8} {:>8}  {:>10} {}",
+            "Case",
+            Ansi::BLUE,
+            "Mean ULP",
+            "Max ULP",
+            "Max Value",
+            Ansi::RESET
+        );
         Self::print_stats("Impl ULP", imp_sum, cnt, imp_max, imp_mval);
         Self::print_stats("Std ULP", std_sum, cnt, std_max, std_mval);
     }
@@ -96,6 +116,19 @@ impl Ulp {
             );
             return;
         }
+
+        let mean = sum / (count as f64);
+
+        println!(
+            "{}{:<11}{} {:>8.3} {:>8.3}  {:#08x} ({:.5e})",
+            Ansi::BOLD,
+            name,
+            Ansi::RESET,
+            mean,
+            ulp_max,
+            max_val.to_bits(),
+            max_val
+        );
     }
 }
 

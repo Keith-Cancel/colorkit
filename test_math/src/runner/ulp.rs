@@ -1,8 +1,12 @@
 use std::f32::consts;
 
 use colorkit::utils::math::MathFuncs;
+use rand::RngCore;
 
 use super::Ansi;
+use super::PRIMES;
+use super::PowersF32;
+use super::RandomF32;
 use crate::tests::MathFn;
 
 pub struct Ulp {
@@ -35,7 +39,12 @@ impl Ulp {
     }
 
     pub fn run<F: MathFn>(&self) {
-        self.run_case::<F, _>(self.values.iter().copied());
+        let s = rand::rng().next_u64();
+        let i = PowersF32::new()
+            .chain(RandomF32::new(1000000, s))
+            .chain(self.values.iter().copied())
+            .chain(PRIMES.iter().copied());
+        self.run_case::<F, _>(i);
     }
 
     fn run_case<F: MathFn, I: Iterator<Item = f32>>(&self, iter: I) {
@@ -101,7 +110,7 @@ impl Ulp {
             Ansi::RESET
         );
         Self::print_stats("Impl ULP", imp_sum, cnt, imp_max, imp_mval);
-        Self::print_stats("Std ULP", std_sum, cnt, std_max, std_mval);
+        Self::print_stats("Std  ULP", std_sum, cnt, std_max, std_mval);
     }
 
     fn print_stats(name: &str, sum: f64, count: u64, ulp_max: f64, max_val: f32) {

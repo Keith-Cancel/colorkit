@@ -64,6 +64,7 @@ mod test {
     fn uld_ref_diff() {
         let ep_d = f32::EPSILON as f64;
         let ep_f = f32::EPSILON;
+
         assert_eq!(ulp_diff(1.0 + (ep_d / 2.0), 1.0), 0.5);
         assert_eq!(ulp_diff(1.0 + (ep_d / 4.0), 1.0), 0.25);
         assert_eq!(ulp_diff(1.0 - (ep_d / 2.0), 1.0), 1.0);
@@ -73,5 +74,7 @@ mod test {
         assert_eq!(ulp_diff(1.0 + (ep_d / 4.0), 1.0 + ep_f * 10.0), 9.75);
         assert_eq!(ulp_diff(1.0 - (ep_d / 2.0), 1.0 - ep_f * 10.0), 19.0);
         assert_eq!(ulp_diff(1.0 - (ep_d / 4.0), 1.0 - ep_f * 10.0), 19.5);
+
+        assert_eq!(ulp_diff(0.0 + (f32::from_bits(1) as f64) / 100.0, 0.0), 0.01);
     }
 }

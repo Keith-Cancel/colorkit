@@ -13,6 +13,76 @@ pub struct Ulp {
     values: Vec<f32>,
 }
 
+struct UlpStats {
+    sum:     f64,
+    max:     f64,
+    mval:    f32,
+    cnt:     u64,
+    // buckets: <=.25, <=0.5, <=1, <=2, <=4, <=8, >8
+    buckets: [u64; 7],
+}
+
+impl UlpStats {
+    pub fn new() -> Self {
+        return Self {
+            sum:     0.0,
+            max:     f64::NEG_INFINITY,
+            mval:    f32::NAN,
+            cnt:     0,
+            buckets: [0; 7],
+        };
+    }
+
+    pub fn count(&self) -> u64 {
+        return self.cnt;
+    }
+
+    pub fn store(&mut self, ulp: f64, val: f32) {
+        self.sum += ulp;
+        self.cnt += 1;
+        if ulp > self.max {
+            self.max = ulp;
+            self.mval = val;
+        }
+        match ulp {
+            0.0..=0.25 => self.buckets[0] += 1,
+            0.25..=0.5 => self.buckets[1] += 1,
+            0.5..=1.0 => self.buckets[2] += 1,
+            1.0..=2.0 => self.buckets[3] += 1,
+            2.0..=4.0 => self.buckets[4] += 1,
+            4.0..=8.0 => self.buckets[5] += 1,
+            _ => self.buckets[6] += 1,
+        }
+    }
+
+    pub fn print_stats(&self, name: &str) {
+        if self.cnt < 1 {
+            println!(
+                "{}{:<12}{} {}(no samples){}",
+                Ansi::BOLD,
+                name,
+                Ansi::RESET,
+                Ansi::YELLOW,
+                Ansi::RESET
+            );
+            return;
+        }
+
+        let mean = self.sum / (self.cnt as f64);
+
+        println!(
+            "{}{:<11}{} {:>8.3} {:>8.3}  {:#08x} ({:.5e})",
+            Ansi::BOLD,
+            name,
+            Ansi::RESET,
+            mean,
+            self.max,
+            self.mval.to_bits(),
+            self.mval
+        );
+    }
+}
+
 impl Ulp {
     /// Precision to use to use for rug
     const PREC: u32 = 128;
@@ -48,14 +118,8 @@ impl Ulp {
     }
 
     fn run_case<F: MathFn, I: Iterator<Item = f32>>(&self, iter: I) {
-        let mut std_sum = 0.0f64;
-        let mut imp_sum = 0.0f64;
-
-        let mut std_max = f64::NEG_INFINITY;
-        let mut imp_max = f64::NEG_INFINITY;
-
-        let mut std_mval = f32::NAN;
-        let mut imp_mval = f32::NAN;
+        let mut std_st = UlpStats::new();
+        let mut imp_st = UlpStats::new();
 
         let mut cnt = 0u64;
         for x in iter {
@@ -74,19 +138,8 @@ impl Ulp {
             let imp_ulp = ulp_diff(rug, fun);
             let std_ulp = ulp_diff(rug, std);
 
-            std_sum += std_ulp;
-            if std_ulp > std_max {
-                std_max = std_ulp;
-                std_mval = x;
-            }
-
-            imp_sum += imp_ulp;
-            if imp_ulp > imp_max {
-                imp_max = imp_ulp;
-                imp_mval = x;
-            }
-
-            cnt += 1;
+            std_st.store(std_ulp, x);
+            imp_st.store(imp_ulp, x);
         }
 
         println!(
@@ -97,7 +150,7 @@ impl Ulp {
             F::NAME,
             Ansi::RESET,
             Ansi::BOLD,
-            cnt,
+            imp_st.count(),
             Ansi::RESET,
         );
         println!(
@@ -109,35 +162,8 @@ impl Ulp {
             "Max Value",
             Ansi::RESET
         );
-        Self::print_stats("Impl ULP", imp_sum, cnt, imp_max, imp_mval);
-        Self::print_stats("Std  ULP", std_sum, cnt, std_max, std_mval);
-    }
-
-    fn print_stats(name: &str, sum: f64, count: u64, ulp_max: f64, max_val: f32) {
-        if count < 1 {
-            println!(
-                "{}{:<12}{} {}(no samples){}",
-                Ansi::BOLD,
-                name,
-                Ansi::RESET,
-                Ansi::YELLOW,
-                Ansi::RESET
-            );
-            return;
-        }
-
-        let mean = sum / (count as f64);
-
-        println!(
-            "{}{:<11}{} {:>8.3} {:>8.3}  {:#08x} ({:.5e})",
-            Ansi::BOLD,
-            name,
-            Ansi::RESET,
-            mean,
-            ulp_max,
-            max_val.to_bits(),
-            max_val
-        );
+        imp_st.print_stats("Impl ULP");
+        std_st.print_stats("Std  ULP");
     }
 }
 

@@ -18,8 +18,8 @@ struct UlpStats {
     max:     f64,
     mval:    f32,
     cnt:     u64,
-    // buckets: <=.25, <=0.5, <=1, <=2, <=4, <=8, >8
-    buckets: [u64; 7],
+    // buckets: <=.25, <=0.5, <=1, <=2, <=4, > 4
+    buckets: [u64; 6],
 }
 
 impl UlpStats {
@@ -29,7 +29,7 @@ impl UlpStats {
             max:     f64::NEG_INFINITY,
             mval:    f32::NAN,
             cnt:     0,
-            buckets: [0; 7],
+            buckets: [0; 6],
         };
     }
 
@@ -50,8 +50,7 @@ impl UlpStats {
             0.5..=1.0 => self.buckets[2] += 1,
             1.0..=2.0 => self.buckets[3] += 1,
             2.0..=4.0 => self.buckets[4] += 1,
-            4.0..=8.0 => self.buckets[5] += 1,
-            _ => self.buckets[6] += 1,
+            _ => self.buckets[5] += 1,
         }
     }
 
@@ -71,7 +70,7 @@ impl UlpStats {
         let mean = self.sum / (self.cnt as f64);
 
         println!(
-            "{}{:<11}{} {:>8.3} {:>8.3}  {:#08x} ({:.5e})",
+            "{}{:<11}{} {:>8.3} {:>8.3}  0x{:08x} ({:.5e})",
             Ansi::BOLD,
             name,
             Ansi::RESET,
@@ -79,6 +78,21 @@ impl UlpStats {
             self.max,
             self.mval.to_bits(),
             self.mval
+        );
+    }
+
+    pub fn print_buckets(&self, name: &str) {
+        println!(
+            "{}{} ULP Sums:{} {:5} <= .25, {:5} <= .5, {:5} <= 1, {:5} <= 2, {:5} <= 4, {:5} > 4",
+            Ansi::DIM,
+            name,
+            Ansi::RESET,
+            self.buckets[0],
+            self.buckets[1],
+            self.buckets[2],
+            self.buckets[3],
+            self.buckets[4],
+            self.buckets[5]
         );
     }
 }
@@ -111,7 +125,7 @@ impl Ulp {
     pub fn run<F: MathFn>(&self) {
         let s = rand::rng().next_u64();
         let i = PowersF32::new()
-            .chain(RandomF32::new(1000000, s))
+            .chain(RandomF32::new(150000, s))
             .chain(self.values.iter().copied())
             .chain(PRIMES.iter().copied());
         self.run_case::<F, _>(i);
@@ -121,7 +135,6 @@ impl Ulp {
         let mut std_st = UlpStats::new();
         let mut imp_st = UlpStats::new();
 
-        let mut cnt = 0u64;
         for x in iter {
             if !x.is_finite() {
                 continue;
@@ -164,6 +177,8 @@ impl Ulp {
         );
         imp_st.print_stats("Impl ULP");
         std_st.print_stats("Std  ULP");
+        std_st.print_buckets("Std ");
+        imp_st.print_buckets("Impl");
     }
 }
 

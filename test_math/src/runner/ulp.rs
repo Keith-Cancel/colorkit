@@ -6,6 +6,8 @@ fn f64_to_f32_down(x: f64) -> f32 {
 }
 
 fn ulp_diff(ref_d: f64, x: f32) -> f64 {
+    // Handle NaNs if the one is a NaN and the
+    // other is not treat the difference as infinite.
     if ref_d.is_nan() || x.is_nan() {
         return if ref_d.is_nan() == x.is_nan() {
             0.0
@@ -17,9 +19,33 @@ fn ulp_diff(ref_d: f64, x: f32) -> f64 {
 
     // Integer part of the ulp.
     let ulp_i = ref_f.ulp_int_diff(x);
+
+    // Simplere if these are all possitive
     let ref_d = ref_d.abs();
-    let ref_f = ref_f.abs();
+    let ref_f = ref_d.abs();
     let x = x.abs();
 
-    todo!();
+    // Find the step size of the where the reference
+    // stradles over the actual value.
+    //
+    // Rust uses Round to nearest, ties away from zero.
+    //
+    // Depending on the value it could be up or down
+    // We need to ensure we round always in one direction
+    // to get the straddle point. Otherwise we would need
+    // way to know if we rounded up or down. So then we
+    // could which know to call `next_up` or `next_down`.
+    // It's just much simpler to force the direction down
+    // or up.
+    let ref_dwn = f64_to_f32_down(ref_d);
+    let ulp_sz = ref_dwn.next_up() - ref_dwn;
+
+    // The fractional part of the ulp
+    let mut frac = ref_d - (ref_f as f64) / (ulp_sz as f64);
+    // should the fraction add or subtract
+    if x as f64 > ref_d {
+        frac = -frac;
+    }
+    // Add the fractional part to Integer part of the ulp
+    return ulp_i as f64 + frac;
 }

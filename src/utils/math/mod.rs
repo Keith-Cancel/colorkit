@@ -1,6 +1,8 @@
 mod quirt;
+mod ulp;
 
 pub use quirt::quirt_f32;
+pub use ulp::ulp_int_diff_f32;
 
 /// Common math functions
 ///
@@ -14,10 +16,16 @@ pub use quirt::quirt_f32;
 pub trait MathFuncs {
     /// Computes the quintic root or 5th root.
     fn quirt(self) -> Self;
+    /// ULP int difference between two values.
+    fn ulp_int_diff(self, other: Self) -> u32;
 }
 
 impl MathFuncs for f32 {
-    fn quirt(self) -> Self {
+    fn quirt(self) -> f32 {
         return quirt_f32(self);
+    }
+
+    fn ulp_int_diff(self, other: f32) -> u32 {
+        return ulp_int_diff_f32(self, other);
     }
 }

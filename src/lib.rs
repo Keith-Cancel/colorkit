@@ -8,5 +8,6 @@ pub extern crate self as colorkit;
 //pub mod layout;
 //pub mod scalar;
 pub mod color;
+pub mod math;
 pub mod space;
 pub mod utils;

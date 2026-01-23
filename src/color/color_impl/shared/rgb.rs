@@ -1,7 +1,7 @@
+use colorkit::math::quirtf;
 use colorkit::space::LinSrgb;
 use colorkit::space::RgbLike;
 use colorkit::space::Srgb;
-use colorkit::utils::math::quirtf;
 
 use super::Color;
 

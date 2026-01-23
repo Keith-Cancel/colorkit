@@ -1,8 +1,8 @@
 use std::f32::consts;
 
 use colorkit::utils::math::MathFuncs;
-use rug::Float;
 
+use super::Ansi;
 use crate::tests::MathFn;
 
 pub struct Ulp {
@@ -38,7 +38,65 @@ impl Ulp {
         self.run_case::<F, _>(self.values.iter().copied());
     }
 
-    fn run_case<F: MathFn, I: Iterator<Item = f32>>(&self, iter: I) {}
+    fn run_case<F: MathFn, I: Iterator<Item = f32>>(&self, iter: I) {
+        let mut std_sum = 0.0f64;
+        let mut imp_sum = 0.0f64;
+
+        let mut std_max = f64::NEG_INFINITY;
+        let mut imp_max = f64::NEG_INFINITY;
+
+        let mut std_mval = f32::NAN;
+        let mut imp_mval = f32::NAN;
+
+        let mut cnt = 0u64;
+        for x in iter {
+            if !x.is_finite() {
+                continue;
+            }
+            if !F::ALLOW_ZERO && x == 0.0 {
+                continue;
+            }
+            let x = if !F::ALLOW_NEG && x < 0.0 { x.abs() } else { x };
+
+            let rug = F::rug_impl(Self::PREC, x).to_f64();
+            let std = F::std_f32_impl(x);
+            let fun = F::test_f32_impl(x);
+
+            let imp_ulp = ulp_diff(rug, fun);
+            let std_ulp = ulp_diff(rug, std);
+
+            std_sum += std_ulp;
+            if std_ulp > std_max {
+                std_max = std_ulp;
+                std_mval = x;
+            }
+
+            imp_sum += imp_ulp;
+            if imp_ulp > imp_max {
+                imp_max = imp_ulp;
+                imp_mval = x;
+            }
+
+            cnt += 1;
+        }
+
+        Self::print_stats("Impl ULP", imp_sum, cnt, imp_max, imp_mval);
+        Self::print_stats("Std ULP", std_sum, cnt, std_max, std_mval);
+    }
+
+    fn print_stats(name: &str, sum: f64, count: u64, ulp_max: f64, max_val: f32) {
+        if count < 1 {
+            println!(
+                "{}{:<12}{} {}(no samples){}",
+                Ansi::BOLD,
+                name,
+                Ansi::RESET,
+                Ansi::YELLOW,
+                Ansi::RESET
+            );
+            return;
+        }
+    }
 }
 
 fn f64_to_f32_down(x: f64) -> f32 {

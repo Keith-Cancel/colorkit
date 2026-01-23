@@ -24,7 +24,7 @@ impl Relative {
     pub const ERR_BAD: f64 = 1e-5;
 
     pub fn new() -> Self {
-        let mut v = Vec::<f32>::with_capacity(100);
+        let mut v = Vec::<f32>::with_capacity(2100);
         v.push(0.0);
         v.push(consts::E);
         v.push(consts::PI);

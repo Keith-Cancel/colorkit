@@ -9,5 +9,5 @@ pub fn sqrtf(x: f32) -> f32 {
             r = inout(xmm_reg) ret,
         )
     };
-    ret
+    return ret;
 }

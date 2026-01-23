@@ -1,3 +1,4 @@
+mod arch;
 mod quirt;
 mod ulp;
 

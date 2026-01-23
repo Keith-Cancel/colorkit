@@ -1,5 +1,45 @@
+use std::f32::consts;
+
 use colorkit::utils::math::MathFuncs;
 use rug::Float;
+
+use crate::tests::MathFn;
+
+pub struct Ulp {
+    values: Vec<f32>,
+}
+
+impl Ulp {
+    /// Precision to use to use for rug
+    const PREC: u32 = 128;
+
+    pub fn new() -> Self {
+        let mut v = Vec::<f32>::with_capacity(128);
+        v.push(0.0);
+        v.push(consts::E);
+        v.push(consts::PI);
+        v.push(consts::FRAC_1_PI);
+        v.push(consts::TAU);
+        v.push(consts::SQRT_2);
+        v.push(consts::FRAC_1_SQRT_2);
+        v.push(consts::LN_2);
+        let mut x = 0.0000000001f32;
+        for _ in 0..120 {
+            v.push(x);
+            v.push(x.sqrt());
+            x *= 1.5;
+        }
+        return Ulp {
+            values: v
+        };
+    }
+
+    pub fn run<F: MathFn>(&self) {
+        self.run_case::<F, _>(self.values.iter().copied());
+    }
+
+    fn run_case<F: MathFn, I: Iterator<Item = f32>>(&self, iter: I) {}
+}
 
 fn f64_to_f32_down(x: f64) -> f32 {
     let f = x as f32;

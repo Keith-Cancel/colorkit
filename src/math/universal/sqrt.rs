@@ -1,4 +1,7 @@
-use super::F32_MSK_EXP;
+use super::*;
+
+const NORM_ADD: u32 = root_const(127 * 2, 127, 2);
+const SUBNORM_ADD: u32 = root_const(127 * 2, 127 + 24, 2);
 
 /// Computes the square root
 #[inline]
@@ -24,32 +27,13 @@ pub const fn sqrtf(x: f32) -> f32 {
         if q == 0 {
             return x;
         }
-        // Got this idea of adding to the exponent by looking at some cbrt
-        // implementations to get back precision when working with
-        // a subnormal.
-        const P24: f32 = f32::from_bits(0x4b800000); // the exponent is 24
         // Essentially add 24 to the exponent
         q = (P24 * x).to_bits() & 0x7fffffff;
-        // So we need to:
-        // x = (e - 127 - 24)/2 + 127
-        // x = (e - 127 - 24)/2 + 254/2
-        // x = e/5 - 151/2 + 254/2
-        // x = e/5 + 103/2
-        // 103 / 2  = 0x33.800000 in fix point u32 with 24 bit fraction
-        // shift right 1 and its then 0x19c00000
         q /= 2;
-        q += 0x19c00000;
+        q += SUBNORM_ADD;
     } else {
-        // So we need to:
-        // x = (e - 127)/2 + 127
-        // x = (e - 127)/2 + 254/2
-        // x = e/2 - 127/2 + 254/2
-        // x = e/5 + 127/2
-        // 127 / 2 = 0x3f.800000 in a fixed point u32 with 24 bit fraction
-        // shift right 1 and it's then 0x1fc00000
-        // and add 1 acount for the shifted off bit.
         q /= 2;
-        q += 0x1fc00000;
+        q += NORM_ADD;
     }
 
     let a = x as f64;

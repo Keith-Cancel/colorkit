@@ -52,13 +52,8 @@ pub const fn sqrtf(x: f32) -> f32 {
     }
 
     // Newtons Method
-    //let a = 0.2 * a;
     //while i < 4 {
-    //    // x^4
-    //    let p = x * x;
-    //    let p = p * p;
-    //
-    //    x = 0.8 * x + (a / p);
+    //    x = 0.5 * ((a / x) + x);
     //    i += 1;
     //}
     return x as f32;

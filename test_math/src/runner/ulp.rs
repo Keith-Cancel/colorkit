@@ -145,6 +145,13 @@ impl Ulp {
             let x = if !F::ALLOW_NEG && x < 0.0 { x.abs() } else { x };
 
             let rug = F::rug_impl(Self::PREC, x).to_f64();
+
+            // It's not resentable as a f32 so does not
+            // make sense to compute a ULP.
+            if (rug as f32).is_infinite() {
+                continue;
+            }
+
             let std = F::std_f32_impl(x);
             let fun = F::test_f32_impl(x);
 

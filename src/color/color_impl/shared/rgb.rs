@@ -50,9 +50,9 @@ const fn linear(s: f32) -> f32 {
         s / 12.92
     } else {
         let x = (s + 0.055) / 1.055;
-        let r = quirtf(x);
         // Equals x.powf(2.4)
-        x * x * r * r
+        let x2 = x * x;
+        x2 * quirtf(x2)
     };
     return l;
 }

@@ -24,6 +24,7 @@ const P24: f32 = f32::from_bits(0x4b800000); // the exponent is 24
 /// * x = (e - 127)/5 + 635/5
 /// * x = e/5 - 127/5 + 635/5
 /// * x = e/5 + 508/5
+///
 /// 508 / 5 ~= `0x65.999999` in a fixed point u32 with 24 bit fraction.
 /// Then shift right 1 and it's then `0x32cccccc`.
 /// Then add 1 acount for the shifted off bit.

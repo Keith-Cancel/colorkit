@@ -10,6 +10,11 @@ pub use ulp::ulp_int_diff_f32;
 pub const F32_MSK_EXP: u32 = 0x7f800000;
 /// The bias amount for an f32 exponent.
 pub const F32_BIAS: i32 = 127;
+// Got this idea of adding to the exponent by looking at some cbrt
+// implementations to get back precision when working with
+// a subnormal.
+/// A float the value of 2^24
+const P24: f32 = f32::from_bits(0x4b800000); // the exponent is 24
 
 /// Compute the const to add the floating point number after dividing
 /// for the intial guess.

@@ -184,8 +184,8 @@ impl Ulp {
         );
         imp_st.print_stats("Impl ULP");
         std_st.print_stats("Std  ULP");
-        std_st.print_buckets("Std ");
         imp_st.print_buckets("Impl");
+        std_st.print_buckets("Std ");
     }
 }
 

@@ -20,13 +20,13 @@ const P24: f32 = f32::from_bits(0x4b800000); // the exponent is 24
 /// for the intial guess.
 ///
 /// For example if we divid by 5 for the 5th root.
-/// x = (e - 127)/5 + 127
-/// x = (e - 127)/5 + 635/5
-/// x = e/5 - 127/5 + 635/5
-/// x = e/5 + 508/5
-/// 508 / 5 ~= 0x65.999999 in a fixed point u32 with 24 bit fraction
-/// shift right 1 and it's then 0x32cccccc
-/// and add 1 acount for the shifted off bit.
+/// * x = (e - 127)/5 + 127
+/// * x = (e - 127)/5 + 635/5
+/// * x = e/5 - 127/5 + 635/5
+/// * x = e/5 + 508/5
+/// 508 / 5 ~= `0x65.999999` in a fixed point u32 with 24 bit fraction.
+/// Then shift right 1 and it's then `0x32cccccc`.
+/// Then add 1 acount for the shifted off bit.
 const fn root_const(minuend: u32, subtrahend: u32, divisor: u32) -> u32 {
     let dif = ((minuend - subtrahend) as u64) << 32;
     let frac = dif / divisor as u64;

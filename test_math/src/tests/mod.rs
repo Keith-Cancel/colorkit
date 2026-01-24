@@ -1,7 +1,9 @@
 mod quirt;
+mod sqrt;
 
 pub use quirt::Quirt;
 use rug::Float;
+pub use sqrt::Sqrt;
 
 /// Single Agrument Math functions
 pub trait MathFn {

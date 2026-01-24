@@ -40,14 +40,14 @@ pub const fn sqrtf(x: f32) -> f32 {
     let mut x = f32::from_bits(neg | q) as f64;
     let mut i = 0;
     // Halley's method
+    let a = a * (1.0 / 3.0);
     while i < 2 {
-        // x^5
-        let p = x * x;
-        let p = p * p * x;
+        let p2 = x * x;
+        let p3 = p2 * x;
 
-        let n1 = (2.0 / 3.0) * x;
-        let n2 = ((2.5 / 3.0) * a * x) / (a + 1.5 * p);
-        x = n1 + n2;
+        let n1 = 3.0 * x;
+        let n2 = ((8.0 / 3.0) * p3) / (a + p2);
+        x = n1 - n2;
         i += 1;
     }
 

@@ -1,5 +1,4 @@
-use super::F32_BIAS;
-use super::F32_MSK_EXP;
+use super::*;
 
 #[allow(unused)]
 #[inline]
@@ -7,6 +6,9 @@ const fn exponent(bits: u32) -> i8 {
     let e = ((bits >> 23) & 0xff) as i32 - F32_BIAS;
     return e as i8;
 }
+
+const NORM_ADD: u32 = root_const(127 * 5, 127, 5);
+const SUBNORM_ADD: u32 = root_const(127 * 5, 127 + 24, 5);
 
 /// Computes the quintic root or 5th root.
 #[inline]
@@ -27,33 +29,13 @@ pub const fn quirtf(x: f32) -> f32 {
         if q == 0 {
             return x;
         }
-        // Got this idea of adding to the exponent by looking at some cbrt
-        // implementations to get back precision when working with
-        // a subnormal.
-        const P24: f32 = f32::from_bits(0x4b800000); // the exponent is 24
         // Essentially add 24 to the exponent
         q = (P24 * x).to_bits() & 0x7fffffff;
-        // So we need to:
-        // x = (e - 127 - 24)/5 + 127
-        // x = (e - 127 - 24)/5 + 635/5
-        // x = e/5 - 151/5 + 635/5
-        // x = e/5 + 484/5
-        // 484 / 5  ~= 0x60.cccccc in fix point u32 with 24 bit fraction
-        // shift right 1 and its then 0x30666666
-        // no bit shifted off so do not need to add 1
         q /= 5;
-        q += 0x30666666;
+        q += SUBNORM_ADD;
     } else {
-        // So we need to:
-        // x = (e - 127)/5 + 127
-        // x = (e - 127)/5 + 635/5
-        // x = e/5 - 127/5 + 635/5
-        // x = e/5 + 508/5
-        // 508 / 5 ~= 0x65.999999 in a fixed point u32 with 24 bit fraction
-        // shift right 1 and it's then 0x32cccccc
-        // and add 1 acount for the shifted off bit.
         q /= 5;
-        q += 0x32cccccc + 1;
+        q += NORM_ADD;
     }
 
     let a = x as f64;

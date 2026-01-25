@@ -39,6 +39,32 @@ const fn root_const(minuend: u32, subtrahend: u32, divisor: u32) -> u32 {
 }
 
 /// `n` is what root we are computing the constant for.
-const fn root_const2(n: u32) -> u32 {
-    todo!();
+fn root_const2(n: u32) -> u32 {
+    const ONE: u64 = 1 << 32;
+    const LN_2: u64 = 2_977_044_472; // ln(2) * 2^32
+
+    // Approximate 2^(1/n) can be aproximated with a Taylor series:
+    // 1 + ln(2)/n + ln^2(2)/2n^2 + ln^3(2)/6n^3 + ln^4(2)/24n^4 + ...
+    let x1 = LN_2 / n as u64;
+    let x2 = (x1 * x1) >> 32;
+    let x3 = (x2 * x1) >> 32;
+    let x4 = (x2 * x2) >> 32;
+    let x5 = (x3 * x2) >> 32;
+    let x6 = (x3 * x3) >> 32;
+    let x7 = (x4 * x3) >> 32;
+    let r1 = ONE + x1;
+    let r2 = r1 + x1;
+    let r3 = r2 + (x2 / 2);
+    let r4 = r3 + (x3 / 6);
+    let r5 = r4 + (x4 / 24);
+    let r6 = r5 + (x5 / 120);
+    let r7 = r6 + (x6 / 720);
+    let r8 = r7 + (x7 / 5040);
+
+    // A float is 2^pow * (1 + m) where the mantissa value is [1 to 2)
+    // Since we divide the whole float by the root
+    // We get 2^(pow/n) * (1 + m/n)
+    // The mantissa should be (1 + m)^(1/n)
+
+    0
 }

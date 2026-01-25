@@ -37,3 +37,8 @@ const fn root_const(minuend: u32, subtrahend: u32, divisor: u32) -> u32 {
     let rnd = frac & 1;
     return (frac >> 1) + rnd;
 }
+
+/// `n` is what root we are computing the constant for.
+const fn root_const2(n: u32) -> u32 {
+    todo!();
+}

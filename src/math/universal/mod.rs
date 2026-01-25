@@ -1,3 +1,4 @@
+mod cbrt;
 mod quirt;
 mod sqrt;
 mod ulp;

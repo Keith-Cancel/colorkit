@@ -24,10 +24,10 @@ pub const fn cbrtf(x: f32) -> f32 {
         }
         // Essentially add 24 to the exponent
         q = (P24 * x).to_bits() & 0x7fffffff;
-        q /= 5;
+        q /= 3;
         q += SUBNORM_ADD;
     } else {
-        q /= 5;
+        q /= 3;
         q += NORM_ADD;
     }
 
@@ -35,13 +35,14 @@ pub const fn cbrtf(x: f32) -> f32 {
     let mut x = f32::from_bits(neg | q) as f64;
     let mut i = 0;
     // Halley's method
+    let a = (1.0 / 2.0) * a;
     while i < 2 {
-        // x^5
+        // x^3
         let p = x * x;
-        let p = p * p * x;
+        let p = p * x;
 
-        let n1 = (2.0 / 3.0) * x;
-        let n2 = ((2.5 / 3.0) * a * x) / (a + 1.5 * p);
+        let n1 = (1.0 / 2.0) * x;
+        let n2 = ((3.0 / 2.0) * a * x) / (a + p);
         x = n1 + n2;
         i += 1;
     }

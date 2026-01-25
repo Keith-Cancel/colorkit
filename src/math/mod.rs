@@ -13,6 +13,7 @@ mod universal;
 // I guess in the mean time just add const version that
 // that calls the universal implementation.
 
+pub use universal::cbrtf;
 pub use universal::quirtf;
 pub use universal::ulp_int_diff_f32;
 

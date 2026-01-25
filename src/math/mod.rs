@@ -16,8 +16,19 @@ mod universal;
 pub use universal::quirtf;
 pub use universal::ulp_int_diff_f32;
 
-#[rustfmt::skip]
+/// Computes the square root
+pub fn sqrtf(x: f32) -> f32 {
+    // TODO think of a better way
+    // like a macro in arch.
+    #[cfg(target_feature = "sse2")]
+    return arch::sqrtf(x);
+    #[allow(unused)]
+    return universal::sqrtf(x);
+}
+
 // Const functions
+#[rustfmt::skip]
+/// Computes the square root with a `const fn`
 pub use universal::sqrtf as sqrtf_const;
 
 /// Common math functions
@@ -30,6 +41,8 @@ pub use universal::sqrtf as sqrtf_const;
 /// performance of these functions in the root of this repo
 /// called `test_math`
 pub trait MathFuncs {
+    /// Computes the square root
+    fn sqrt(self) -> Self;
     /// Computes the quintic root or 5th root.
     fn quirt(self) -> Self;
     /// ULP int difference between two values.
@@ -37,6 +50,10 @@ pub trait MathFuncs {
 }
 
 impl MathFuncs for f32 {
+    fn sqrt(self) -> f32 {
+        return sqrtf(self);
+    }
+
     fn quirt(self) -> f32 {
         return universal::quirtf(self);
     }

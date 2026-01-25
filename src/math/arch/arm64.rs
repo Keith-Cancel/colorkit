@@ -5,10 +5,11 @@ pub fn sqrtf(x: f32) -> f32 {
     let mut ret = x;
     unsafe {
         asm!(
-            "sqrtss {r}, {r}",
-            r = inout(xmm_reg) ret,
+            "fsqrt s0, s0",
+            //"fsqrt {r}, {r}",
+            //r = inout(??) ret,
             // https://doc.rust-lang.org/rust-by-example/unsafe/asm.html#options
-            options(nomem, nostack, pure),
+            //options(nomem, nostack, pure),
         )
     };
     return ret;

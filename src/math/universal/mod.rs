@@ -39,7 +39,7 @@ const fn root_const(minuend: u32, subtrahend: u32, divisor: u32) -> u32 {
 }
 
 /// `n` is what root we are computing the constant for.
-fn root_const2(n: u32) -> u32 {
+const fn root_const2(n: u32) -> u32 {
     const ONE: u64 = 1 << 32;
     const LN_2: u64 = 2_977_044_472; // ln(2) * 2^32
 
@@ -65,6 +65,9 @@ fn root_const2(n: u32) -> u32 {
     // Since we divide the whole float by the root
     // We get 2^(pow/n) * (1 + m/n)
     // The mantissa should be (1 + m)^(1/n)
-
+    // So lets compute the error and divide the error by n
+    let m = ONE + (ONE / n as u64);
+    let d = r8 - m;
+    let e = ((d << 32) / r8) / (n as u64);
     0
 }

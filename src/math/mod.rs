@@ -1,4 +1,4 @@
-mod arch;
+pub(crate) mod arch;
 mod universal;
 
 // TODO: arch and const fns
@@ -18,10 +18,7 @@ pub use universal::ulp_int_diff_f32;
 
 /// Computes the square root
 pub fn sqrtf(x: f32) -> f32 {
-    // TODO think of a better way
-    // like a macro in arch.
-    #[cfg(target_feature = "sse2")]
-    return arch::sqrtf(x);
+    arch::arch_fn!(name: sqrtf, args: x);
     #[allow(unused)]
     return universal::sqrtf(x);
 }

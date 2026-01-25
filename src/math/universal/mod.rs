@@ -39,7 +39,8 @@ const fn root_const(minuend: u32, subtrahend: u32, divisor: u32) -> u32 {
 }
 
 /// `n` is what root we are computing the constant for.
-const fn root_const2(n: u32) -> u32 {
+const fn root_const2(n: u32, shift: u32) -> u32 {
+    const BIAS: u64 = 127;
     const ONE: u64 = 1 << 32;
     const LN_2: u64 = 2_977_044_472; // ln(2) * 2^32
 
@@ -69,5 +70,10 @@ const fn root_const2(n: u32) -> u32 {
     let m = ONE + (ONE / n as u64);
     let d = r8 - m;
     let e = ((d << 32) / r8) / (n as u64);
-    0
+
+    let b = BIAS * (n as u64) - BIAS - (shift as u64);
+    let p = (b * ONE) / (n as u64);
+    let c = p - e;
+
+    return (c >> 9) as u32;
 }

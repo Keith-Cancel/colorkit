@@ -1,14 +1,16 @@
-#[cfg(target_feature = "sse2")]
-mod x86_64;
+cfg_items!(
+    #[cfg(target_feature = "sse2")] => {
+        mod x86_64;
+        pub use x86_64::sqrtf;
+    }
+);
 
-#[cfg(target_feature = "sse2")]
-pub use x86_64::sqrtf;
-
-#[cfg(all(target_arch = "aarch64", target_feature = "neon"))]
-mod arm64;
-
-#[cfg(all(target_arch = "aarch64", target_feature = "neon"))]
-pub use arm64::sqrtf;
+cfg_items!(
+    #[cfg(all(target_arch = "aarch64", target_feature = "neon"))] => {
+        mod arm64;
+        pub use arm64::sqrtf;
+    }
+);
 
 macro_rules! arch_fn {
     (name: $name:ident, args: $($arg:expr),+) => {
@@ -23,3 +25,12 @@ macro_rules! arch_fn {
     };
 }
 pub(crate) use arch_fn;
+
+macro_rules! cfg_items {
+    (#[cfg($cfg:meta)] => { $($i:item)* }) => {
+        $(
+            #[cfg($cfg)] $i
+        )*
+    };
+}
+pub(crate) use cfg_items;

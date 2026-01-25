@@ -1,7 +1,9 @@
 use super::*;
 
-const NORM_ADD: u32 = root_const(127 * 2, 127, 2);
-const SUBNORM_ADD: u32 = root_const(127 * 2, 127 + 24, 2);
+//const NORM_ADD: u32 = root_const(127 * 2, 127, 2);
+//const SUBNORM_ADD: u32 = root_const(127 * 2, 127 + 24, 2);
+const NORM_ADD: u32 = root_const2(2, 0);
+const SUBNORM_ADD: u32 = root_const2(2, 24);
 
 /// Computes the square root
 #[inline]

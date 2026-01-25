@@ -7,8 +7,10 @@ const fn exponent(bits: u32) -> i8 {
     return e as i8;
 }
 
-const NORM_ADD: u32 = root_const(127 * 5, 127, 5);
-const SUBNORM_ADD: u32 = root_const(127 * 5, 127 + 24, 5);
+//const NORM_ADD: u32 = root_const(127 * 5, 127, 5);
+//const SUBNORM_ADD: u32 = root_const(127 * 5, 127 + 24, 5);
+const NORM_ADD: u32 = root_const2(5, 0);
+const SUBNORM_ADD: u32 = root_const2(5, 24);
 
 /// Computes the quintic root or 5th root.
 #[inline]

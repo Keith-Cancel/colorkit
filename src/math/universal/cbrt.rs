@@ -1,7 +1,9 @@
 use super::*;
 
-const NORM_ADD: u32 = root_const(127 * 3, 127, 3);
-const SUBNORM_ADD: u32 = root_const(127 * 3, 127 + 24, 3);
+//const NORM_ADD: u32 = root_const(127 * 3, 127, 3);
+//const SUBNORM_ADD: u32 = root_const(127 * 3, 127 + 24, 3);
+const NORM_ADD: u32 = root_const2(3, 0);
+const SUBNORM_ADD: u32 = root_const2(3, 24);
 
 /// Computes the cube root or 3rd root.
 #[inline]

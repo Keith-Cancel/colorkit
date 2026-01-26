@@ -1,3 +1,4 @@
+//! Standard White Points
 //use colorkit::color::Color;
 //use super::Xyz;
 

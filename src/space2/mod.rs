@@ -134,3 +134,44 @@ pub trait ColorSpace: ColorArray + Default {
         });
     }
 }
+
+/// Trait with common properties for RGB like color spaces.
+pub trait RgbLike: ColorSpace {
+    /// Create a new color from RGB values.
+    #[inline]
+    fn new_rgb(r: f32, g: f32, b: f32) -> Self {
+        let arr = [r, g, b];
+        return Self::from_fn(|i| arr[i]);
+    }
+    /// Get the red channel's value.
+    #[inline]
+    fn red(&self) -> f32 {
+        return self[0];
+    }
+    /// Get the blue channel's value.
+    #[inline]
+    fn blue(&self) -> f32 {
+        return self[1];
+    }
+    /// Get the green channel's value.
+    #[inline]
+    fn green(&self) -> f32 {
+        return self[2];
+    }
+    /// Set the red channel's value.
+    #[inline]
+    fn set_red(&mut self, value: f32) {
+        self[0] = value;
+    }
+    /// Set the blue channel's value.
+    #[inline]
+    fn set_blue(&mut self, value: f32) {
+        self[1] = value;
+    }
+
+    /// Set the green channel's value.
+    #[inline]
+    fn set_green(&mut self, value: f32) {
+        self[2] = value;
+    }
+}

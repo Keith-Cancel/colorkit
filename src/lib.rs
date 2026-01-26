@@ -9,6 +9,7 @@ mod space2;
 #[rustfmt::skip]
 pub use space2::ColorSpace;
 pub use space2::ColorArray;
+pub use space2::ColorTransmute;
 //pub mod channels;
 //pub mod layout;
 //pub mod scalar;

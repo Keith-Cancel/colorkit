@@ -1,12 +1,9 @@
-mod white_point;
+pub mod white_point;
 
 use core::borrow::Borrow;
 use core::borrow::BorrowMut;
 use core::ops::Index;
 use core::ops::IndexMut;
-
-#[rustfmt::skip]
-pub use white_point::*;
 
 /// Defines the a bound on a color space channel
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -14,6 +11,10 @@ pub enum ChannelBound {
     Included(f32),
     Unbounded,
 }
+
+/// This marker trait marks that a color can be
+/// transmuted into an array of `[f32; [`ColorArray::CHANNELS`]]`
+pub unsafe trait ColorTransmute: ColorSpace {}
 
 pub trait ColorArray:
     Copy
@@ -52,13 +53,23 @@ pub trait ColorArray:
         let (slc, _) = self.as_mut_slice().split_at_mut(N);
         return slc.try_into().ok();
     }
+
+    /// Get channel value reference or `None`.
+    fn get_ref(&self, index: usize) -> Option<&f32> {
+        return self.as_slice().get(index);
+    }
+
+    /// Get a mutable channel value reference or `None`.
+    fn get_mut(&mut self, index: usize) -> Option<&mut f32> {
+        return self.as_mut_slice().get_mut(index);
+    }
 }
 
 pub trait ColorSpace: ColorArray + Default {
     /// Default color, should be black.
     const DEFAULT: Self;
     /// Color Spaces White Point
-    type WhitePoint: WhitePoint;
+    type WhitePoint: white_point::WhitePoint;
     /// Are the Channels Linear
     const LINEAR: bool;
     /// Upper or max bound of each channel.

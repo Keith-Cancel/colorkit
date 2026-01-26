@@ -21,11 +21,26 @@ macro_rules! base_funcs {
             pub const fn blue(&self) -> f32 {
                 return self.0[1];
             }
-
             /// Get the green channel's value.
             #[inline]
             pub const fn green(&self) -> f32 {
                 return self.0[2];
+            }
+            /// Set the red channel's value.
+            #[inline]
+            pub const fn set_red(&mut self, value: f32) {
+                self.0[0] = value;
+            }
+            /// Set the blue channel's value.
+            #[inline]
+            pub const fn set_blue(&mut self, value: f32) {
+                self.0[1] = value;
+            }
+
+            /// Set the green channel's value.
+            #[inline]
+            pub const fn set_green(&mut self, value: f32) {
+                self.0[2] = value;
             }
         }
     };

@@ -135,7 +135,7 @@ pub trait ColorSpace: ColorArray + Default {
     }
 }
 
-/// Trait with common properties for RGB like color spaces.
+/// Trait with common operations for RGB like color spaces.
 pub trait RgbLike: ColorSpace {
     /// Create a new color from RGB values.
     #[inline]

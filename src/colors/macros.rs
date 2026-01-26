@@ -52,6 +52,29 @@ macro_rules! impl_color_array {
                 return &mut self.0;
             }
         }
+
+        impl core::convert::From<[f32; $len]> for $name {
+            fn from(values: [f32; $len]) -> Self {
+                return Self(values);
+            }
+        }
+
+        impl core::convert::From<$name> for [f32; $len] {
+            fn from(values: $name) -> Self {
+                return values.0;
+            }
+        }
+
+        impl $name {
+            /// Create a new instance of the color from an array
+            pub const fn from_array(values: [f32; $len]) -> Self {
+                return Self(values);
+            }
+            /// Convert an instance of the color to an array.
+            pub const fn into_array(self) -> [f32; $len] {
+                return self.0;
+            }
+        }
     };
 }
 pub(crate) use impl_color_array;

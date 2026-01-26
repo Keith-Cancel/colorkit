@@ -71,7 +71,10 @@ const fn root_const2(n: u32, shift: u32) -> u32 {
     // The error will be worst at like 1.999... so just treat it as 2.
     let m = ONE + (ONE / n as u64);
     let d = m - r8;
-    let e = ((d << 32) / r8) / (n as u64);
+    let e = (d << 32) / r8;
+    // Take the error at m = 0 and m ~= 1 and average, error at 0 is zero
+    // so just divide by 2
+    let e = e / 2;
 
     let b = BIAS * (n as u64) - BIAS - (shift as u64);
     let p = (b * ONE) / (n as u64);

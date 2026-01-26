@@ -86,4 +86,40 @@ pub trait ColorSpace: ColorArray + Default {
     fn channel_min(ch_num: usize) -> ChannelBound {
         return Self::CHANNEL_MIN[ch_num];
     }
+
+    /// Check if the color’s channels are all within the range bounds.
+    fn within_bounds(&self) -> bool {
+        for (i, &v) in self.as_slice().iter().enumerate() {
+            if let ChannelBound::Included(max) = Self::CHANNEL_MAX[i]
+                && v > max
+            {
+                return false;
+            }
+            if let ChannelBound::Included(min) = Self::CHANNEL_MIN[i]
+                && v < min
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /// Clamp all channels to min and max
+    fn clamp(self) -> Self {
+        let slc = self.as_slice();
+        return Self::from_fn(|i| {
+            let mut v = slc[i];
+            if let ChannelBound::Included(max) = Self::CHANNEL_MAX[i]
+                && v > max
+            {
+                v = max;
+            }
+            if let ChannelBound::Included(min) = Self::CHANNEL_MIN[i]
+                && v < min
+            {
+                v = min;
+            }
+            v
+        });
+    }
 }

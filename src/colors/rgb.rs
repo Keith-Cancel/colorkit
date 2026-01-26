@@ -1,5 +1,5 @@
 use colorkit::ColorSpace;
-use colorkit::ColorTransmute;
+use colorkit::RgbLike;
 use colorkit::math::cbrtf;
 use colorkit::math::quirtf;
 use colorkit::math::sqrtf;
@@ -64,6 +64,8 @@ macro_rules! base_funcs {
                 return Self([0.0, 0.0, 0.0]);
             }
         }
+
+        impl RgbLike for $name {}
 
         impl ColorSpace for $name {
             const DEFAULT: Self = Self([0.0, 0.0, 0.0]);

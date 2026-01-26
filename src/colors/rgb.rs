@@ -47,6 +47,15 @@ macro_rules! base_funcs {
             pub const fn set_green(&mut self, value: f32) {
                 self.0[2] = value;
             }
+
+            /// Clamp channel values between 0.0 and 1.0
+            pub const fn clamp(self) -> Self {
+                return Self([
+                    f32::clamp(self.0[0], 0.0, 1.0),
+                    f32::clamp(self.0[1], 0.0, 1.0),
+                    f32::clamp(self.0[2], 0.0, 1.0),
+                ]);
+            }
         }
 
         impl Default for $name {
@@ -74,10 +83,11 @@ pub struct Srgb([f32; 3]);
 impl Srgb {
     /// Convert Srgb into Linear Srgb
     pub const fn into_linear(self) -> LinSrgb {
+        let v = self.clamp();
         return LinSrgb([
-            linear(self.0[0]),
-            linear(self.0[1]),
-            linear(self.0[2]),
+            linear(v.0[0]),
+            linear(v.0[1]),
+            linear(v.0[2]),
         ]);
     }
 }
@@ -93,10 +103,11 @@ pub struct LinSrgb([f32; 3]);
 impl LinSrgb {
     /// Convert Linear Srgb into Srgb
     pub fn into_nonlinear(self) -> Srgb {
+        let v = self.clamp();
         return Srgb([
-            nonlinear(self.0[0]),
-            nonlinear(self.0[1]),
-            nonlinear(self.0[2]),
+            nonlinear(v.0[0]),
+            nonlinear(v.0[1]),
+            nonlinear(v.0[2]),
         ]);
     }
 }

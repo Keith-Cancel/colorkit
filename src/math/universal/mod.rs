@@ -54,7 +54,7 @@ const fn root_const2(n: u32, shift: u32) -> u32 {
     let x5 = (x3 * x2) >> 32;
     let x6 = (x3 * x3) >> 32;
     let x7 = (x4 * x3) >> 32;
-    let r1 = ONE + x1;
+    let r1 = ONE;
     let r2 = r1 + x1;
     let r3 = r2 + (x2 / 2);
     let r4 = r3 + (x3 / 6);
@@ -70,7 +70,7 @@ const fn root_const2(n: u32, shift: u32) -> u32 {
     // So lets compute the error and divide the error by n
     // The error will be worst at like 1.999... so just treat it as 2.
     let m = ONE + (ONE / n as u64);
-    let d = r8 - m;
+    let d = m - r8;
     let e = ((d << 32) / r8) / (n as u64);
 
     let b = BIAS * (n as u64) - BIAS - (shift as u64);

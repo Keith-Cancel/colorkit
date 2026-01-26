@@ -54,6 +54,17 @@ macro_rules! base_funcs {
 #[repr(transparent)]
 pub struct Srgb([f32; 3]);
 
+impl Srgb {
+    /// Convert Srgb into Linear Srgb
+    pub const fn into_linear(self) -> LinSrgb {
+        return LinSrgb([
+            linear(self.0[0]),
+            linear(self.0[1]),
+            linear(self.0[2]),
+        ]);
+    }
+}
+
 base_funcs!(Srgb, 3);
 impl_color_array!(Srgb, 3);
 
@@ -66,9 +77,9 @@ impl LinSrgb {
     /// Convert Linear Srgb into Srgb
     pub fn into_nonlinear(self) -> Srgb {
         return Srgb([
-            nonlinear(self[0]),
-            nonlinear(self[1]),
-            nonlinear(self[2]),
+            nonlinear(self.0[0]),
+            nonlinear(self.0[1]),
+            nonlinear(self.0[2]),
         ]);
     }
 }
@@ -102,4 +113,16 @@ const fn linear(s: f32) -> f32 {
         x2 * quirtf(x2)
     };
     return l;
+}
+
+impl From<Srgb> for LinSrgb {
+    fn from(value: Srgb) -> Self {
+        return value.into_linear();
+    }
+}
+
+impl From<LinSrgb> for Srgb {
+    fn from(value: LinSrgb) -> Self {
+        return value.into_nonlinear();
+    }
 }

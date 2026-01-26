@@ -28,14 +28,30 @@ pub trait ColorArray:
     const CHANNELS: usize;
     /// Construct the Color calling `f(i)` for each index (same semantics as [`core::array::from_fn`]).
     fn from_fn<F: FnMut(usize) -> f32>(f: F) -> Self;
+    /// View color as a slice reference.
+    fn as_slice(&self) -> &[f32];
+    /// View color as a mutable slice.
+    fn as_mut_slice(&mut self) -> &mut [f32];
     /// Try to get a reference as an array.
     ///
     /// If `N` is greater than [`ColorArray::CHANNELS`] returns [`None`]`
-    fn try_as_array<const N: usize>(&self) -> Option<&[f32; N]>;
+    fn try_as_array<const N: usize>(&self) -> Option<&[f32; N]> {
+        if N > Self::CHANNELS {
+            return None;
+        }
+        let (slc, _) = self.as_slice().split_at(N);
+        return slc.try_into().ok();
+    }
     /// Try to get a reference as an mutable array.
     ///
     /// If `N` is greater than [`ColorArray::CHANNELS`] returns [`None`]`
-    fn try_as_mut_array<const N: usize>(&self) -> Option<&mut [f32; N]>;
+    fn try_as_mut_array<const N: usize>(&mut self) -> Option<&mut [f32; N]> {
+        if N > Self::CHANNELS {
+            return None;
+        }
+        let (slc, _) = self.as_mut_slice().split_at_mut(N);
+        return slc.try_into().ok();
+    }
 }
 
 pub trait ColorSpace: ColorArray + Default {

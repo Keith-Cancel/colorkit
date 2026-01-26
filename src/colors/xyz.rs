@@ -7,7 +7,7 @@ use colorkit::wp::WhitePoint;
 #[repr(transparent)]
 pub struct Xyz<Wp: WhitePoint>([f32; 3], PhantomData<Wp>);
 
-impl<Wp: WhitePoint> Xyz<Wp> {
+impl<W: WhitePoint> Xyz<W> {
     /// Create a new color from XYZ values.
     pub const fn new(x: f32, y: f32, z: f32) -> Self {
         return Self([x, y, z], PhantomData);
@@ -41,5 +41,13 @@ impl<Wp: WhitePoint> Xyz<Wp> {
     #[inline]
     pub const fn set_z(&mut self, value: f32) {
         self.0[2] = value;
+    }
+    /// Change the white point of the XYZ color without
+    /// any chromatic adaptation.
+    ///
+    /// All numeric values are left unchanged.
+    #[inline]
+    pub const fn change_white_point<Wp: WhitePoint>(self) -> Xyz<Wp> {
+        return Xyz::<Wp>(self.0, PhantomData);
     }
 }

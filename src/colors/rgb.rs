@@ -161,7 +161,7 @@ impl From<LinSrgb> for Srgb {
 mod test {
     use super::*;
     #[test]
-    fn linear() {
+    fn linear_convert() {
         let c = Srgb::new(0.34117647058, 0.89019607843, 0.53725490196);
         let c = c.into_linear();
         assert!(c[0] >= 0.0953074);

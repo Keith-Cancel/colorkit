@@ -126,3 +126,24 @@ impl From<LinSrgb> for Srgb {
         return value.into_nonlinear();
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    #[test]
+    fn linear() {
+        let c = Srgb::new(0.34117647058, 0.89019607843, 0.53725490196);
+        let c = c.into_linear();
+        assert!(c[0] >= 0.0953074);
+        assert!(c[0] <= 0.0953075);
+
+        // These values have an exact representation so should not be lost.
+        let c = Srgb::new(0.5, 0.75, 0.125);
+        let c = c.into_linear();
+        assert!(c[0] >= 0.214 && c[0] <= 0.2141);
+        let c = c.into_nonlinear();
+        assert_eq!(c[0], 0.5);
+        assert_eq!(c[1], 0.75);
+        assert_eq!(c[2], 0.125);
+    }
+}

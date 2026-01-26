@@ -1,6 +1,5 @@
 //! Standard White Points
-//use colorkit::color::Color;
-//use super::Xyz;
+use colorkit::colors::Xyz;
 
 #[allow(non_camel_case_types)]
 /// The *`x`*, *`y`* chromaticity and FOV of a white point.
@@ -39,9 +38,9 @@ pub trait WhitePoint: WhitePoint_xy {
     }
 
     ///// Get the XYZ color of the white point
-    //fn color() -> Color<Xyz<Self>> {
-    //    return white_point_color();
-    //}
+    fn color() -> Xyz<Self> {
+        return white_point_color();
+    }
 }
 
 /// Calculate the `X` value using a different `Y`
@@ -66,9 +65,9 @@ pub const fn white_point_z<W: WhitePoint>(y: f32) -> f32 {
 }
 
 /// Get the XYZ color of the white point
-//pub const fn white_point_color<W: WhitePoint>() -> Color<Xyz<W>> {
-//    return <Color<Xyz<W>>>::new_xyz(W::X, W::Y, W::Z);
-//}
+pub const fn white_point_color<W: WhitePoint>() -> Xyz<W> {
+    return Xyz::new(W::X, W::Y, W::Z);
+}
 
 /// D65 White point 2 Degree FOV
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]

@@ -1,8 +1,12 @@
+mod cbrt;
 mod quirt;
 mod sqrt;
 
-pub use quirt::Quirt;
 use rug::Float;
+
+#[rustfmt::skip]
+pub use cbrt::Cbrt;
+pub use quirt::Quirt;
 pub use sqrt::Sqrt;
 
 /// Single Agrument Math functions

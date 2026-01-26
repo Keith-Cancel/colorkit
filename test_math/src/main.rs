@@ -13,6 +13,10 @@ fn main() {
     r.run::<Sqrt>();
     u.run::<Sqrt>();
 
+    p.run::<Cbrt>();
+    r.run::<Cbrt>();
+    u.run::<Cbrt>();
+
     p.run::<Quirt>();
     r.run::<Quirt>();
     u.run::<Quirt>();

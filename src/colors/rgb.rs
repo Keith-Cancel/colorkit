@@ -3,6 +3,8 @@ use colorkit::ColorTransmute;
 use colorkit::math::cbrtf;
 use colorkit::math::quirtf;
 use colorkit::math::sqrtf;
+use colorkit::space2::ChannelBound;
+use colorkit::wp::D65;
 
 use super::macros::impl_color_array;
 
@@ -45,6 +47,21 @@ macro_rules! base_funcs {
             pub const fn set_green(&mut self, value: f32) {
                 self.0[2] = value;
             }
+        }
+
+        impl Default for $name {
+            #[inline]
+            fn default() -> Self {
+                return Self([0.0, 0.0, 0.0]);
+            }
+        }
+
+        impl ColorSpace for $name {
+            const DEFAULT: Self = Self([0.0, 0.0, 0.0]);
+            type WhitePoint = D65;
+            const LINEAR: bool = true;
+            const CHANNEL_MAX: &'static [ChannelBound] = &[ChannelBound::Included(1.0); 3];
+            const CHANNEL_MIN: &'static [ChannelBound] = &[ChannelBound::Included(0.0); 3];
         }
     };
 }

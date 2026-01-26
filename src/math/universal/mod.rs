@@ -30,6 +30,7 @@ const P24: f32 = f32::from_bits(0x4b800000); // the exponent is 24
 /// 508 / 5 ~= `0x65.999999` in a fixed point u32 with 24 bit fraction.
 /// Then shift right 1 and it's then `0x32cccccc`.
 /// Then add 1 acount for the shifted off bit.
+#[allow(unused)]
 const fn root_const(minuend: u32, subtrahend: u32, divisor: u32) -> u32 {
     let dif = ((minuend - subtrahend) as u64) << 32;
     let frac = dif / divisor as u64;

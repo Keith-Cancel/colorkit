@@ -7,8 +7,25 @@ macro_rules! base_funcs {
     ($name:ident, $len:expr) => {
         impl $name {
             /// Create a new color from RGB values.
-            pub const fn new(r: f32, b: f32, g: f32) -> Self {
-                return Self([r, b, g]);
+            #[inline]
+            pub const fn new(r: f32, g: f32, b: f32) -> Self {
+                return Self([r, g, b]);
+            }
+            /// Get the red channel's value.
+            #[inline]
+            pub const fn red(&self) -> f32 {
+                return self.0[0];
+            }
+            /// Get the blue channel's value.
+            #[inline]
+            pub const fn blue(&self) -> f32 {
+                return self.0[1];
+            }
+
+            /// Get the green channel's value.
+            #[inline]
+            pub const fn green(&self) -> f32 {
+                return self.0[2];
             }
         }
     };

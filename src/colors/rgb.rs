@@ -1,5 +1,8 @@
 use colorkit::ColorSpace;
 use colorkit::ColorTransmute;
+use colorkit::math::cbrtf;
+use colorkit::math::quirtf;
+use colorkit::math::sqrtf;
 
 use super::macros::impl_color_array;
 
@@ -59,5 +62,44 @@ impl_color_array!(Srgb, 3);
 #[repr(transparent)]
 pub struct LinSrgb([f32; 3]);
 
+impl LinSrgb {
+    /// Convert Linear Srgb into Srgb
+    pub fn into_nonlinear(self) -> Srgb {
+        return Srgb([
+            nonlinear(self[0]),
+            nonlinear(self[1]),
+            nonlinear(self[2]),
+        ]);
+    }
+}
+
 base_funcs!(LinSrgb, 3);
 impl_color_array!(LinSrgb, 3);
+
+fn nonlinear(l: f32) -> f32 {
+    // 0.0031308 old
+    let s = if l <= 0.00313066844250063 {
+        l * 12.92
+    } else {
+        let sq = sqrtf(l);
+        let cb = cbrtf(l);
+        let c = sqrtf(sq) * sqrtf(cb);
+
+        1.055 * c - 0.055
+    };
+    return s;
+}
+
+// https://entropymine.com/imageworsener/srgbformula/
+const fn linear(s: f32) -> f32 {
+    // 0.04045 old
+    let l = if s <= 0.0404482362771082 {
+        s / 12.92
+    } else {
+        let x = (s + 0.055) / 1.055;
+        // Equals x.powf(2.4)
+        let x2 = x * x;
+        x2 * quirtf(x2)
+    };
+    return l;
+}

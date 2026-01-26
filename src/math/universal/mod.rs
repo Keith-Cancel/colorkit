@@ -68,6 +68,7 @@ const fn root_const2(n: u32, shift: u32) -> u32 {
     // We get 2^(pow/n) * (1 + m/n)
     // The mantissa should be (1 + m)^(1/n)
     // So lets compute the error and divide the error by n
+    // The error will be worst at like 1.999... so just treat it as 2.
     let m = ONE + (ONE / n as u64);
     let d = r8 - m;
     let e = ((d << 32) / r8) / (n as u64);

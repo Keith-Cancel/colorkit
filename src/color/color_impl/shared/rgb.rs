@@ -1,4 +1,6 @@
+use colorkit::math::cbrtf;
 use colorkit::math::quirtf;
+use colorkit::math::sqrtf;
 use colorkit::space::LinSrgb;
 use colorkit::space::RgbLike;
 use colorkit::space::Srgb;
@@ -43,6 +45,13 @@ impl Color<Srgb> {
     }
 }
 
+impl Color<LinSrgb> {
+    pub fn into_nonlinear(self) -> Color<Srgb> {
+        let [r, g, b] = self.clamp().crate_inner();
+        return Color::crate_new([nonlinear(r), nonlinear(g), nonlinear(b)]);
+    }
+}
+
 // https://entropymine.com/imageworsener/srgbformula/
 const fn linear(s: f32) -> f32 {
     // 0.04045 old
@@ -55,6 +64,20 @@ const fn linear(s: f32) -> f32 {
         x2 * quirtf(x2)
     };
     return l;
+}
+
+fn nonlinear(l: f32) -> f32 {
+    // 0.0031308 old
+    let s = if l <= 0.00313066844250063 {
+        l * 12.92
+    } else {
+        let sq = sqrtf(l);
+        let cb = cbrtf(l);
+        let c = sqrtf(sq) * sqrtf(cb);
+
+        1.055 * c - 0.055
+    };
+    return s;
 }
 
 #[cfg(test)]
@@ -97,5 +120,14 @@ mod test {
         let c = c.into_linear();
         assert!(c[0] >= 0.0953074);
         assert!(c[0] <= 0.0953075);
+
+        // These values have an exact representation so should not be lost.
+        let c = Color::<Srgb>::new_rgb(0.5, 0.75, 0.125);
+        let c = c.into_linear();
+        assert!(c[0] >= 0.214 && c[0] <= 0.2141);
+        let c = c.into_nonlinear();
+        assert_eq!(c[0], 0.5);
+        assert_eq!(c[1], 0.75);
+        assert_eq!(c[2], 0.125);
     }
 }

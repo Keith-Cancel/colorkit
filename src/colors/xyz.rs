@@ -2,6 +2,8 @@ use core::marker::PhantomData;
 
 use colorkit::wp::WhitePoint;
 
+use super::macros::impl_color_array;
+
 /// Represention of an CIE XYZ color using [`f32`] values.
 #[derive(Copy, Clone, Debug, PartialEq)]
 #[repr(transparent)]
@@ -50,4 +52,12 @@ impl<W: WhitePoint> Xyz<W> {
     pub const fn change_white_point<Wp: WhitePoint>(self) -> Xyz<Wp> {
         return Xyz::<Wp>(self.0, PhantomData);
     }
+}
+
+impl_color_array! {
+    name: Xyz,
+    channels: 3,
+    extra_args: { PhantomData },
+    generics: { <W: WhitePoint> },
+    gen_use: { <W> }
 }

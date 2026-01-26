@@ -95,7 +95,13 @@ impl Srgb {
 }
 
 base_funcs!(Srgb, 3);
-impl_color_array!(Srgb, 3);
+impl_color_array! {
+    name: Srgb,
+    channels: 3,
+    extra_args: {},
+    generics: {},
+    gen_use: {}
+}
 
 /// Represention of a Linear Srgb color using [`f32`] values.
 #[derive(Copy, Clone, Debug, PartialEq)]
@@ -115,7 +121,13 @@ impl LinSrgb {
 }
 
 base_funcs!(LinSrgb, 3);
-impl_color_array!(LinSrgb, 3);
+impl_color_array! {
+    name: LinSrgb,
+    channels: 3,
+    extra_args: {},
+    generics: {},
+    gen_use: {}
+}
 
 fn nonlinear(l: f32) -> f32 {
     // 0.0031308 old

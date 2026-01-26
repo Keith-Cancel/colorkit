@@ -143,33 +143,33 @@ pub trait RgbLike: ColorSpace {
         let arr = [r, g, b];
         return Self::from_fn(|i| arr[i]);
     }
-    /// Get the red channel's value.
+    /// Get the Color's red channel value.
     #[inline]
     fn red(&self) -> f32 {
         return self[0];
     }
-    /// Get the blue channel's value.
+    /// Get the Color's blue channel value.
     #[inline]
     fn blue(&self) -> f32 {
         return self[1];
     }
-    /// Get the green channel's value.
+    /// Get the Color's green channel value.
     #[inline]
     fn green(&self) -> f32 {
         return self[2];
     }
-    /// Set the red channel's value.
+    /// Set the Color's red channel value.
     #[inline]
     fn set_red(&mut self, value: f32) {
         self[0] = value;
     }
-    /// Set the blue channel's value.
+    /// Set the Color's blue channel value.
     #[inline]
     fn set_blue(&mut self, value: f32) {
         self[1] = value;
     }
 
-    /// Set the green channel's value.
+    /// Set the Color's green channel value.
     #[inline]
     fn set_green(&mut self, value: f32) {
         self[2] = value;

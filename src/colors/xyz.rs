@@ -41,7 +41,7 @@ impl<W: WhitePoint> Xyz<W> {
     /// Set the Color's the `Y` channel's value.
     #[inline]
     pub const fn set_y(&mut self, value: f32) {
-        self.0[0] = value;
+        self.0[1] = value;
     }
     /// Set the Color's the `Z` channel's value.
     #[inline]

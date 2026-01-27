@@ -193,11 +193,40 @@ pub trait XyzConvert: ColorData {
 }
 
 /// Transformation Matrices to go between and from CIE XYZ
-pub trait XyzMatrix: ColorData {
-    // Looks like people generally reprsent these as a transformation matrix.
+pub trait XyzMatrices: ColorData {
+    // Looks like people generally represent these as a transformation matrix.
     // http://www.brucelindbloom.com/index.html?Eqn_RGB_to_XYZ.html
     /// 3x3 Matrix to convert into XYZ
     const INTO_XYZ: [f32; 9];
     /// 3x3 Matrix to convert from XYZ
     const FROM_XYZ: [f32; 9];
+}
+
+impl<T: ColorArray + XyzMatrices> XyzConvert for T {
+    fn into_xyz(self) -> Xyz<Self::WhitePoint> {
+        debug_assert!(T::CHANNELS == 3);
+        let mut x = 0.0f32;
+        let mut y = 0.0f32;
+        let mut z = 0.0f32;
+
+        let slc = self.as_slice();
+        for i in 0..3usize {
+            x += slc[i] * Self::INTO_XYZ[i];
+            y += slc[i] * Self::INTO_XYZ[i + 3];
+            z += slc[i] * Self::INTO_XYZ[i + 6];
+        }
+        return Xyz::new(x, y, z);
+    }
+
+    fn from_xyz(color: Xyz<Self::WhitePoint>) -> Self {
+        debug_assert!(T::CHANNELS == 3);
+        let mut c = [0.0f32; 3];
+        let slc = color.as_slice();
+        for i in 0..3usize {
+            c[0] += slc[i] * Self::FROM_XYZ[i];
+            c[1] += slc[i] * Self::FROM_XYZ[i + 3];
+            c[2] += slc[i] * Self::FROM_XYZ[i + 6];
+        }
+        return Self::from_fn(|i| c[i]);
+    }
 }

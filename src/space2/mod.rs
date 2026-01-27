@@ -5,6 +5,8 @@ use core::borrow::BorrowMut;
 use core::ops::Index;
 use core::ops::IndexMut;
 
+use white_point::WhitePoint;
+
 /// Defines the a bound on a color space channel
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum ChannelBound {
@@ -65,11 +67,12 @@ pub trait ColorArray:
     }
 }
 
-pub trait ColorSpace: ColorArray + Default {
+/// Information about a Color Space
+pub trait ColorSpaceData: Default {
     /// Default color, should be black.
     const DEFAULT: Self;
     /// Color Spaces White Point
-    type WhitePoint: white_point::WhitePoint;
+    type WhitePoint: WhitePoint;
     /// Are the Channels Linear
     const LINEAR: bool;
     /// Upper or max bound of each channel.
@@ -79,7 +82,10 @@ pub trait ColorSpace: ColorArray + Default {
 
     // what else to add?
     // primaries?
+}
 
+/// ColorSpace Trait
+pub trait ColorSpace: ColorArray + ColorSpaceData {
     /// Number Channels
     #[inline]
     fn channels(&self) -> usize {
@@ -174,4 +180,14 @@ pub trait RgbLike: ColorSpace {
     fn set_green(&mut self, value: f32) {
         self[2] = value;
     }
+}
+
+/// Transformation Matrices to go between and from CIE XYZ
+pub trait XyzMatrix: ColorSpaceData {
+    // Looks like people generally reprsent these as a transformation matrix.
+    // http://www.brucelindbloom.com/index.html?Eqn_RGB_to_XYZ.html
+    /// 3x3 Matrix to convert into XYZ
+    const INTO_XYZ: [f32; 9];
+    /// 3x3 Matrix to convert from XYZ
+    const FROM_XYZ: [f32; 9];
 }

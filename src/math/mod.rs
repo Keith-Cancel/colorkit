@@ -45,6 +45,8 @@ pub trait MathFuncs {
     fn quirt(self) -> Self;
     /// ULP int difference between two values.
     fn ulp_int_diff(self, other: Self) -> u32;
+    /// Compare to floats are close enough with some tolerance/epsilon
+    fn almost_eq(self, other: Self, tol: f32) -> bool;
 }
 
 impl MathFuncs for f32 {
@@ -58,5 +60,9 @@ impl MathFuncs for f32 {
 
     fn ulp_int_diff(self, other: f32) -> u32 {
         return universal::ulp_int_diff_f32(self, other);
+    }
+
+    fn almost_eq(self, other: f32, tol: f32) -> bool {
+        return (self - other).abs() < tol;
     }
 }

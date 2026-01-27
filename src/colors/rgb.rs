@@ -201,6 +201,9 @@ impl From<LinSrgb> for Srgb {
 
 #[cfg(test)]
 mod test {
+    use colorkit::math::MathFuncs;
+    use colorkit::wp::WhitePoint;
+
     use super::*;
     #[test]
     fn linear_convert() {
@@ -217,5 +220,25 @@ mod test {
         assert_eq!(c[0], 0.5);
         assert_eq!(c[1], 0.75);
         assert_eq!(c[2], 0.125);
+    }
+
+    #[test]
+    fn xyz_conver() {
+        let c = Srgb::new(1.0, 1.0, 1.0);
+        let x = c.into_xyz();
+        assert!(x[0].almost_eq(D65::X, 2e-7));
+        assert!(x[1].almost_eq(D65::Y, 2e-7));
+        assert!(x[2].almost_eq(D65::Z, 2e-7));
+
+        let c = Srgb::from_xyz(D65::color());
+        assert!(c[0].almost_eq(1.0, 2e-7));
+        assert!(c[1].almost_eq(1.0, 2e-7));
+        assert!(c[2].almost_eq(1.0, 2e-7));
+
+        let c = Srgb::new(0.0, 0.0, 0.0);
+        let x = c.into_xyz();
+        assert_eq!(x[0], 0.0);
+        assert_eq!(x[1], 0.0);
+        assert_eq!(x[2], 0.0);
     }
 }

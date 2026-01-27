@@ -111,10 +111,10 @@ impl Srgb {
 
 impl XyzConvert for Srgb {
     fn into_xyz(self) -> Xyz<Self::WhitePoint> {
-        todo!();
+        return self.into_linear().into_xyz();
     }
     fn from_xyz(color: Xyz<Self::WhitePoint>) -> Self {
-        todo!();
+        return LinSrgb::from_xyz(color).into_nonlinear();
     }
 }
 

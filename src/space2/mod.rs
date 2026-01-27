@@ -5,6 +5,7 @@ use core::borrow::BorrowMut;
 use core::ops::Index;
 use core::ops::IndexMut;
 
+use colorkit::colors::Xyz;
 use white_point::WhitePoint;
 
 /// Defines the a bound on a color space channel
@@ -84,8 +85,8 @@ pub trait ColorSpaceData: Default {
     // primaries?
 }
 
-/// ColorSpace Trait
-pub trait ColorSpace: ColorArray + ColorSpaceData {
+/// The main ColorSpace Trait
+pub trait ColorSpace: ColorArray + ColorSpaceData + XyzConvert {
     /// Number Channels
     #[inline]
     fn channels(&self) -> usize {
@@ -180,6 +181,14 @@ pub trait RgbLike: ColorSpace {
     fn set_green(&mut self, value: f32) {
         self[2] = value;
     }
+}
+
+/// Conversion between CIE XYZ and other Color Spaces.
+pub trait XyzConvert: ColorSpaceData {
+    /// Convert a color into CIE XYZ with it's white point.
+    fn into_xyz(self) -> Xyz<Self::WhitePoint>;
+    /// Convert a color from CIE XYZ into this color Space.
+    fn from_xyz(color: Xyz<Self::WhitePoint>) -> Self;
 }
 
 /// Transformation Matrices to go between and from CIE XYZ

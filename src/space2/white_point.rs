@@ -88,8 +88,8 @@ impl WhitePoint_xy for D65 {
     const y_i: f32 = 0.3290232066412840;
 }
 impl WhitePoint for D65 {
-    const X: f32 = 0.9504705586542831;
-    const Z: f32 = 1.0888287363958840;
+    const X: f32 = 0.9504705586542830;
+    const Z: f32 = 1.0888287363958847;
 }
 
 /// D65 White point 10 Degree FOV
@@ -97,12 +97,12 @@ impl WhitePoint for D65 {
 pub struct D65Deg10;
 impl WhitePoint_xy for D65Deg10 {
     const FOV: u8 = 10;
-    const x_i: f32 = 0.3138236469387096;
+    const x_i: f32 = 0.3138236469387095;
     const y_i: f32 = 0.3309989854899336;
 }
 impl WhitePoint for D65Deg10 {
-    const X: f32 = 0.9481106006237403;
-    const Z: f32 = 1.0730466954321181;
+    const X: f32 = 0.9481106006237398;
+    const Z: f32 = 1.0730466954321179;
 }
 
 /// D50 White point 2 Degree FOV
@@ -110,12 +110,12 @@ impl WhitePoint for D65Deg10 {
 pub struct D50;
 impl WhitePoint_xy for D50 {
     const FOV: u8 = 2;
-    const x_i: f32 = 0.3456842223226256;
-    const y_i: f32 = 0.3585040259042516;
+    const x_i: f32 = 0.3456842223226252;
+    const y_i: f32 = 0.3585040259042519;
 }
 impl WhitePoint for D50 {
-    const X: f32 = 0.9642408378837846;
-    const Z: f32 = 0.8251281168377381;
+    const X: f32 = 0.9642408378837830;
+    const Z: f32 = 0.8251281168377378;
 }
 
 /// D50 White point 10 Degree FOV
@@ -123,12 +123,12 @@ impl WhitePoint for D50 {
 pub struct D50Deg10;
 impl WhitePoint_xy for D50Deg10 {
     const FOV: u8 = 10;
-    const x_i: f32 = 0.3477476825870566;
-    const y_i: f32 = 0.3595360243755528;
+    const x_i: f32 = 0.3477476825870567;
+    const y_i: f32 = 0.3595360243755529;
 }
 impl WhitePoint for D50Deg10 {
     const X: f32 = 0.9672123487236909;
-    const Z: f32 = 0.8141501078947077;
+    const Z: f32 = 0.8141501078947072;
 }
 
 /// D55 White point 2 Degree FOV
@@ -136,12 +136,12 @@ impl WhitePoint for D50Deg10 {
 pub struct D55;
 impl WhitePoint_xy for D55 {
     const FOV: u8 = 2;
-    const x_i: f32 = 0.3324241024688303;
+    const x_i: f32 = 0.3324241024688304;
     const y_i: f32 = 0.3474280390876662;
 }
 impl WhitePoint for D55 {
-    const X: f32 = 0.9568142609956416;
-    const Z: f32 = 0.9214796229003291;
+    const X: f32 = 0.9568142609956419;
+    const Z: f32 = 0.9214796229003290;
 }
 
 /// D55 White point 10 Degree FOV
@@ -153,8 +153,8 @@ impl WhitePoint_xy for D55Deg10 {
     const y_i: f32 = 0.3487660909759536;
 }
 impl WhitePoint for D55Deg10 {
-    const X: f32 = 0.9579954733996484;
-    const Z: f32 = 0.9092557470435318;
+    const X: f32 = 0.9579954733996483;
+    const Z: f32 = 0.9092557470435315;
 }
 
 /// D75 White point 2 Degree FOV
@@ -163,11 +163,11 @@ pub struct D75;
 impl WhitePoint_xy for D75 {
     const FOV: u8 = 2;
     const x_i: f32 = 0.2990223004124971;
-    const y_i: f32 = 0.3148527378883419;
+    const y_i: f32 = 0.3148527378883418;
 }
 impl WhitePoint for D75 {
-    const X: f32 = 0.9497211376276523;
-    const Z: f32 = 1.2263668541961188;
+    const X: f32 = 0.9497211376276525;
+    const Z: f32 = 1.2263668541961194;
 }
 
 /// D75 White point 10 Degree FOV
@@ -175,10 +175,10 @@ impl WhitePoint for D75 {
 pub struct D75Deg10;
 impl WhitePoint_xy for D75Deg10 {
     const FOV: u8 = 10;
-    const x_i: f32 = 0.2996799713457529;
-    const y_i: f32 = 0.3174032398548367;
+    const x_i: f32 = 0.2996799713457530;
+    const y_i: f32 = 0.3174032398548366;
 }
 impl WhitePoint for D75Deg10 {
-    const X: f32 = 0.9441616647732094;
+    const X: f32 = 0.9441616647732098;
     const Z: f32 = 1.2064047896125327;
 }

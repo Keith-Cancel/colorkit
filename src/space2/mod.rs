@@ -193,6 +193,9 @@ pub trait XyzConvert: ColorData {
 }
 
 /// Transformation Matrices to go between and from CIE XYZ
+// TODO
+// Maybe add my number item back to some these traits
+// since I can't do associated const equality in stable.
 pub trait XyzMatrices: ColorData {
     // Looks like people generally represent these as a transformation matrix.
     // http://www.brucelindbloom.com/index.html?Eqn_RGB_to_XYZ.html

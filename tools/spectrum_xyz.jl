@@ -1,8 +1,10 @@
 #!/usr/bin/env -S julia --color=yes --startup-file=no
 using Printf
 
+setprecision(BigFloat, 128)
+
 function load_csv(path::String, cols::Int)
-    ret = Dict{Int,Vector{Float64}}()
+    ret = Dict{Int,Vector{BigFloat}}()
     open(path) do file
         for ln in eachline(file)
             ln = strip(ln)
@@ -22,9 +24,9 @@ function load_csv(path::String, cols::Int)
                 exit(1)
             end
 
-            dat = Vector{Float64}()
+            dat = Vector{BigFloat}()
             for v in parts[2:end]
-                v = parse(Float64, v)
+                v = parse(BigFloat, v)
                 if isnan(v)
                     v = 0.0
                 end
@@ -37,9 +39,9 @@ function load_csv(path::String, cols::Int)
 end
 
 function calc(spec, cmf)
-    x_raw = 0.0
-    y_raw = 0.0
-    z_raw = 0.0
+    x_raw::BigFloat = 0.0
+    y_raw::BigFloat = 0.0
+    z_raw::BigFloat = 0.0
     for (wl, p) in spec
         p = p[1]
         if !haskey(cmf, wl)

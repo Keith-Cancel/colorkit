@@ -19,7 +19,8 @@ pub enum ChannelBound {
 /// transmuted into an array of `[f32; [`ColorArray::CHANNELS`]]`
 pub unsafe trait ColorTransmute: ColorSpace {}
 
-pub trait ColorArray:
+/// Trait to let Color Spaces be handled mostly like an array/slice.
+pub trait ColorSpaceArray:
     Copy
     + AsRef<[f32]>
     + AsMut<[f32]>

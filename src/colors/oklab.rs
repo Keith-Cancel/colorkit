@@ -1,4 +1,5 @@
 use colorkit::ColorData;
+use colorkit::math::cbrtf;
 use colorkit::space2::ChannelBound;
 use colorkit::space2::XyzConvert;
 use colorkit::wp::D65;
@@ -65,6 +66,11 @@ impl OkLab {
     pub const fn set_b(&mut self, value: f32) {
         self.0[2] = value;
     }
+
+    #[inline]
+    pub const fn into_xyz(self) -> Xyz<D65> {
+        todo!();
+    }
 }
 
 impl_color_array! {
@@ -103,6 +109,21 @@ impl XyzConvert for OkLab {
         todo!()
     }
     fn into_xyz(self) -> Xyz<Self::WhitePoint> {
-        todo!();
+        let mut lms = [0.0f32; 3];
+        for i in 0..3usize {
+            lms[0] += self.0[i] * Self::M1[i];
+            lms[1] += self.0[i] * Self::M1[i + 3];
+            lms[2] += self.0[i] * Self::M1[i + 6];
+        }
+        for v in &mut lms {
+            *v = cbrtf(*v);
+        }
+        let mut xyz = [0.0f32; 3];
+        for i in 0..3usize {
+            xyz[0] += lms[i] * Self::M2[i];
+            xyz[1] += lms[i] * Self::M2[i + 3];
+            xyz[2] += lms[i] * Self::M2[i + 6];
+        }
+        return Xyz::new(xyz[0], xyz[1], xyz[2]);
     }
 }

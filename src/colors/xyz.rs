@@ -2,6 +2,8 @@ use core::marker::PhantomData;
 
 use colorkit::ColorSpace;
 use colorkit::space2::ChannelBound;
+use colorkit::space2::ColorSpaceData;
+use colorkit::space2::XyzConvert;
 use colorkit::wp::WhitePoint;
 
 use super::macros::impl_color_array;
@@ -71,10 +73,22 @@ impl<W: WhitePoint> Default for Xyz<W> {
     }
 }
 
-impl<W: WhitePoint> ColorSpace for Xyz<W> {
+impl<W: WhitePoint> ColorSpaceData for Xyz<W> {
     const DEFAULT: Self = Self([0.0, 0.0, 0.0], PhantomData);
     type WhitePoint = W;
     const LINEAR: bool = true;
     const CHANNEL_MAX: &'static [ChannelBound] = &[ChannelBound::Unbounded; 3];
     const CHANNEL_MIN: &'static [ChannelBound] = &[ChannelBound::Included(0.0); 3];
 }
+
+impl<W: WhitePoint> XyzConvert for Xyz<W> {
+    #[inline]
+    fn from_xyz(color: Xyz<W>) -> Self {
+        return color;
+    }
+    fn into_xyz(self) -> Xyz<W> {
+        return self;
+    }
+}
+
+impl<W: WhitePoint> ColorSpace for Xyz<W> {}

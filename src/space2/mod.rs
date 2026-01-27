@@ -70,7 +70,7 @@ pub trait ColorArray:
 }
 
 /// Information about a Color Space
-pub trait ColorSpaceData: Default {
+pub trait ColorData: Default {
     /// Default color, should be black.
     const DEFAULT: Self;
     /// Color Spaces White Point
@@ -87,7 +87,7 @@ pub trait ColorSpaceData: Default {
 }
 
 /// The main ColorSpace Trait
-pub trait ColorSpace: ColorArray + ColorSpaceData + XyzConvert {
+pub trait ColorSpace: ColorArray + ColorData + XyzConvert {
     /// Number Channels
     #[inline]
     fn channels(&self) -> usize {
@@ -185,7 +185,7 @@ pub trait RgbLike: ColorSpace {
 }
 
 /// Conversion between CIE XYZ and other Color Spaces.
-pub trait XyzConvert: ColorSpaceData {
+pub trait XyzConvert: ColorData {
     /// Convert a color into CIE XYZ with it's white point.
     fn into_xyz(self) -> Xyz<Self::WhitePoint>;
     /// Convert a color from CIE XYZ into this color Space.
@@ -193,7 +193,7 @@ pub trait XyzConvert: ColorSpaceData {
 }
 
 /// Transformation Matrices to go between and from CIE XYZ
-pub trait XyzMatrix: ColorSpaceData {
+pub trait XyzMatrix: ColorData {
     // Looks like people generally reprsent these as a transformation matrix.
     // http://www.brucelindbloom.com/index.html?Eqn_RGB_to_XYZ.html
     /// 3x3 Matrix to convert into XYZ

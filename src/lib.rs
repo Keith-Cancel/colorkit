@@ -9,6 +9,7 @@ mod space2;
 #[rustfmt::skip]
 pub use space2::ColorSpace;
 pub use space2::ColorArray;
+pub use space2::ColorData;
 pub use space2::ColorTransmute;
 pub use space2::RgbLike;
 pub use space2::white_point as wp;

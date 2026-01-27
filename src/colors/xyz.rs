@@ -1,8 +1,8 @@
 use core::marker::PhantomData;
 
+use colorkit::ColorData;
 use colorkit::ColorSpace;
 use colorkit::space2::ChannelBound;
-use colorkit::space2::ColorSpaceData;
 use colorkit::space2::XyzConvert;
 use colorkit::wp::WhitePoint;
 
@@ -73,7 +73,7 @@ impl<W: WhitePoint> Default for Xyz<W> {
     }
 }
 
-impl<W: WhitePoint> ColorSpaceData for Xyz<W> {
+impl<W: WhitePoint> ColorData for Xyz<W> {
     const DEFAULT: Self = Self([0.0, 0.0, 0.0], PhantomData);
     type WhitePoint = W;
     const LINEAR: bool = true;

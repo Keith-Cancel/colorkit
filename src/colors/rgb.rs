@@ -6,6 +6,7 @@ use colorkit::math::quirtf;
 use colorkit::math::sqrtf;
 use colorkit::space2::ChannelBound;
 use colorkit::space2::XyzConvert;
+use colorkit::space2::XyzMatrices;
 use colorkit::wp::D65;
 
 use super::Xyz;
@@ -76,15 +77,6 @@ macro_rules! base_funcs {
             const CHANNEL_MIN: &'static [ChannelBound] = &[ChannelBound::Included(0.0); 3];
         }
 
-        impl XyzConvert for $name {
-            fn into_xyz(self) -> Xyz<Self::WhitePoint> {
-                todo!();
-            }
-            fn from_xyz(color: Xyz<Self::WhitePoint>) -> Self {
-                todo!();
-            }
-        }
-
         impl ColorSpace for $name {}
 
         impl RgbLike for $name {}
@@ -95,6 +87,15 @@ macro_rules! base_funcs {
 #[derive(Copy, Clone, Debug, PartialEq)]
 #[repr(transparent)]
 pub struct Srgb([f32; 3]);
+
+base_funcs!(Srgb, 3);
+impl_color_array! {
+    name: Srgb,
+    channels: 3,
+    extra_args: {},
+    generics: {},
+    gen_use: {}
+}
 
 impl Srgb {
     /// Convert Srgb into Linear Srgb
@@ -108,19 +109,28 @@ impl Srgb {
     }
 }
 
-base_funcs!(Srgb, 3);
-impl_color_array! {
-    name: Srgb,
-    channels: 3,
-    extra_args: {},
-    generics: {},
-    gen_use: {}
+impl XyzConvert for Srgb {
+    fn into_xyz(self) -> Xyz<Self::WhitePoint> {
+        todo!();
+    }
+    fn from_xyz(color: Xyz<Self::WhitePoint>) -> Self {
+        todo!();
+    }
 }
 
 /// Represention of a Linear Srgb color using [`f32`] values.
 #[derive(Copy, Clone, Debug, PartialEq)]
 #[repr(transparent)]
 pub struct LinSrgb([f32; 3]);
+
+base_funcs!(LinSrgb, 3);
+impl_color_array! {
+    name: LinSrgb,
+    channels: 3,
+    extra_args: {},
+    generics: {},
+    gen_use: {}
+}
 
 impl LinSrgb {
     /// Convert Linear Srgb into Srgb
@@ -134,13 +144,19 @@ impl LinSrgb {
     }
 }
 
-base_funcs!(LinSrgb, 3);
-impl_color_array! {
-    name: LinSrgb,
-    channels: 3,
-    extra_args: {},
-    generics: {},
-    gen_use: {}
+impl XyzMatrices for LinSrgb {
+    #[rustfmt::skip]
+    const INTO_XYZ: [f32; 9] = [
+        0.4124574455823671, 0.3575758652455160, 0.1804372478263999,
+        0.2126733703784081, 0.7151517304910320, 0.0721748991305599,
+        0.0193339427616735, 0.1191919550818387, 0.9503028385523726,
+    ];
+    #[rustfmt::skip]
+    const FROM_XYZ: [f32; 9] = [
+         3.2404462546477404, -1.5371347618200820, -0.4985301930227293,
+        -0.9692666062446794,  1.8760119597883695,  0.0415560422144301,
+         0.0556435035643528, -0.2040261797359601,  1.0572265677227023
+    ];
 }
 
 fn nonlinear(l: f32) -> f32 {

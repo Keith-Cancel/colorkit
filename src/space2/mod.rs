@@ -20,7 +20,7 @@ pub enum ChannelBound {
 pub unsafe trait ColorTransmute: ColorSpace {}
 
 /// Trait to let Color Spaces be handled mostly like an array/slice.
-pub trait ColorSpaceArray:
+pub trait ColorArray:
     Copy
     + AsRef<[f32]>
     + AsMut<[f32]>

@@ -1,11 +1,14 @@
+use colorkit::ColorData;
 use colorkit::ColorSpace;
 use colorkit::RgbLike;
 use colorkit::math::cbrtf;
 use colorkit::math::quirtf;
 use colorkit::math::sqrtf;
 use colorkit::space2::ChannelBound;
+use colorkit::space2::XyzConvert;
 use colorkit::wp::D65;
 
+use super::Xyz;
 use super::macros::impl_color_array;
 
 macro_rules! base_funcs {
@@ -65,15 +68,26 @@ macro_rules! base_funcs {
             }
         }
 
-        impl RgbLike for $name {}
-
-        impl ColorSpace for $name {
+        impl ColorData for $name {
             const DEFAULT: Self = Self([0.0, 0.0, 0.0]);
             type WhitePoint = D65;
             const LINEAR: bool = true;
             const CHANNEL_MAX: &'static [ChannelBound] = &[ChannelBound::Included(1.0); 3];
             const CHANNEL_MIN: &'static [ChannelBound] = &[ChannelBound::Included(0.0); 3];
         }
+
+        impl XyzConvert for $name {
+            fn into_xyz(self) -> Xyz<Self::WhitePoint> {
+                todo!();
+            }
+            fn from_xyz(color: Xyz<Self::WhitePoint>) -> Self {
+                todo!();
+            }
+        }
+
+        impl ColorSpace for $name {}
+
+        impl RgbLike for $name {}
     };
 }
 

@@ -1,7 +1,9 @@
 use colorkit::ColorData;
 use colorkit::space2::ChannelBound;
+use colorkit::space2::XyzConvert;
 use colorkit::wp::D65;
 
+use super::Xyz;
 use super::macros::impl_color_array;
 
 /// Represention of an OkLab color using [`f32`] values.
@@ -10,6 +12,13 @@ use super::macros::impl_color_array;
 pub struct OkLab([f32; 3]);
 
 impl OkLab {
+    /// Matrix used as part the conversion From XYZ
+    #[rustfmt::skip]
+    pub const M1: [f32; 9] = [
+        0.8189330101, 0.3618667424, 0.1288597137,
+        0.0329845436, 0.9293118715, 0.0361456387,
+        0.0482003018, 0.2643662691, 0.6338517070
+    ];
     /// Create a new color from `Lab` values.
     pub const fn new(l: f32, a: f32, b: f32) -> Self {
         return Self([l, a, b]);
@@ -75,4 +84,13 @@ impl ColorData for OkLab {
         ChannelBound::Included(-0.5),
         ChannelBound::Included(-0.5),
     ];
+}
+
+impl XyzConvert for OkLab {
+    fn from_xyz(color: super::Xyz<Self::WhitePoint>) -> Self {
+        todo!()
+    }
+    fn into_xyz(self) -> Xyz<Self::WhitePoint> {
+        todo!();
+    }
 }

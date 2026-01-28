@@ -223,7 +223,7 @@ mod test {
     }
 
     #[test]
-    fn xyz_conver() {
+    fn xyz_convert() {
         let c = Srgb::new(1.0, 1.0, 1.0);
         let x = c.into_xyz();
         assert!(x[0].almost_eq(D65::X, 2e-7));

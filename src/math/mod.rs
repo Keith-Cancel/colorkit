@@ -67,6 +67,7 @@ impl MathFuncs for f32 {
     }
 }
 
+// TODO, maybe some inline asm or SSE intrinsics.
 pub(crate) fn matrix_3x3_vec3_mul(mat: &[f32; 9], vec: &[f32]) -> [f32; 3] {
     let mut res = [0f32; 3];
     let mut i = 0usize;

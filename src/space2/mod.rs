@@ -6,6 +6,7 @@ use core::ops::Index;
 use core::ops::IndexMut;
 
 use colorkit::colors::Xyz;
+use colorkit::math::matrix_3x3_vec3_mul;
 use white_point::WhitePoint;
 
 /// Defines the a bound on a color space channel
@@ -208,28 +209,12 @@ pub trait XyzMatrices: ColorData {
 impl<T: ColorArray + XyzMatrices> XyzConvert for T {
     fn into_xyz(self) -> Xyz<Self::WhitePoint> {
         debug_assert!(T::CHANNELS == 3);
-        let mut x = 0.0f32;
-        let mut y = 0.0f32;
-        let mut z = 0.0f32;
-
-        let slc = self.as_slice();
-        for i in 0..3usize {
-            x += slc[i] * Self::INTO_XYZ[i];
-            y += slc[i] * Self::INTO_XYZ[i + 3];
-            z += slc[i] * Self::INTO_XYZ[i + 6];
-        }
-        return Xyz::new(x, y, z);
+        return Xyz::from_array(matrix_3x3_vec3_mul(&Self::INTO_XYZ, self.as_slice()));
     }
 
     fn from_xyz(color: Xyz<Self::WhitePoint>) -> Self {
         debug_assert!(T::CHANNELS == 3);
-        let mut c = [0.0f32; 3];
-        let slc = color.as_slice();
-        for i in 0..3usize {
-            c[0] += slc[i] * Self::FROM_XYZ[i];
-            c[1] += slc[i] * Self::FROM_XYZ[i + 3];
-            c[2] += slc[i] * Self::FROM_XYZ[i + 6];
-        }
+        let c = matrix_3x3_vec3_mul(&Self::FROM_XYZ, color.as_slice());
         return Self::from_fn(|i| c[i]);
     }
 }

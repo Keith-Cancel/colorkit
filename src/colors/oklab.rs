@@ -3,6 +3,7 @@ use colorkit::ColorData;
 use colorkit::math::cbrtf;
 use colorkit::math::matrix_3x3_vec3_mul;
 use colorkit::space2::ChannelBound;
+use colorkit::space2::ColorSpace;
 use colorkit::space2::XyzConvert;
 use colorkit::wp::D65;
 
@@ -95,6 +96,8 @@ impl_color_array! {
     generics: {},
     gen_use: {}
 }
+
+impl ColorSpace for OkLab {}
 
 impl Default for OkLab {
     #[inline]

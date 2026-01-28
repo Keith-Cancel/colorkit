@@ -51,6 +51,20 @@ macro_rules! base_funcs {
             }
         }
 
+        impl<S: ColorTransmute> core::borrow::Borrow<[f32]> for $name<S> {
+            #[inline]
+            fn borrow(&self) -> &[f32] {
+                return self.as_slice();
+            }
+        }
+
+        impl<S: ColorTransmute> core::borrow::BorrowMut<[f32]> for $name<S> {
+            #[inline]
+            fn borrow_mut(&mut self) -> &mut [f32] {
+                return self.as_mut_slice();
+            }
+        }
+
         impl<S: ColorTransmute> Default for $name<S> {
             fn default() -> Self {
                 return Self(S::DEFAULT, 1.0);

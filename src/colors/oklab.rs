@@ -1,3 +1,4 @@
+use colorkit::ColorArray;
 use colorkit::ColorData;
 use colorkit::math::cbrtf;
 use colorkit::math::matrix_3x3_vec3_mul;
@@ -23,6 +24,15 @@ impl OkLab {
         0.0329845436, 0.9293118715,  0.0361456387,
         0.0482003018, 0.2643662691,  0.6338517070
     ];
+    /// The matrix M1's inverse (M2^-1)
+    ///
+    /// Used to convert OkLab to XYZ
+    #[rustfmt::skip]
+    pub const M1_INV: [f32; 9] = [
+         1.227013851104, -0.557799980652,  0.281256148966,
+        -0.040580178423,  1.112256869617, -0.071676678666,
+        -0.076381284506, -0.421481978418,  1.586163220441,
+    ];
     /// Matrix used as part the conversion From XYZ
     ///
     /// https://bottosson.github.io/posts/oklab/
@@ -31,6 +41,15 @@ impl OkLab {
         0.2104542553,  0.7936177850, -0.0040720468,
         1.9779984951, -2.4285922050, 0.4505937099,
         0.0259040371,  0.7827717662, -0.8086757660,
+    ];
+    /// The matrix M2's inverse (M2^-1)
+    ///
+    /// Used to convert OkLab to XYZ
+    #[rustfmt::skip]
+    pub const M2_INV: [f32; 9] = [
+        0.999999998451,  0.396337792174,  0.215803758061,
+        1.000000008882, -0.105561342324, -0.063854174772,
+        1.000000054672, -0.089484182095, -1.291485537864,
     ];
 
     /// Create a new color from `Lab` values.
@@ -102,13 +121,18 @@ impl ColorData for OkLab {
 
 impl XyzConvert for OkLab {
     fn from_xyz(color: super::Xyz<Self::WhitePoint>) -> Self {
-        todo!()
-    }
-    fn into_xyz(self) -> Xyz<Self::WhitePoint> {
-        let mut lms = matrix_3x3_vec3_mul(&Self::M1, &self.0);
+        let mut lms = matrix_3x3_vec3_mul(&Self::M1, color.as_slice());
         for v in &mut lms {
             *v = cbrtf(*v);
         }
-        return Xyz::from_array(matrix_3x3_vec3_mul(&Self::M2, &lms));
+        return Self(matrix_3x3_vec3_mul(&Self::M2, &lms));
+    }
+    fn into_xyz(self) -> Xyz<Self::WhitePoint> {
+        let mut lms = matrix_3x3_vec3_mul(&Self::M2_INV, &self.0);
+        for v in &mut lms {
+            let ch = *v;
+            *v = ch * ch * ch;
+        }
+        return Xyz::from_array(matrix_3x3_vec3_mul(&Self::M1_INV, &lms));
     }
 }

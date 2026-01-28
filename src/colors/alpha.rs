@@ -13,9 +13,31 @@ impl<S: ColorTransmute> Alpha<S> {
     pub const fn set_alpha(&mut self, alpha: f32) {
         self.1 = alpha;
     }
+    /// View [`Alpha`] as a reference to the underylying colorspace.
+    #[inline]
+    pub const fn as_color(&self) -> &S {
+        return &self.0;
+    }
+    /// View [`Alpha`] as a mutable reference to the underylying colorspace.
+    #[inline]
+    pub const fn as_mut_color(&mut self) -> &mut S {
+        return &mut self.0;
+    }
 }
 
 base_funcs!(Alpha);
+
+impl<S: ColorTransmute> AsRef<S> for Alpha<S> {
+    fn as_ref(&self) -> &S {
+        return &self.0;
+    }
+}
+
+impl<S: ColorTransmute> AsMut<S> for Alpha<S> {
+    fn as_mut(&mut self) -> &mut S {
+        return &mut self.0;
+    }
+}
 
 macro_rules! base_funcs {
     ($name:ident) => {

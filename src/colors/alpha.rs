@@ -47,7 +47,7 @@ macro_rules! base_funcs {
             pub const fn alpha(&self) -> f32 {
                 return self.1;
             }
-            /// View alpha color as a slice reference.
+            /// View the alpha color as a slice reference.
             #[inline]
             pub const fn as_slice(&self) -> &[f32] {
                 // Safety:
@@ -58,7 +58,7 @@ macro_rules! base_funcs {
                 let p = self as *const _ as *const f32;
                 return unsafe { core::slice::from_raw_parts(p, Self::LEN) };
             }
-            /// View alpha color as a mutable slice
+            /// View the alpha color as a mutable slice
             #[inline]
             pub const fn as_mut_slice(&mut self) -> &mut [f32] {
                 let p = self as *mut _ as *mut f32;

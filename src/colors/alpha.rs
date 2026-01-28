@@ -132,7 +132,7 @@ macro_rules! base_funcs {
             const CHANNELS: usize = Self::LEN;
             fn from_fn<F: FnMut(usize) -> f32>(f: F) -> Self {
                 let mut f = f;
-                return Self(S::from_fn(|i| f(i)), f(Self::LEN));
+                return Self(S::from_fn(|i| f(i)), f(S::CHANNELS));
             }
             #[inline]
             fn as_slice(&self) -> &[f32] {
@@ -177,7 +177,6 @@ mod test {
     use colorkit::colors::OkLab;
     use colorkit::colors::Srgb;
     use colorkit::colors::Xyz;
-    use colorkit::space2::ColorData;
     use colorkit::wp::D65;
 
     use super::*;
@@ -203,5 +202,19 @@ mod test {
         assert_eq!(<Alpha<OkLab>>::CHANNEL_MIN[1], BoundF32::Include(-0.5));
         assert_eq!(<Alpha<OkLab>>::CHANNEL_MIN[2], BoundF32::Include(-0.5));
         assert_eq!(<Alpha<OkLab>>::CHANNEL_MIN[3], BoundF32::Include(0.0));
+    }
+
+    #[test]
+    fn from_fn() {
+        let arr = [0.125f32, 0.25, 0.375, 0.5];
+        let c = <Alpha<Srgb>>::from_fn(|i| arr[i]);
+        let r = &c;
+
+        assert_eq!(c[0], 0.125);
+        assert_eq!(c[1], 0.25);
+        assert_eq!(c[2], 0.375);
+        assert_eq!(c[3], 0.5);
+
+        assert_eq!(r.as_color().red(), 0.125);
     }
 }

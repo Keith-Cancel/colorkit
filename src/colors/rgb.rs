@@ -5,6 +5,7 @@ use colorkit::math::cbrtf;
 use colorkit::math::quirtf;
 use colorkit::math::sqrtf;
 use colorkit::space2::ChannelBound;
+use colorkit::space2::ColorTransmute;
 use colorkit::space2::XyzConvert;
 use colorkit::space2::XyzMatrices;
 use colorkit::wp::D65;
@@ -78,14 +79,14 @@ macro_rules! base_funcs {
         }
 
         impl ColorSpace for $name {}
-
+        unsafe impl ColorTransmute for $name {}
         impl RgbLike for $name {}
     };
 }
 
 /// Represention of an Srgb color using [`f32`] values.
-#[derive(Copy, Clone, Debug, PartialEq)]
 #[repr(transparent)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Srgb([f32; 3]);
 
 base_funcs!(Srgb, 3);
@@ -119,8 +120,8 @@ impl XyzConvert for Srgb {
 }
 
 /// Represention of a Linear Srgb color using [`f32`] values.
-#[derive(Copy, Clone, Debug, PartialEq)]
 #[repr(transparent)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub struct LinSrgb([f32; 3]);
 
 base_funcs!(LinSrgb, 3);

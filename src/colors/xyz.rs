@@ -3,14 +3,15 @@ use core::marker::PhantomData;
 use colorkit::ColorData;
 use colorkit::ColorSpace;
 use colorkit::space2::ChannelBound;
+use colorkit::space2::ColorTransmute;
 use colorkit::space2::XyzConvert;
 use colorkit::wp::WhitePoint;
 
 use super::macros::impl_color_array;
 
 /// Represention of an CIE XYZ color using [`f32`] values.
-#[derive(Copy, Clone, Debug, PartialEq)]
 #[repr(transparent)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Xyz<Wp: WhitePoint>([f32; 3], PhantomData<Wp>);
 
 impl<W: WhitePoint> Xyz<W> {
@@ -92,3 +93,4 @@ impl<W: WhitePoint> XyzConvert for Xyz<W> {
 }
 
 impl<W: WhitePoint> ColorSpace for Xyz<W> {}
+unsafe impl<W: WhitePoint> ColorTransmute for Xyz<W> {}

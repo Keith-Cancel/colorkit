@@ -2,7 +2,7 @@ use core::marker::PhantomData;
 
 use colorkit::ColorData;
 use colorkit::ColorSpace;
-use colorkit::space2::ChannelBound;
+use colorkit::math::BoundF32;
 use colorkit::space2::ColorTransmute;
 use colorkit::space2::XyzConvert;
 use colorkit::wp::WhitePoint;
@@ -78,8 +78,8 @@ impl<W: WhitePoint> ColorData for Xyz<W> {
     const DEFAULT: Self = Self([0.0, 0.0, 0.0], PhantomData);
     type WhitePoint = W;
     const LINEAR: bool = true;
-    const CHANNEL_MAX: &'static [ChannelBound] = &[ChannelBound::Unbounded; 3];
-    const CHANNEL_MIN: &'static [ChannelBound] = &[ChannelBound::Included(0.0); 3];
+    const CHANNEL_MAX: &'static [BoundF32] = &[BoundF32::Unbounded; 3];
+    const CHANNEL_MIN: &'static [BoundF32] = &[BoundF32::Include(0.0); 3];
 }
 
 impl<W: WhitePoint> XyzConvert for Xyz<W> {

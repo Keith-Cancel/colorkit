@@ -1,10 +1,10 @@
 use colorkit::ColorData;
 use colorkit::ColorSpace;
 use colorkit::RgbLike;
+use colorkit::math::BoundF32;
 use colorkit::math::cbrtf;
 use colorkit::math::quirtf;
 use colorkit::math::sqrtf;
-use colorkit::space2::ChannelBound;
 use colorkit::space2::ColorTransmute;
 use colorkit::space2::XyzConvert;
 use colorkit::space2::XyzMatrices;
@@ -74,8 +74,8 @@ macro_rules! base_funcs {
             const DEFAULT: Self = Self([0.0, 0.0, 0.0]);
             type WhitePoint = D65;
             const LINEAR: bool = true;
-            const CHANNEL_MAX: &'static [ChannelBound] = &[ChannelBound::Included(1.0); 3];
-            const CHANNEL_MIN: &'static [ChannelBound] = &[ChannelBound::Included(0.0); 3];
+            const CHANNEL_MAX: &'static [BoundF32] = &[BoundF32::Include(1.0); 3];
+            const CHANNEL_MIN: &'static [BoundF32] = &[BoundF32::Include(0.0); 3];
         }
 
         impl ColorSpace for $name {}

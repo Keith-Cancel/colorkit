@@ -1,8 +1,8 @@
 use colorkit::ColorArray;
 use colorkit::ColorData;
+use colorkit::math::BoundF32;
 use colorkit::math::cbrtf;
 use colorkit::math::matrix_3x3_vec3_mul;
-use colorkit::space2::ChannelBound;
 use colorkit::space2::ColorSpace;
 use colorkit::space2::ColorTransmute;
 use colorkit::space2::XyzConvert;
@@ -112,15 +112,15 @@ impl ColorData for OkLab {
     type WhitePoint = D65;
     const DEFAULT: Self = Self([0.0, 0.0, 0.0]);
     const LINEAR: bool = true;
-    const CHANNEL_MAX: &'static [ChannelBound] = &[
-        ChannelBound::Included(1.0),
-        ChannelBound::Included(0.5),
-        ChannelBound::Included(0.5),
+    const CHANNEL_MAX: &'static [BoundF32] = &[
+        BoundF32::Include(1.0),
+        BoundF32::Include(0.5),
+        BoundF32::Include(0.5),
     ];
-    const CHANNEL_MIN: &'static [ChannelBound] = &[
-        ChannelBound::Included(0.0),
-        ChannelBound::Included(-0.5),
-        ChannelBound::Included(-0.5),
+    const CHANNEL_MIN: &'static [BoundF32] = &[
+        BoundF32::Include(0.0),
+        BoundF32::Include(-0.5),
+        BoundF32::Include(-0.5),
     ];
 }
 

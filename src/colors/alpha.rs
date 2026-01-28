@@ -37,21 +37,38 @@ macro_rules! base_funcs {
             }
         }
 
-        impl<S: ColorTransmute> Default for $name<S> {
-            fn default() -> Self {
-                return Self(S::DEFAULT, 1.0);
-            }
-        }
-
         impl<S: ColorTransmute> AsRef<[f32]> for $name<S> {
+            #[inline]
             fn as_ref(&self) -> &[f32] {
                 return self.as_slice();
             }
         }
 
         impl<S: ColorTransmute> AsMut<[f32]> for $name<S> {
+            #[inline]
             fn as_mut(&mut self) -> &mut [f32] {
                 return self.as_mut_slice();
+            }
+        }
+
+        impl<S: ColorTransmute> Default for $name<S> {
+            fn default() -> Self {
+                return Self(S::DEFAULT, 1.0);
+            }
+        }
+
+        impl<S: ColorTransmute> core::ops::Index<usize> for $name<S> {
+            type Output = f32;
+            #[inline]
+            fn index(&self, index: usize) -> &f32 {
+                return &self.as_slice()[index];
+            }
+        }
+
+        impl<S: ColorTransmute> core::ops::IndexMut<usize> for $name<S> {
+            #[inline]
+            fn index_mut(&mut self, index: usize) -> &mut f32 {
+                return &mut self.as_mut_slice()[index];
             }
         }
 

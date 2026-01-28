@@ -19,7 +19,7 @@ pub struct OkLab([f32; 3]);
 impl OkLab {
     /// Matrix used as part the conversion From XYZ
     ///
-    /// https://bottosson.github.io/posts/oklab/
+    /// <https://bottosson.github.io/posts/oklab/>
     #[rustfmt::skip]
     pub const M1: [f32; 9] = [
         0.8189330101, 0.3618667424, -0.1288597137,
@@ -37,7 +37,7 @@ impl OkLab {
     ];
     /// Matrix used as part the conversion From XYZ
     ///
-    /// https://bottosson.github.io/posts/oklab/
+    /// <https://bottosson.github.io/posts/oklab/>
     #[rustfmt::skip]
     pub const M2: [f32; 9] = [
         0.2104542553,  0.7936177850, -0.0040720468,

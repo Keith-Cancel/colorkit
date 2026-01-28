@@ -17,7 +17,7 @@ pub enum ChannelBound {
 }
 
 /// This marker trait marks that a color can be
-/// transmuted into an array of `[f32; [`ColorArray::CHANNELS`]]`
+/// transmuted into an array of [f32; [`ColorArray::CHANNELS`]]
 pub unsafe trait ColorTransmute: ColorSpace {}
 
 /// Trait to let Color Spaces be handled mostly like an array/slice.

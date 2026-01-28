@@ -66,3 +66,15 @@ impl MathFuncs for f32 {
         return (self - other).abs() < tol;
     }
 }
+
+pub(crate) fn matrix_3x3_vec3_mul(mat: &[f32; 9], vec: &[f32]) -> [f32; 3] {
+    let mut res = [0f32; 3];
+    let mut i = 0usize;
+    while i < 3 {
+        res[0] += vec[i] * mat[i];
+        res[1] += vec[i] * mat[i + 3];
+        res[2] += vec[i] * mat[i + 6];
+        i += 1;
+    }
+    return res;
+}

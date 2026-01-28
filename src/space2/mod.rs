@@ -12,6 +12,10 @@ use white_point::WhitePoint;
 
 /// This marker trait marks that a color can be
 /// transmuted into an array of [f32; [`ColorArray::CHANNELS`]]
+///
+/// Essentially `size_of::<Self>() / size_of::<f32>()` should
+/// equal [`ColorArray::CHANNELS`], plus other constraints like
+/// alignment ect...
 pub unsafe trait ColorTransmute: ColorSpace {}
 
 /// Trait to let Color Spaces be handled mostly like an array/slice.

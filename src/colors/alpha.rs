@@ -1,10 +1,19 @@
 use colorkit::math::BoundF32;
+use colorkit::space2::ColorArray;
 use colorkit::space2::ColorData;
 use colorkit::space2::ColorTransmute;
 
+/// Wraps a color space with Alpha channel for transparency.
 #[repr(C)]
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Alpha<S: ColorTransmute>(S, f32);
+
+impl<S: ColorTransmute> Alpha<S> {
+    /// Set the colors alpha channel value.
+    pub const fn set_alpha(&mut self, alpha: f32) {
+        self.1 = alpha;
+    }
+}
 
 base_funcs!(Alpha);
 
@@ -12,7 +21,10 @@ macro_rules! base_funcs {
     ($name:ident) => {
         impl<S: ColorTransmute> $name<S> {
             const LEN: usize = S::CHANNELS + 1;
-
+            /// Get the colors alpha channel value.
+            pub const fn alpha(&self) -> f32 {
+                return self.1;
+            }
             /// View alpha color as a slice reference.
             #[inline]
             pub const fn as_slice(&self) -> &[f32] {
@@ -92,6 +104,22 @@ macro_rules! base_funcs {
             const LINEAR: bool = S::LINEAR;
             const CHANNEL_MAX: &'static [BoundF32] = { Self::MAX.split_at(Self::LEN).0 };
             const CHANNEL_MIN: &'static [BoundF32] = { Self::MIN.split_at(Self::LEN).0 };
+        }
+
+        impl<S: ColorTransmute> ColorArray for $name<S> {
+            const CHANNELS: usize = Self::LEN;
+            fn from_fn<F: FnMut(usize) -> f32>(f: F) -> Self {
+                //return Self(S::from_fn(f), f(Self::LEN));
+                todo!();
+            }
+            #[inline]
+            fn as_slice(&self) -> &[f32] {
+                return self.as_slice();
+            }
+            #[inline]
+            fn as_mut_slice(&mut self) -> &mut [f32] {
+                return self.as_mut_slice();
+            }
         }
 
         impl<S: ColorTransmute> $name<S> {

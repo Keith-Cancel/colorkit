@@ -67,6 +67,13 @@ impl MathFuncs for f32 {
     }
 }
 
+/// Defines the a bound on a color space channel
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum BoundF32 {
+    Include(f32),
+    Unbounded,
+}
+
 // TODO, maybe some inline asm or SSE intrinsics.
 pub(crate) fn matrix_3x3_vec3_mul(mat: &[f32; 9], vec: &[f32]) -> [f32; 3] {
     assert!(vec.len() == 3);

@@ -6,15 +6,9 @@ use core::ops::Index;
 use core::ops::IndexMut;
 
 use colorkit::colors::Xyz;
+use colorkit::math::BoundF32;
 use colorkit::math::matrix_3x3_vec3_mul;
 use white_point::WhitePoint;
-
-/// Defines the a bound on a color space channel
-#[derive(Debug, Clone, Copy, PartialEq)]
-pub enum ChannelBound {
-    Included(f32),
-    Unbounded,
-}
 
 /// This marker trait marks that a color can be
 /// transmuted into an array of [f32; [`ColorArray::CHANNELS`]]
@@ -79,9 +73,9 @@ pub trait ColorData: Default {
     /// Are the Channels Linear
     const LINEAR: bool;
     /// Upper or max bound of each channel.
-    const CHANNEL_MAX: &'static [ChannelBound];
+    const CHANNEL_MAX: &'static [BoundF32];
     /// Lower or min bound of each channel.
-    const CHANNEL_MIN: &'static [ChannelBound];
+    const CHANNEL_MIN: &'static [BoundF32];
 
     // what else to add?
     // primaries?
@@ -97,25 +91,25 @@ pub trait ColorSpace: ColorArray + ColorData + XyzConvert {
 
     /// Get Max value for a given channel in the color space
     #[inline(always)]
-    fn channel_max(ch_num: usize) -> ChannelBound {
+    fn channel_max(ch_num: usize) -> BoundF32 {
         return Self::CHANNEL_MAX[ch_num];
     }
 
     /// Get min value for a given channel in the color space
     #[inline(always)]
-    fn channel_min(ch_num: usize) -> ChannelBound {
+    fn channel_min(ch_num: usize) -> BoundF32 {
         return Self::CHANNEL_MIN[ch_num];
     }
 
     /// Check if the color’s channels are all within the range bounds.
     fn within_bounds(&self) -> bool {
         for (i, &v) in self.as_slice().iter().enumerate() {
-            if let ChannelBound::Included(max) = Self::CHANNEL_MAX[i]
+            if let BoundF32::Include(max) = Self::CHANNEL_MAX[i]
                 && v > max
             {
                 return false;
             }
-            if let ChannelBound::Included(min) = Self::CHANNEL_MIN[i]
+            if let BoundF32::Include(min) = Self::CHANNEL_MIN[i]
                 && v < min
             {
                 return false;
@@ -129,12 +123,12 @@ pub trait ColorSpace: ColorArray + ColorData + XyzConvert {
         let slc = self.as_slice();
         return Self::from_fn(|i| {
             let mut v = slc[i];
-            if let ChannelBound::Included(max) = Self::CHANNEL_MAX[i]
+            if let BoundF32::Include(max) = Self::CHANNEL_MAX[i]
                 && v > max
             {
                 v = max;
             }
-            if let ChannelBound::Included(min) = Self::CHANNEL_MIN[i]
+            if let BoundF32::Include(min) = Self::CHANNEL_MIN[i]
                 && v < min
             {
                 v = min;

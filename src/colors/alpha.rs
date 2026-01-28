@@ -131,8 +131,8 @@ macro_rules! base_funcs {
         impl<S: ColorTransmute> ColorArray for $name<S> {
             const CHANNELS: usize = Self::LEN;
             fn from_fn<F: FnMut(usize) -> f32>(f: F) -> Self {
-                //return Self(S::from_fn(f), f(Self::LEN));
-                todo!();
+                let mut f = f;
+                return Self(S::from_fn(|i| f(i)), f(Self::LEN));
             }
             #[inline]
             fn as_slice(&self) -> &[f32] {

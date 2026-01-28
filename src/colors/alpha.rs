@@ -1,13 +1,12 @@
 use colorkit::space2::ChannelBound;
-use colorkit::space2::ColorArray;
 use colorkit::space2::ColorData;
-use colorkit::space2::ColorSpace;
+use colorkit::space2::ColorTransmute;
 
 #[repr(C)]
 #[derive(Copy, Clone, Debug, PartialEq)]
-pub struct Alpha<S: ColorSpace>(S, f32);
+pub struct Alpha<S: ColorTransmute>(S, f32);
 
-impl<S: ColorSpace> Alpha<S> {
+impl<S: ColorTransmute> Alpha<S> {
     const CHANNELS: usize = size_of::<Alpha<S>>() / size_of::<f32>();
     const MAX: &'static [crate::space2::ChannelBound] = &const {
         // Just make this larger than likely needed can't use
@@ -31,15 +30,25 @@ impl<S: ColorSpace> Alpha<S> {
         arr[i] = ChannelBound::Included(0.0);
         arr
     };
+
+    const fn slice_ref(&self) -> &[f32] {
+        let p = self as *const _ as *const f32;
+        return unsafe { core::slice::from_raw_parts(p, Self::CHANNELS) };
+    }
+
+    const fn slice_mut(&mut self) -> &mut [f32] {
+        let p = self as *mut _ as *mut f32;
+        return unsafe { core::slice::from_raw_parts_mut(p, Self::CHANNELS) };
+    }
 }
 
-impl<S: ColorSpace> Default for Alpha<S> {
+impl<S: ColorTransmute> Default for Alpha<S> {
     fn default() -> Self {
         return Self(S::DEFAULT, 1.0);
     }
 }
 
-impl<S: ColorSpace> ColorData for Alpha<S> {
+impl<S: ColorTransmute> ColorData for Alpha<S> {
     type WhitePoint = S::WhitePoint;
     const DEFAULT: Self = Self(S::DEFAULT, 1.0);
     const LINEAR: bool = S::LINEAR;
@@ -49,12 +58,13 @@ impl<S: ColorSpace> ColorData for Alpha<S> {
 
 #[cfg(test)]
 mod test {
-    use super::*;
     use colorkit::colors::OkLab;
     use colorkit::colors::Srgb;
     use colorkit::colors::Xyz;
     use colorkit::space2::ColorData;
     use colorkit::wp::D65;
+
+    use super::*;
 
     #[test]
     fn min_max() {

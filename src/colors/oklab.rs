@@ -4,6 +4,7 @@ use colorkit::math::cbrtf;
 use colorkit::math::matrix_3x3_vec3_mul;
 use colorkit::space2::ChannelBound;
 use colorkit::space2::ColorSpace;
+use colorkit::space2::ColorTransmute;
 use colorkit::space2::XyzConvert;
 use colorkit::wp::D65;
 
@@ -11,8 +12,8 @@ use super::Xyz;
 use super::macros::impl_color_array;
 
 /// Represention of an OkLab color using [`f32`] values.
-#[derive(Copy, Clone, Debug, PartialEq)]
 #[repr(transparent)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub struct OkLab([f32; 3]);
 
 impl OkLab {
@@ -98,6 +99,7 @@ impl_color_array! {
 }
 
 impl ColorSpace for OkLab {}
+unsafe impl ColorTransmute for OkLab {}
 
 impl Default for OkLab {
     #[inline]

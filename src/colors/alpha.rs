@@ -13,7 +13,13 @@ use super::Xyz;
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Alpha<S: ColorTransmute>(S, f32);
 
+base_funcs!(Alpha);
+
 impl<S: ColorTransmute> Alpha<S> {
+    /// Create a new Alpha color with a color and alpha channel value.
+    pub const fn new(color: S, alpha: f32) -> Self {
+        return Self(color, alpha);
+    }
     /// Set the colors alpha channel value.
     pub const fn set_alpha(&mut self, alpha: f32) {
         self.1 = alpha;
@@ -30,7 +36,17 @@ impl<S: ColorTransmute> Alpha<S> {
     }
 }
 
-base_funcs!(Alpha);
+impl<S: ColorTransmute> FromColor<Xyz<S::WhitePoint>> for Alpha<S> {
+    fn from_color(color: Xyz<S::WhitePoint>) -> Self {
+        return Self(color.into_color(), 1.0);
+    }
+}
+
+impl<S: ColorTransmute> FromColor<Alpha<S>> for Xyz<S::WhitePoint> {
+    fn from_color(color: Alpha<S>) -> Self {
+        return color.0.into_color();
+    }
+}
 
 impl<S: ColorTransmute> AsRef<S> for Alpha<S> {
     fn as_ref(&self) -> &S {
@@ -41,6 +57,39 @@ impl<S: ColorTransmute> AsRef<S> for Alpha<S> {
 impl<S: ColorTransmute> AsMut<S> for Alpha<S> {
     fn as_mut(&mut self) -> &mut S {
         return &mut self.0;
+    }
+}
+
+/// A color with it's alpha premultiplied on all other channels.
+#[repr(C)]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct AlphaPre<S: ColorTransmute>(S, f32);
+
+base_funcs!(AlphaPre);
+
+impl<S: ColorTransmute> AlphaPre<S> {
+    /// Create a new premultiplied Alpha color with a color and alpha channel value.
+    pub fn new(color: S, alpha: f32) -> Self {
+        let mut c = color;
+        for v in c.as_mut_slice() {
+            *v = *v * alpha;
+        }
+        return Self(color, alpha);
+    }
+}
+
+impl<S: ColorTransmute> FromColor<Xyz<S::WhitePoint>> for AlphaPre<S> {
+    fn from_color(color: Xyz<S::WhitePoint>) -> Self {
+        return Self::new(color.into_color(), 1.0);
+    }
+}
+
+impl<S: ColorTransmute> FromColor<AlphaPre<S>> for Xyz<S::WhitePoint> {
+    fn from_color(mut color: AlphaPre<S>) -> Self {
+        for v in color.0.as_mut_slice() {
+            *v = *v / color.1;
+        }
+        return color.0.into_color();
     }
 }
 
@@ -146,18 +195,6 @@ macro_rules! base_funcs {
             #[inline]
             fn as_mut_slice(&mut self) -> &mut [f32] {
                 return self.as_mut_slice();
-            }
-        }
-
-        impl<S: ColorTransmute> FromColor<Xyz<S::WhitePoint>> for $name<S> {
-            fn from_color(color: Xyz<S::WhitePoint>) -> Self {
-                return Self(color.into_color(), 1.0);
-            }
-        }
-
-        impl<S: ColorTransmute> FromColor<$name<S>> for Xyz<S::WhitePoint> {
-            fn from_color(color: $name<S>) -> Self {
-                return color.0.into_color();
             }
         }
 

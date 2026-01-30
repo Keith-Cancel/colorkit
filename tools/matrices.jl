@@ -69,6 +69,15 @@ print_matrices("Linear sRGB Matrices", m)
 
 # OkLab Matrices
 # https://bottosson.github.io/posts/oklab/
+# Aftering some the stuff regarding the CSS spec
+# I found this:
+# https://github.com/w3c/csswg-drafts/issues/6642#issuecomment-945714988
+# I should be able to use this generate matrices
+m0 = load_matrix3x3([
+    "0.77849780", "0.34399940", "-0.12249720",
+    "0.03303601", "0.93076195", "0.03620204",
+    "0.05092917", "0.27933344", "0.66973739"
+])
 m1 = load_matrix3x3([
     "0.8189330101", "0.3618667424", "-0.1288597137",
     "0.0329845436", "0.9293118715", "0.0361456387",

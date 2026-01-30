@@ -4,15 +4,10 @@
 #![cfg_attr(feature = "type_const", register_tool(type_const))] // Make rust analyzer not show this an error.
 pub extern crate self as colorkit;
 
-mod space2;
-
 #[rustfmt::skip]
-pub use space2::ColorSpace;
-pub use space2::ColorArray;
-pub use space2::ColorData;
-pub use space2::RgbLike;
 pub mod colors;
 pub mod convert;
+pub mod space;
 //pub mod channels;
 //pub mod layout;
 //pub mod scalar;

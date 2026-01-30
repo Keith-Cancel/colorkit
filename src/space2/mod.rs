@@ -3,18 +3,9 @@ use core::borrow::BorrowMut;
 use core::ops::Index;
 use core::ops::IndexMut;
 
-use colorkit::colors::Xyz;
+use colorkit::convert::XyzConvert;
 use colorkit::math::BoundF32;
-use colorkit::math::matrix_3x3_vec3_mul;
 use colorkit::wp::WhitePoint;
-
-/// This marker trait marks that a color can be
-/// transmuted into an array of [f32; [`ColorArray::CHANNELS`]]
-///
-/// Essentially `size_of::<Self>() / size_of::<f32>()` should
-/// equal [`ColorArray::CHANNELS`], plus other constraints like
-/// alignment ect...
-pub unsafe trait ColorTransmute: ColorSpace {}
 
 /// Trait to let Color Spaces be handled mostly like an array/slice.
 pub trait ColorArray:
@@ -178,39 +169,5 @@ pub trait RgbLike: ColorSpace {
     #[inline]
     fn set_green(&mut self, value: f32) {
         self[2] = value;
-    }
-}
-
-/// Conversion between CIE XYZ and other Color Spaces.
-pub trait XyzConvert: ColorData {
-    /// Convert a color into CIE XYZ with it's white point.
-    fn into_xyz(self) -> Xyz<Self::WhitePoint>;
-    /// Convert a color from CIE XYZ into this color Space.
-    fn from_xyz(color: Xyz<Self::WhitePoint>) -> Self;
-}
-
-/// Transformation Matrices to go between and from CIE XYZ
-// TODO
-// Maybe add my number item back to some these traits
-// since I can't do associated const equality in stable.
-pub trait XyzMatrices: ColorData {
-    // Looks like people generally represent these as a transformation matrix.
-    // http://www.brucelindbloom.com/index.html?Eqn_RGB_to_XYZ.html
-    /// 3x3 Matrix to convert into XYZ
-    const INTO_XYZ: [f32; 9];
-    /// 3x3 Matrix to convert from XYZ
-    const FROM_XYZ: [f32; 9];
-}
-
-impl<T: ColorArray + XyzMatrices> XyzConvert for T {
-    fn into_xyz(self) -> Xyz<Self::WhitePoint> {
-        debug_assert!(T::CHANNELS == 3);
-        return Xyz::from_array(matrix_3x3_vec3_mul(&Self::INTO_XYZ, self.as_slice()));
-    }
-
-    fn from_xyz(color: Xyz<Self::WhitePoint>) -> Self {
-        debug_assert!(T::CHANNELS == 3);
-        let c = matrix_3x3_vec3_mul(&Self::FROM_XYZ, color.as_slice());
-        return Self::from_fn(|i| c[i]);
     }
 }

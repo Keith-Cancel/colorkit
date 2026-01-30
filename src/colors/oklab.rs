@@ -1,4 +1,5 @@
 use colorkit::convert::ColorTransmute;
+use colorkit::convert::FromColor;
 use colorkit::convert::XyzConvert;
 use colorkit::math::BoundF32;
 use colorkit::math::cbrtf;
@@ -96,6 +97,16 @@ impl_color_array! {
     extra_args: {},
     generics: {},
     gen_use: {}
+}
+
+impl FromColor<Xyz<D65>> for OkLab {
+    fn from_color(color: Xyz<D65>) -> Self {
+        let mut lms = matrix_3x3_vec3_mul(&Self::M1, color.as_slice());
+        for v in &mut lms {
+            *v = cbrtf(*v);
+        }
+        return Self(matrix_3x3_vec3_mul(&Self::M2, &lms));
+    }
 }
 
 impl ColorSpace for OkLab {}

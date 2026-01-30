@@ -1,5 +1,5 @@
 use colorkit::convert::ColorTransmute;
-use colorkit::convert::XyzConvert;
+use colorkit::convert::FromColor;
 use colorkit::math::BoundF32;
 use colorkit::space::ColorArray;
 use colorkit::space::ColorData;
@@ -148,11 +148,8 @@ macro_rules! base_funcs {
             }
         }
 
-        impl<S: ColorTransmute> XyzConvert for $name<S> {
-            fn into_xyz(self) -> Xyz<Self::WhitePoint> {
-                return self.0.into_xyz();
-            }
-            fn from_xyz(color: Xyz<Self::WhitePoint>) -> Self {
+        impl<S: ColorTransmute> FromColor<Xyz<S::WhitePoint>> for $name<S> {
+            fn from_color(color: Xyz<S::WhitePoint>) -> Self {
                 return Self(S::from_xyz(color), 1.0);
             }
         }

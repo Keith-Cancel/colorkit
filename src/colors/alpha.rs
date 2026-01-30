@@ -52,6 +52,12 @@ impl<S: ColorTransmute> FromColor<Alpha<S>> for Xyz<S::WhitePoint> {
     }
 }
 
+impl<S: ColorTransmute> FromColor<Alpha<S>> for AlphaPre<S> {
+    fn from_color(color: Alpha<S>) -> Self {
+        return color.into_alpha_pre();
+    }
+}
+
 impl<S: ColorTransmute> AsRef<S> for Alpha<S> {
     fn as_ref(&self) -> &S {
         return &self.0;
@@ -110,6 +116,12 @@ impl<S: ColorTransmute> FromColor<AlphaPre<S>> for Xyz<S::WhitePoint> {
     fn from_color(color: AlphaPre<S>) -> Self {
         let a = color.into_alpha();
         return a.into_color();
+    }
+}
+
+impl<S: ColorTransmute> FromColor<AlphaPre<S>> for Alpha<S> {
+    fn from_color(color: AlphaPre<S>) -> Self {
+        return color.into_alpha();
     }
 }
 

@@ -1,11 +1,11 @@
 use colorkit::ColorArray;
 use colorkit::ColorData;
+use colorkit::convert::ColorTransmute;
+use colorkit::convert::XyzConvert;
 use colorkit::math::BoundF32;
 use colorkit::math::cbrtf;
 use colorkit::math::matrix_3x3_vec3_mul;
 use colorkit::space2::ColorSpace;
-use colorkit::space2::ColorTransmute;
-use colorkit::space2::XyzConvert;
 use colorkit::wp::D65;
 
 use super::Xyz;

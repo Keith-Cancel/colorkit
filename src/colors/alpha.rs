@@ -1,9 +1,9 @@
+use colorkit::convert::ColorTransmute;
+use colorkit::convert::XyzConvert;
 use colorkit::math::BoundF32;
 use colorkit::space2::ColorArray;
 use colorkit::space2::ColorData;
 use colorkit::space2::ColorSpace;
-use colorkit::space2::ColorTransmute;
-use colorkit::space2::XyzConvert;
 
 use super::Xyz;
 

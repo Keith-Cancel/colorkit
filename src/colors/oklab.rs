@@ -169,11 +169,26 @@ mod test {
     use colorkit::wp::WhitePoint;
 
     use super::*;
+    use crate::math::MathFuncs;
 
     #[test]
     fn wp_to_lms() {
         let wp = D65::color().into_array();
         let lms = OkLab::xyz_into_lms(wp);
         assert_eq!(lms, [1.0, 1.0, 1.0]);
+    }
+
+    #[test]
+    fn white_and_black() {
+        let lab = OkLab::new(1.0, 0.0, 0.0);
+        let xyz = lab.into_xyz().into_array();
+        let wp = D65::color().into_array();
+        assert!(wp[0].almost_eq(xyz[0], 2e-7));
+        assert!(wp[1].almost_eq(xyz[1], 2e-7));
+        assert!(wp[2].almost_eq(xyz[2], 2e-7));
+
+        let lab = OkLab::new(0.0, 0.0, 0.0);
+        let xyz = lab.into_xyz().into_array();
+        assert_eq!(xyz, [0.0, 0.0, 0.0]);
     }
 }

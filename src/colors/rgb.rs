@@ -113,7 +113,13 @@ impl Srgb {
 
 impl FromColor<Xyz<D65>> for Srgb {
     fn from_color(color: Xyz<D65>) -> Self {
-        return LinSrgb::from_xyz(color).into_nonlinear();
+        return LinSrgb::from_color(color).into_nonlinear();
+    }
+}
+
+impl FromColor<Srgb> for Xyz<D65> {
+    fn from_color(color: Srgb) -> Self {
+        return <Xyz<D65>>::from_color(color.into_linear());
     }
 }
 
@@ -221,7 +227,7 @@ mod test {
         assert_eq!(c[2], 0.125);
     }
 
-    /*#[test]
+    #[test]
     fn xyz_convert() {
         let c = Srgb::new(1.0, 1.0, 1.0);
         let x = c.into_xyz();
@@ -235,9 +241,9 @@ mod test {
         assert!(c[2].almost_eq(1.0, 2e-7));
 
         let c = Srgb::new(0.0, 0.0, 0.0);
-        let x = c.into_xyz();
+        let x = <Xyz<D65>>::from_color(c);
         assert_eq!(x[0], 0.0);
         assert_eq!(x[1], 0.0);
         assert_eq!(x[2], 0.0);
-    }*/
+    }
 }

@@ -26,6 +26,29 @@ pub trait XyzConvert: ColorData {
     fn from_xyz(color: Xyz<Self::WhitePoint>) -> Self;
 }
 
+/// This trait converts from one [ColorSpace] into an other.
+///
+/// Also unlike the [core::convert::From] it may be lossy
+/// depending source or target color space.
+///
+/// Much like core's `From`, this is the reciprocal of [`IntoColor`].
+pub trait FromColor<C: ColorSpace>: ColorSpace {
+    /// Convert to this [`ColorSpace`] from the input
+    /// color.
+    fn from_color(color: C) -> Self;
+}
+
+/// This trait converts from one [ColorSpace] into an other.
+///
+/// Also unlike the [core::convert::Into] it may be lossy
+/// depending source or target color space.
+///
+/// Much like core's `Into`, this is the reciprocal of [`FromColor`].
+pub trait IntoColor<C: ColorSpace>: ColorSpace {
+    /// Convert this color inoto the target [`ColorSpace`]
+    fn into_color(self) -> C;
+}
+
 /// Transformation Matrices to go between and from CIE XYZ
 // TODO
 // Maybe add my number item back to some these traits

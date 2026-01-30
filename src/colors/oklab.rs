@@ -1,6 +1,5 @@
 use colorkit::convert::ColorTransmute;
 use colorkit::convert::FromColor;
-use colorkit::convert::XyzConvert;
 use colorkit::math::BoundF32;
 use colorkit::math::cbrtf;
 use colorkit::math::matrix_3x3_vec3_mul;
@@ -99,16 +98,6 @@ impl_color_array! {
     gen_use: {}
 }
 
-impl FromColor<Xyz<D65>> for OkLab {
-    fn from_color(color: Xyz<D65>) -> Self {
-        let mut lms = matrix_3x3_vec3_mul(&Self::M1, color.as_slice());
-        for v in &mut lms {
-            *v = cbrtf(*v);
-        }
-        return Self(matrix_3x3_vec3_mul(&Self::M2, &lms));
-    }
-}
-
 impl ColorSpace for OkLab {}
 unsafe impl ColorTransmute for OkLab {}
 
@@ -136,20 +125,23 @@ impl ColorData for OkLab {
     ];
 }
 
-impl XyzConvert for OkLab {
-    fn from_xyz(color: super::Xyz<Self::WhitePoint>) -> Self {
+impl FromColor<Xyz<D65>> for OkLab {
+    fn from_color(color: Xyz<D65>) -> Self {
         let mut lms = matrix_3x3_vec3_mul(&Self::M1, color.as_slice());
         for v in &mut lms {
             *v = cbrtf(*v);
         }
         return Self(matrix_3x3_vec3_mul(&Self::M2, &lms));
     }
-    fn into_xyz(self) -> Xyz<Self::WhitePoint> {
-        let mut lms = matrix_3x3_vec3_mul(&Self::M2_INV, &self.0);
+}
+
+impl FromColor<OkLab> for Xyz<D65> {
+    fn from_color(color: OkLab) -> Self {
+        let mut lms = matrix_3x3_vec3_mul(&OkLab::M2_INV, &color.0);
         for v in &mut lms {
             let ch = *v;
             *v = ch * ch * ch;
         }
-        return Xyz::from_array(matrix_3x3_vec3_mul(&Self::M1_INV, &lms));
+        return Xyz::from_array(matrix_3x3_vec3_mul(&OkLab::M1_INV, &lms));
     }
 }

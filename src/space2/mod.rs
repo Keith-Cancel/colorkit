@@ -1,5 +1,3 @@
-pub mod white_point;
-
 use core::borrow::Borrow;
 use core::borrow::BorrowMut;
 use core::ops::Index;
@@ -8,7 +6,7 @@ use core::ops::IndexMut;
 use colorkit::colors::Xyz;
 use colorkit::math::BoundF32;
 use colorkit::math::matrix_3x3_vec3_mul;
-use white_point::WhitePoint;
+use colorkit::wp::WhitePoint;
 
 /// This marker trait marks that a color can be
 /// transmuted into an array of [f32; [`ColorArray::CHANNELS`]]

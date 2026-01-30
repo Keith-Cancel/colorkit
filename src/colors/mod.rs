@@ -1,3 +1,4 @@
+//! Colorspaces like [`Srgb`], [`OkLab`], [`Xyz`] ect...
 mod alpha;
 mod oklab;
 mod rgb;

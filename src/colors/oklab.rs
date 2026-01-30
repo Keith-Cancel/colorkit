@@ -3,7 +3,6 @@ use colorkit::convert::FromColor;
 use colorkit::math::BoundF32;
 use colorkit::math::cbrtf;
 use colorkit::math::matrix_3x3_vec3_mul;
-use colorkit::space::ColorArray;
 use colorkit::space::ColorData;
 use colorkit::space::ColorSpace;
 use colorkit::wp::D65;
@@ -90,6 +89,30 @@ impl OkLab {
     pub const fn set_b(&mut self, value: f32) {
         self.0[2] = value;
     }
+
+    fn xyz_into_lms(xyz: [f32; 3]) -> [f32; 3] {
+        return matrix_3x3_vec3_mul(&Self::M1, &xyz);
+    }
+
+    fn lms_into_xyz(lms: [f32; 3]) -> [f32; 3] {
+        return matrix_3x3_vec3_mul(&Self::M1_INV, &lms);
+    }
+
+    fn lms_into_lab(mut lms: [f32; 3]) -> [f32; 3] {
+        for v in &mut lms {
+            *v = cbrtf(*v);
+        }
+        return matrix_3x3_vec3_mul(&OkLab::M2, &lms);
+    }
+
+    fn lab_into_lms(lab: [f32; 3]) -> [f32; 3] {
+        let mut lms = matrix_3x3_vec3_mul(&OkLab::M2_INV, &lab);
+        for v in &mut lms {
+            let ch = *v;
+            *v = ch * ch * ch;
+        }
+        return lms;
+    }
 }
 
 impl_color_array! {
@@ -129,21 +152,28 @@ impl ColorData for OkLab {
 
 impl FromColor<Xyz<D65>> for OkLab {
     fn from_color(color: Xyz<D65>) -> Self {
-        let mut lms = matrix_3x3_vec3_mul(&Self::M1, color.as_slice());
-        for v in &mut lms {
-            *v = cbrtf(*v);
-        }
-        return Self(matrix_3x3_vec3_mul(&Self::M2, &lms));
+        let lms = Self::xyz_into_lms(color.into_array());
+        return Self(Self::lms_into_lab(lms));
     }
 }
 
 impl FromColor<OkLab> for Xyz<D65> {
     fn from_color(color: OkLab) -> Self {
-        let mut lms = matrix_3x3_vec3_mul(&OkLab::M2_INV, &color.0);
-        for v in &mut lms {
-            let ch = *v;
-            *v = ch * ch * ch;
-        }
-        return Xyz::from_array(matrix_3x3_vec3_mul(&OkLab::M1_INV, &lms));
+        let lms = OkLab::lab_into_lms(color.0);
+        return <Xyz<D65>>::from_array(OkLab::lms_into_xyz(lms));
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use colorkit::wp::WhitePoint;
+
+    use super::*;
+
+    #[test]
+    fn wp_to_lms() {
+        let wp = D65::color().into_array();
+        let lms = OkLab::xyz_into_lms(wp);
+        assert_eq!(lms, [1.0, 1.0, 1.0]);
     }
 }

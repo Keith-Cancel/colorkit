@@ -111,6 +111,7 @@ impl Default for OkLab {
 impl ColorData for OkLab {
     type WhitePoint = D65;
     const DEFAULT: Self = Self([0.0, 0.0, 0.0]);
+    const CHANNELS: usize = 3;
     const LINEAR: bool = true;
     const CHANNEL_MAX: &'static [BoundF32] = &[
         BoundF32::Include(1.0),

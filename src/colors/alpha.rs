@@ -127,13 +127,13 @@ macro_rules! base_funcs {
         impl<S: ColorTransmute> ColorData for $name<S> {
             type WhitePoint = S::WhitePoint;
             const DEFAULT: Self = Self(S::DEFAULT, 1.0);
+            const CHANNELS: usize = 3;
             const LINEAR: bool = S::LINEAR;
             const CHANNEL_MAX: &'static [BoundF32] = { Self::MAX.split_at(Self::LEN).0 };
             const CHANNEL_MIN: &'static [BoundF32] = { Self::MIN.split_at(Self::LEN).0 };
         }
 
         impl<S: ColorTransmute> ColorArray for $name<S> {
-            const CHANNELS: usize = Self::LEN;
             fn from_fn<F: FnMut(usize) -> f32>(f: F) -> Self {
                 let mut f = f;
                 return Self(S::from_fn(|i| f(i)), f(S::CHANNELS));

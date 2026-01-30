@@ -75,8 +75,9 @@ impl<W: WhitePoint> Default for Xyz<W> {
 }
 
 impl<W: WhitePoint> ColorData for Xyz<W> {
-    const DEFAULT: Self = Self([0.0, 0.0, 0.0], PhantomData);
     type WhitePoint = W;
+    const DEFAULT: Self = Self([0.0, 0.0, 0.0], PhantomData);
+    const CHANNELS: usize = 3;
     const LINEAR: bool = true;
     const CHANNEL_MAX: &'static [BoundF32] = &[BoundF32::Unbounded; 3];
     const CHANNEL_MIN: &'static [BoundF32] = &[BoundF32::Include(0.0); 3];

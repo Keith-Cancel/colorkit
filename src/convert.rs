@@ -32,9 +32,8 @@ pub trait XyzConvert: ColorData {
 /// depending source or target color space.
 ///
 /// Much like core's `From`, this is the reciprocal of [`IntoColor`].
-pub trait FromColor<C: ColorSpace>: ColorSpace {
-    /// Convert to this [`ColorSpace`] from the input
-    /// color.
+pub trait FromColor<C: ColorData>: ColorData {
+    /// Convert to this [`ColorSpace`] from the input color.
     fn from_color(color: C) -> Self;
 }
 
@@ -44,13 +43,13 @@ pub trait FromColor<C: ColorSpace>: ColorSpace {
 /// depending source or target color space.
 ///
 /// Much like core's `Into`, this is the reciprocal of [`FromColor`].
-pub trait IntoColor<C: ColorSpace>: ColorSpace {
-    /// Convert this color inoto the target [`ColorSpace`]
+pub trait IntoColor<C: ColorData>: ColorData {
+    /// Convert this color into the target [`ColorSpace`]
     fn into_color(self) -> C;
 }
 
 // Blanket impl of IntoColor for any implementation of FromColor
-impl<C1: ColorSpace, C2: FromColor<C1>> IntoColor<C2> for C1 {
+impl<C1: ColorData, C2: FromColor<C1>> IntoColor<C2> for C1 {
     fn into_color(self) -> C2 {
         return C2::from_color(self);
     }
@@ -67,6 +66,21 @@ pub trait XyzMatrices: ColorData {
     const INTO_XYZ: [f32; 9];
     /// 3x3 Matrix to convert from XYZ
     const FROM_XYZ: [f32; 9];
+}
+
+impl<C: ColorArray + XyzMatrices> FromColor<Xyz<C::WhitePoint>> for C {
+    fn from_color(color: Xyz<C::WhitePoint>) -> Self {
+        debug_assert!(C::CHANNELS == 3);
+        let c = matrix_3x3_vec3_mul(&Self::FROM_XYZ, color.as_slice());
+        return Self::from_fn(|i| c[i]);
+    }
+}
+
+impl<C: ColorArray + XyzMatrices> FromColor<C> for Xyz<C::WhitePoint> {
+    fn from_color(color: C) -> Self {
+        debug_assert!(C::CHANNELS == 3);
+        return Xyz::from_array(matrix_3x3_vec3_mul(&C::INTO_XYZ, color.as_slice()));
+    }
 }
 
 impl<T: ColorArray + XyzMatrices> XyzConvert for T {

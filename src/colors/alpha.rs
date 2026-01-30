@@ -34,6 +34,10 @@ impl<S: ColorTransmute> Alpha<S> {
     pub const fn as_mut_color(&mut self) -> &mut S {
         return &mut self.0;
     }
+    /// Convert to premultiplied alpha.
+    pub fn into_alpha_pre(self) -> AlphaPre<S> {
+        return AlphaPre::new(self.0, self.1);
+    }
 }
 
 impl<S: ColorTransmute> FromColor<Xyz<S::WhitePoint>> for Alpha<S> {
@@ -76,6 +80,24 @@ impl<S: ColorTransmute> AlphaPre<S> {
         }
         return Self(color, alpha);
     }
+    /// Set the colors alpha channel, but this will not update the other channels.
+    pub const fn set_alpha(&mut self, alpha: f32) {
+        self.1 = alpha;
+    }
+    /// Set the alpha channel, and update all other channels.
+    pub fn update_alpha(&mut self, alpha: f32) {
+        for v in self.0.as_mut_slice() {
+            *v = (*v / self.1) * alpha;
+        }
+    }
+    /// Convert to normal alpha with no premultiplication.
+    pub fn into_alpha(self) -> Alpha<S> {
+        let mut s = self;
+        for v in s.0.as_mut_slice() {
+            *v = *v / s.1;
+        }
+        return Alpha::new(s.0, s.1);
+    }
 }
 
 impl<S: ColorTransmute> FromColor<Xyz<S::WhitePoint>> for AlphaPre<S> {
@@ -85,11 +107,9 @@ impl<S: ColorTransmute> FromColor<Xyz<S::WhitePoint>> for AlphaPre<S> {
 }
 
 impl<S: ColorTransmute> FromColor<AlphaPre<S>> for Xyz<S::WhitePoint> {
-    fn from_color(mut color: AlphaPre<S>) -> Self {
-        for v in color.0.as_mut_slice() {
-            *v = *v / color.1;
-        }
-        return color.0.into_color();
+    fn from_color(color: AlphaPre<S>) -> Self {
+        let a = color.into_alpha();
+        return a.0.into_color();
     }
 }
 

@@ -23,6 +23,7 @@ pub trait FromColor<C>: Sized {
     fn from_color(color: C) -> Self;
 }
 
+// Blanket implentation for Self.
 impl<C> FromColor<C> for C {
     #[inline]
     fn from_color(color: C) -> Self {
@@ -72,6 +73,8 @@ mod private {
 // TODO
 // Maybe add my number item back to some these traits
 // since I can't do associated const equality in stable.
+// Mainly the length thing.
+// Ideally pub trait XyzMatrices: ColorData<CHANNELS = 3> 
 pub trait XyzMatrices: ColorData {
     // Looks like people generally represent these as a transformation matrix.
     // http://www.brucelindbloom.com/index.html?Eqn_RGB_to_XYZ.html

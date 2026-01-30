@@ -63,7 +63,7 @@ m = rgb_matrix(
         parse(BigFloat, "0.15") parse(BigFloat, "0.06")
     ],
     # This value is from spectrum_xyz.jl
-    BigFloat[parse(BigFloat, "0.9504705586542830"), 1.0, parse(BigFloat, "1.0888287363958847")],
+    load_vector(["0.9504705586542830", "1.0", "1.0888287363958847"])
 )
 print_matrices("Linear sRGB Matrices", m)
 

@@ -54,7 +54,8 @@ function load_matrix3x3(m::Vector{String})
     return Matrix(reshape(load_vector(m), 3, 3)')
 end
 
-
+# This value is from spectrum_xyz.jl printed with more precision than probably necessary.
+D65 = load_vector(["0.9504705586542829699097014291854001056630", "1.0", "1.0888287363958846603044439158088782923057"])
 #sRGB D65, and primaries.
 m = rgb_matrix(
     BigFloat[
@@ -62,8 +63,7 @@ m = rgb_matrix(
         parse(BigFloat, "0.30") parse(BigFloat, "0.60");
         parse(BigFloat, "0.15") parse(BigFloat, "0.06")
     ],
-    # This value is from spectrum_xyz.jl
-    load_vector(["0.9504705586542830", "1.0", "1.0888287363958847"])
+    D65
 )
 print_matrices("Linear sRGB Matrices", m)
 
@@ -78,11 +78,17 @@ m0 = load_matrix3x3([
     "0.03303601", "0.93076195", "0.03620204",
     "0.05092917", "0.27933344", "0.66973739"
 ])
-m1 = load_matrix3x3([
-    "0.8189330101", "0.3618667424", "-0.1288597137",
-    "0.0329845436", "0.9293118715", "0.0361456387",
-    "0.0482003018", "0.2643662691", "0.6338517070"
-])
+# calculate the matrix instead using the white point.
+# using the logic outlined here:
+# https://github.com/w3c/csswg-drafts/issues/6642#issuecomment-945714988
+# Now m1 * D65 = [1.0, 1.0, 1.0]
+m1 = m0 ./ reshape((m0 * D65), :, 1)
+#m1 = load_matrix3x3([
+#    "0.8189330101", "0.3618667424", "-0.1288597137",
+#    "0.0329845436", "0.9293118715", "0.0361456387",
+#    "0.0482003018", "0.2643662691", "0.6338517070"
+#])
+#println(m1 * D65)
 m2 = load_matrix3x3([
     "0.2104542553", "0.7936177850", "-0.0040720468",
     "1.9779984951", "-2.4285922050", "0.4505937099",

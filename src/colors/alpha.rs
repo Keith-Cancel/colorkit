@@ -4,6 +4,8 @@ use colorkit::space2::ColorData;
 use colorkit::space2::ColorTransmute;
 use colorkit::space2::XyzConvert;
 
+use super::Xyz;
+
 /// Wraps a color space with Alpha channel for transparency.
 #[repr(C)]
 #[derive(Copy, Clone, Debug, PartialEq)]
@@ -145,10 +147,14 @@ macro_rules! base_funcs {
             }
         }
 
-        /*
         impl<S: ColorTransmute> XyzConvert for $name<S> {
-
-        }*/
+            fn into_xyz(self) -> Xyz<Self::WhitePoint> {
+                return self.0.into_xyz();
+            }
+            fn from_xyz(color: Xyz<Self::WhitePoint>) -> Self {
+                return Self(S::from_xyz(color), 1.0);
+            }
+        }
 
         impl<S: ColorTransmute> $name<S> {
             const MAX: &'static [BoundF32] = &const {

@@ -49,6 +49,13 @@ pub trait IntoColor<C: ColorSpace>: ColorSpace {
     fn into_color(self) -> C;
 }
 
+// Blanket impl of IntoColor for any implementation of FromColor
+impl<C1: ColorSpace, C2: FromColor<C1>> IntoColor<C2> for C1 {
+    fn into_color(self) -> C2 {
+        return C2::from_color(self);
+    }
+}
+
 /// Transformation Matrices to go between and from CIE XYZ
 // TODO
 // Maybe add my number item back to some these traits

@@ -26,7 +26,7 @@ function print_matrix(name::String, m::Matrix{BigFloat})
     @printf("    %.016lf, %.016lf, %.016lf,\n", m[3, 1], m[3, 2], m[3, 3])
 end
 
-function print_matrices(name::String, m::Matrix{BigFloat})
+function print_header(name::String)
     name = " $(name) "
     fill = 40 - length(name)
     left = div(fill, 2)
@@ -34,8 +34,20 @@ function print_matrices(name::String, m::Matrix{BigFloat})
     header = repeat("~", left) * name * repeat("~", right)
     println(header)
     println(repeat("=", length(header)))
+end
+
+function print_matrices(name::String, m::Matrix{BigFloat})
+    print_header(name)
     print_matrix("Into XYZ (M)", m)
     print_matrix("From XYZ (M^-1)", inv(m))
+end
+
+function load_matrix(m::Vector{String})
+    parsed = Vector{BigFloat}()
+    for v in m
+        push!(parsed, parse(BigFloat, v))
+    end
+    return reshape(parsed, 3, 3)'
 end
 
 
@@ -50,3 +62,16 @@ m = rgb_matrix(
     BigFloat[parse(BigFloat, "0.9504705586542830"), 1.0, parse(BigFloat, "1.0888287363958847")],
 )
 print_matrices("Linear sRGB Matrices", m)
+
+# OkLab Matrices
+# https://bottosson.github.io/posts/oklab/
+m1 = load_matrix([
+    "0.8189330101", "0.3618667424", "-0.1288597137",
+    "0.0329845436", "0.9293118715", "0.0361456387",
+    "0.0482003018", "0.2643662691", "0.6338517070"
+])
+m2 = load_matrix([
+    "0.2104542553", "0.7936177850", "-0.0040720468",
+    "1.9779984951", "-2.4285922050", "0.4505937099",
+    "0.0259040371", "0.7827717662", "-0.8086757660"
+])

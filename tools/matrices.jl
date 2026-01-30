@@ -21,9 +21,9 @@ end
 
 function print_matrix(name::String, m::Matrix{BigFloat})
     println("$(name):")
-    @printf("    %.016lf, %.016lf, %.016lf,\n", m[1, 1], m[1, 2], m[1, 3])
-    @printf("    %.016lf, %.016lf, %.016lf,\n", m[2, 1], m[2, 2], m[2, 3])
-    @printf("    %.016lf, %.016lf, %.016lf,\n", m[3, 1], m[3, 2], m[3, 3])
+    @printf("    %19.016lf, %19.016lf, %19.016lf,\n", m[1, 1], m[1, 2], m[1, 3])
+    @printf("    %19.016lf, %19.016lf, %19.016lf,\n", m[2, 1], m[2, 2], m[2, 3])
+    @printf("    %19.016lf, %19.016lf, %19.016lf,\n", m[3, 1], m[3, 2], m[3, 3])
 end
 
 function print_header(name::String)
@@ -47,7 +47,7 @@ function load_matrix(m::Vector{String})
     for v in m
         push!(parsed, parse(BigFloat, v))
     end
-    return reshape(parsed, 3, 3)'
+    return Matrix(reshape(parsed, 3, 3)')
 end
 
 
@@ -75,3 +75,8 @@ m2 = load_matrix([
     "1.9779984951", "-2.4285922050", "0.4505937099",
     "0.0259040371", "0.7827717662", "-0.8086757660"
 ])
+print_header("Oklab matrices")
+print_matrix("M1", m1)
+print_matrix("M1^-1", inv(m1))
+print_matrix("M2", m2)
+print_matrix("M2^-1", inv(m2))

@@ -16,8 +16,6 @@ pub mod convert;
 //pub mod channels;
 //pub mod layout;
 //pub mod scalar;
-pub mod color;
 pub mod math;
-pub mod space;
 pub mod utils;
 pub mod wp;

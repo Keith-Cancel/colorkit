@@ -109,7 +109,7 @@ impl<S: ColorTransmute> FromColor<Xyz<S::WhitePoint>> for AlphaPre<S> {
 impl<S: ColorTransmute> FromColor<AlphaPre<S>> for Xyz<S::WhitePoint> {
     fn from_color(color: AlphaPre<S>) -> Self {
         let a = color.into_alpha();
-        return a.0.into_color();
+        return a.into_color();
     }
 }
 

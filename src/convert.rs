@@ -1,8 +1,8 @@
 use colorkit::colors::Xyz;
 use colorkit::math::matrix_3x3_vec3_mul;
-use colorkit::space2::ColorArray;
-use colorkit::space2::ColorData;
-use colorkit::space2::ColorSpace;
+use colorkit::space::ColorArray;
+use colorkit::space::ColorData;
+use colorkit::space::ColorSpace;
 
 /// This marker trait marks that a color can be
 /// transmuted into an array of [f32; [`ColorArray::CHANNELS`]]

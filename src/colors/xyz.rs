@@ -1,10 +1,10 @@
 use core::marker::PhantomData;
 
-use colorkit::ColorData;
-use colorkit::ColorSpace;
 use colorkit::convert::ColorTransmute;
 use colorkit::convert::XyzConvert;
 use colorkit::math::BoundF32;
+use colorkit::space::ColorData;
+use colorkit::space::ColorSpace;
 use colorkit::wp::WhitePoint;
 
 use super::macros::impl_color_array;

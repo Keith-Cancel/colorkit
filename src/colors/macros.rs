@@ -43,7 +43,7 @@ macro_rules! impl_color_array {
             }
         }
 
-        impl $($generics)* colorkit::space2::ColorArray for $name $($gen_use)* {
+        impl $($generics)* colorkit::space::ColorArray for $name $($gen_use)* {
             const CHANNELS: usize = $len;
             fn from_fn<F: FnMut(usize) -> f32>(f: F) -> Self {
                 return Self(core::array::from_fn(f), $($args),*);

@@ -1,6 +1,3 @@
-use colorkit::ColorData;
-use colorkit::ColorSpace;
-use colorkit::RgbLike;
 use colorkit::convert::ColorTransmute;
 use colorkit::convert::XyzConvert;
 use colorkit::convert::XyzMatrices;
@@ -8,6 +5,9 @@ use colorkit::math::BoundF32;
 use colorkit::math::cbrtf;
 use colorkit::math::quirtf;
 use colorkit::math::sqrtf;
+use colorkit::space::ColorData;
+use colorkit::space::ColorSpace;
+use colorkit::space::RgbLike;
 use colorkit::wp::D65;
 
 use super::Xyz;

@@ -42,16 +42,16 @@ function print_matrices(name::String, m::Matrix{BigFloat})
     print_matrix("From XYZ (M^-1)", inv(m))
 end
 
-function load_vector(vec::Vector{String})
-    parsed = Vector{BigFloat}()
+function load_vector(vec::Vector{String}, typ=BigFloat)
+    parsed = Vector{typ}()
     for v in vec
-        push!(parsed, parse(BigFloat, v))
+        push!(parsed, parse(typ, v))
     end
     return parsed
 end
 
-function load_matrix3x3(m::Vector{String})
-    return Matrix(reshape(load_vector(m), 3, 3)')
+function load_matrix3x3(m::Vector{String}, typ=BigFloat)
+    return Matrix(reshape(load_vector(m, typ), 3, 3)')
 end
 
 # This value is from spectrum_xyz.jl printed with more precision than probably necessary.
@@ -89,11 +89,29 @@ m1 = m0 ./ reshape((m0 * D65), :, 1)
 #    "0.0482003018", "0.2643662691", "0.6338517070"
 #])
 #println(m1 * D65)
+
+# Looking at what people have done here:
+# https://github.com/w3c/csswg-drafts/issues/6642
+# Seems like for m2 it's based to use the inverse in the sample code at:
+# https://bottosson.github.io/posts/oklab/
+# interpret that matrix as an f32 and then invert
+# the inverse to get M2.
+m2_inv = convert(Matrix{BigFloat}, load_matrix3x3([
+        "1.0", "0.3963377774", "0.2158037573",
+        "1.0", "-0.1055613458", "-0.0638541728",
+        "1.0", "-0.0894841775", "-1.2914855480"
+    ],
+    Float32
+))
+m2 = inv(m2_inv)
+
+#=
 m2 = load_matrix3x3([
     "0.2104542553", "0.7936177850", "-0.0040720468",
     "1.9779984951", "-2.4285922050", "0.4505937099",
     "0.0259040371", "0.7827717662", "-0.8086757660"
 ])
+=#
 print_header("Oklab matrices")
 print_matrix("M1", m1)
 print_matrix("M1^-1", inv(m1))
@@ -101,4 +119,4 @@ print_matrix("M2", m2)
 # The first column is almost 1.0, should it be 1.0?
 # Looking here that is the case, gonna need to dig in a little more.
 # https://www.w3.org/TR/css-color-4/#color-conversion-code
-print_matrix("M2^-1", inv(m2))
+print_matrix("M2^-1", m2_inv)

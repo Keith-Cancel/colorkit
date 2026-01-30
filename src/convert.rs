@@ -6,10 +6,10 @@ use colorkit::space::ColorData;
 use colorkit::space::ColorSpace;
 
 /// This marker trait marks that a color can be
-/// transmuted into an array of [f32; [`ColorArray::CHANNELS`]]
+/// transmuted into an array of [f32; [`ColorData::CHANNELS`]]
 ///
 /// Essentially `size_of::<Self>() / size_of::<f32>()` should
-/// equal [`ColorArray::CHANNELS`], plus other constraints like
+/// equal [`ColorData::CHANNELS`], plus other constraints like
 /// alignment ect...
 pub unsafe trait ColorTransmute: ColorSpace {}
 

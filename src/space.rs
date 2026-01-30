@@ -3,13 +3,11 @@ use core::borrow::BorrowMut;
 use core::ops::Index;
 use core::ops::IndexMut;
 
-use colorkit::convert::FromColor;
-use colorkit::convert::XyzConvert;
+use colorkit::colors::Xyz;
+use colorkit::convert::FromColorBoth;
+use colorkit::convert::IntoColor;
 use colorkit::math::BoundF32;
 use colorkit::wp::WhitePoint;
-
-use crate::colors::Xyz;
-use crate::convert::IntoColor;
 
 /// Information about a Color Space
 pub trait ColorData: Default {
@@ -37,7 +35,6 @@ pub trait ColorArray:
     + AsMut<[f32]>
     + Borrow<[f32]>
     + BorrowMut<[f32]>
-    + ColorData
     + Index<usize, Output = f32>
     + IndexMut<usize, Output = f32>
 {
@@ -51,20 +48,22 @@ pub trait ColorArray:
     ///
     /// If `N` is greater than [`ColorArray::CHANNELS`] returns [`None`]`
     fn try_as_array<const N: usize>(&self) -> Option<&[f32; N]> {
-        if N > Self::CHANNELS {
+        let slc = self.as_slice();
+        if N > slc.len() {
             return None;
         }
-        let (slc, _) = self.as_slice().split_at(N);
+        let (slc, _) = slc.split_at(N);
         return slc.try_into().ok();
     }
     /// Try to get a reference as an mutable array.
     ///
     /// If `N` is greater than [`ColorArray::CHANNELS`] returns [`None`]`
     fn try_as_mut_array<const N: usize>(&mut self) -> Option<&mut [f32; N]> {
-        if N > Self::CHANNELS {
+        let slc = self.as_mut_slice();
+        if N > slc.len() {
             return None;
         }
-        let (slc, _) = self.as_mut_slice().split_at_mut(N);
+        let (slc, _) = slc.split_at_mut(N);
         return slc.try_into().ok();
     }
 
@@ -80,7 +79,7 @@ pub trait ColorArray:
 }
 
 /// The main ColorSpace Trait
-pub trait ColorSpace: ColorData + ColorArray + FromColor<Xyz<<Self as ColorData>::WhitePoint>> {
+pub trait ColorSpace: ColorArray + ColorData + FromColorBoth<Xyz<Self::WhitePoint>> {
     /// Number Channels
     #[inline]
     fn channels(&self) -> usize {
@@ -137,6 +136,10 @@ pub trait ColorSpace: ColorData + ColorArray + FromColor<Xyz<<Self as ColorData>
     /// Create an instance of this color from a CIE XYZ color.
     fn from_xyz(color: Xyz<Self::WhitePoint>) -> Self {
         return color.into_color();
+    }
+    /// Create a CIE XYZ Color from this color
+    fn into_xyz(self) -> Xyz<Self::WhitePoint> {
+        return self.into_color();
     }
 }
 

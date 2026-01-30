@@ -69,33 +69,29 @@ print_matrices("Linear sRGB Matrices", m)
 
 # OkLab Matrices
 # https://bottosson.github.io/posts/oklab/
-# Aftering some the stuff regarding the CSS spec
-# I found this:
+# Aftering notcing some oddities, I know that OkLab was
+# added as a CSS spec. Looking at the spec I found this
+# github issue:
+# https://github.com/w3c/csswg-drafts/issues/6642
+# When reading what people were saying there I ended up finding
+# this by the author of OkLab:
 # https://github.com/w3c/csswg-drafts/issues/6642#issuecomment-945714988
-# I should be able to use this generate matrices
+# I should be able to use this generate better M1 and M1^-1
 m0 = load_matrix3x3([
     "0.77849780", "0.34399940", "-0.12249720",
     "0.03303601", "0.93076195", "0.03620204",
     "0.05092917", "0.27933344", "0.66973739"
 ])
-# calculate the matrix instead using the white point.
-# using the logic outlined here:
-# https://github.com/w3c/csswg-drafts/issues/6642#issuecomment-945714988
+# calculate the matrix, using the white point.
 # Now m1 * D65 = [1.0, 1.0, 1.0]
 m1 = m0 ./ reshape((m0 * D65), :, 1)
-#m1 = load_matrix3x3([
-#    "0.8189330101", "0.3618667424", "-0.1288597137",
-#    "0.0329845436", "0.9293118715", "0.0361456387",
-#    "0.0482003018", "0.2643662691", "0.6338517070"
-#])
 #println(m1 * D65)
 
-# Looking at what people have done here:
+# Looking at what people have done for M2:
 # https://github.com/w3c/csswg-drafts/issues/6642
-# Seems like for m2 it's based to use the inverse in the sample code at:
+# Seems like for M2 it's best to use the inverse in the sample code at:
 # https://bottosson.github.io/posts/oklab/
-# interpret that matrix as an f32 and then invert
-# the inverse to get M2.
+# interpret that matrix as an f32 and then invert the inverse to get M2.
 m2_inv = convert(Matrix{BigFloat}, load_matrix3x3([
         "1.0", "0.3963377774", "0.2158037573",
         "1.0", "-0.1055613458", "-0.0638541728",
@@ -104,19 +100,27 @@ m2_inv = convert(Matrix{BigFloat}, load_matrix3x3([
     Float32
 ))
 m2 = inv(m2_inv)
+print_header("Oklab matrices")
+print_matrix("M1", m1)
+print_matrix("M1^-1", inv(m1))
+print_matrix("M2", m2)
+print_matrix("M2^-1", m2_inv)
+
 
 #=
+Don't uses these directly.
+m1 = load_matrix3x3([
+    "0.8189330101", "0.3618667424", "-0.1288597137",
+    "0.0329845436", "0.9293118715", "0.0361456387",
+    "0.0482003018", "0.2643662691", "0.6338517070"
+])
 m2 = load_matrix3x3([
     "0.2104542553", "0.7936177850", "-0.0040720468",
     "1.9779984951", "-2.4285922050", "0.4505937099",
     "0.0259040371", "0.7827717662", "-0.8086757660"
 ])
-=#
-print_header("Oklab matrices")
-print_matrix("M1", m1)
-print_matrix("M1^-1", inv(m1))
-print_matrix("M2", m2)
-# The first column is almost 1.0, should it be 1.0?
+# The of inv(m2) did not look quite correct to.
+# The first column is almost 1.0, shouldn't it be 1.0?
 # Looking here that is the case, gonna need to dig in a little more.
 # https://www.w3.org/TR/css-color-4/#color-conversion-code
-print_matrix("M2^-1", m2_inv)
+=#

@@ -12,6 +12,12 @@ use colorkit::space::ColorSpace;
 /// alignment ect...
 pub unsafe trait ColorTransmute: ColorSpace {}
 
+/// Converts CIE XYZ and into an other Color Spaces.
+pub trait FromXyz: ColorData {
+    /// Convert a CIE XYZ color into this color Space.
+    fn from_xyz(color: Xyz<Self::WhitePoint>) -> Self;
+}
+
 /// Conversion between CIE XYZ and other Color Spaces.
 pub trait XyzConvert: ColorData {
     /// Convert a color into CIE XYZ with it's white point.

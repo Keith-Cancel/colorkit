@@ -1,7 +1,6 @@
 use core::marker::PhantomData;
 
 use colorkit::convert::ColorTransmute;
-use colorkit::convert::FromColor;
 use colorkit::math::BoundF32;
 use colorkit::space::ColorData;
 use colorkit::space::ColorSpace;
@@ -83,13 +82,5 @@ impl<W: WhitePoint> ColorData for Xyz<W> {
     const CHANNEL_MIN: &'static [BoundF32] = &[BoundF32::Include(0.0); 3];
 }
 
-impl<W: WhitePoint> FromColor<Xyz<W>> for Xyz<W> {
-    #[inline(always)]
-    fn from_color(color: Self) -> Self {
-        return color;
-    }
-}
-
 impl<W: WhitePoint> ColorSpace for Xyz<W> {}
-
 unsafe impl<W: WhitePoint> ColorTransmute for Xyz<W> {}

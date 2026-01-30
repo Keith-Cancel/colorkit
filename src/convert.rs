@@ -12,29 +12,22 @@ use colorkit::space::ColorSpace;
 /// alignment ect...
 pub unsafe trait ColorTransmute: ColorSpace {}
 
-/// Converts CIE XYZ and into an other Color Spaces.
-pub trait FromXyz: ColorData {
-    /// Convert a CIE XYZ color into this color Space.
-    fn from_xyz(color: Xyz<Self::WhitePoint>) -> Self;
-}
-
-/// Conversion between CIE XYZ and other Color Spaces.
-pub trait XyzConvert: ColorData {
-    /// Convert a color into CIE XYZ with it's white point.
-    fn into_xyz(self) -> Xyz<Self::WhitePoint>;
-    /// Convert a color from CIE XYZ into this color Space.
-    fn from_xyz(color: Xyz<Self::WhitePoint>) -> Self;
-}
-
 /// This trait converts from one [ColorSpace] into an other.
 ///
 /// Also unlike the [core::convert::From] it may be lossy
 /// depending source or target color space.
 ///
 /// Much like core's `From`, this is the reciprocal of [`IntoColor`].
-pub trait FromColor<C: ColorData>: ColorData {
+pub trait FromColor<C>: Sized {
     /// Convert to this [`ColorSpace`] from the input color.
     fn from_color(color: C) -> Self;
+}
+
+impl<C> FromColor<C> for C {
+    #[inline]
+    fn from_color(color: C) -> Self {
+        return color;
+    }
 }
 
 /// This trait converts from one [ColorSpace] into an other.
@@ -43,15 +36,35 @@ pub trait FromColor<C: ColorData>: ColorData {
 /// depending source or target color space.
 ///
 /// Much like core's `Into`, this is the reciprocal of [`FromColor`].
-pub trait IntoColor<C: ColorData>: ColorData {
+pub trait IntoColor<C> {
     /// Convert this color into the target [`ColorSpace`]
     fn into_color(self) -> C;
 }
 
 // Blanket impl of IntoColor for any implementation of FromColor
-impl<C1: ColorData, C2: FromColor<C1>> IntoColor<C2> for C1 {
+impl<C1, C2: FromColor<C1>> IntoColor<C2> for C1 {
     fn into_color(self) -> C2 {
         return C2::from_color(self);
+    }
+}
+
+/// Marker trait stating conversion from `Self` <-> `C` exists both ways.
+pub trait FromColorBoth<C>: FromColor<C> + private::FromBound<C, Other: FromColor<Self>, Other = C> {}
+
+// Blanket Implentation if From is defined for both color spaces.
+impl<C1: FromColor<C2>, C2: FromColor<C1>> FromColorBoth<C2> for C1 {}
+
+// After seearching for awhile on how get rid of redundant where clauses
+// I found the following:
+// https://github.com/rust-lang/rust/issues/44491#issuecomment-2496196742
+// This allow me to avoid to drag a where clause around everywhere, but still
+// in my color space trait specify Xyz<Wp>: From<Self> instead of just Into
+mod private {
+    pub trait FromBound<C> {
+        type Other;
+    }
+    impl<C1, C2> FromBound<C2> for C1 {
+        type Other = C2;
     }
 }
 
@@ -80,18 +93,5 @@ impl<C: ColorArray + XyzMatrices> FromColor<C> for Xyz<C::WhitePoint> {
     fn from_color(color: C) -> Self {
         debug_assert!(C::CHANNELS == 3);
         return Xyz::from_array(matrix_3x3_vec3_mul(&C::INTO_XYZ, color.as_slice()));
-    }
-}
-
-impl<T: ColorArray + XyzMatrices> XyzConvert for T {
-    fn into_xyz(self) -> Xyz<Self::WhitePoint> {
-        debug_assert!(T::CHANNELS == 3);
-        return Xyz::from_array(matrix_3x3_vec3_mul(&Self::INTO_XYZ, self.as_slice()));
-    }
-
-    fn from_xyz(color: Xyz<Self::WhitePoint>) -> Self {
-        debug_assert!(T::CHANNELS == 3);
-        let c = matrix_3x3_vec3_mul(&Self::FROM_XYZ, color.as_slice());
-        return Self::from_fn(|i| c[i]);
     }
 }

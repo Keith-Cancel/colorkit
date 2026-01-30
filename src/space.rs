@@ -7,6 +7,25 @@ use colorkit::convert::XyzConvert;
 use colorkit::math::BoundF32;
 use colorkit::wp::WhitePoint;
 
+/// Information about a Color Space
+pub trait ColorData: Default {
+    /// Number of channels or also should be the length of the array.
+    const CHANNELS: usize;
+    /// Default color, should be black.
+    const DEFAULT: Self;
+    /// Color Spaces White Point
+    type WhitePoint: WhitePoint;
+    /// Are the Channels Linear
+    const LINEAR: bool;
+    /// Upper or max bound of each channel.
+    const CHANNEL_MAX: &'static [BoundF32];
+    /// Lower or min bound of each channel.
+    const CHANNEL_MIN: &'static [BoundF32];
+
+    // what else to add?
+    // primaries?
+}
+
 /// Trait to let Color Spaces be handled mostly like an array/slice.
 pub trait ColorArray:
     Copy
@@ -14,11 +33,10 @@ pub trait ColorArray:
     + AsMut<[f32]>
     + Borrow<[f32]>
     + BorrowMut<[f32]>
+    + ColorData
     + Index<usize, Output = f32>
     + IndexMut<usize, Output = f32>
 {
-    /// Number of channels or also should be the length of the array.
-    const CHANNELS: usize;
     /// Construct the Color calling `f(i)` for each index (same semantics as [`core::array::from_fn`]).
     fn from_fn<F: FnMut(usize) -> f32>(f: F) -> Self;
     /// View color as a slice reference.
@@ -57,25 +75,8 @@ pub trait ColorArray:
     }
 }
 
-/// Information about a Color Space
-pub trait ColorData: Default {
-    /// Default color, should be black.
-    const DEFAULT: Self;
-    /// Color Spaces White Point
-    type WhitePoint: WhitePoint;
-    /// Are the Channels Linear
-    const LINEAR: bool;
-    /// Upper or max bound of each channel.
-    const CHANNEL_MAX: &'static [BoundF32];
-    /// Lower or min bound of each channel.
-    const CHANNEL_MIN: &'static [BoundF32];
-
-    // what else to add?
-    // primaries?
-}
-
 /// The main ColorSpace Trait
-pub trait ColorSpace: ColorArray + ColorData + XyzConvert {
+pub trait ColorSpace: ColorData + ColorArray + XyzConvert {
     /// Number Channels
     #[inline]
     fn channels(&self) -> usize {

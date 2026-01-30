@@ -42,12 +42,16 @@ function print_matrices(name::String, m::Matrix{BigFloat})
     print_matrix("From XYZ (M^-1)", inv(m))
 end
 
-function load_matrix(m::Vector{String})
+function load_vector(vec::Vector{String})
     parsed = Vector{BigFloat}()
-    for v in m
+    for v in vec
         push!(parsed, parse(BigFloat, v))
     end
-    return Matrix(reshape(parsed, 3, 3)')
+    return parsed
+end
+
+function load_matrix3x3(m::Vector{String})
+    return Matrix(reshape(load_vector(m), 3, 3)')
 end
 
 
@@ -65,12 +69,12 @@ print_matrices("Linear sRGB Matrices", m)
 
 # OkLab Matrices
 # https://bottosson.github.io/posts/oklab/
-m1 = load_matrix([
+m1 = load_matrix3x3([
     "0.8189330101", "0.3618667424", "-0.1288597137",
     "0.0329845436", "0.9293118715", "0.0361456387",
     "0.0482003018", "0.2643662691", "0.6338517070"
 ])
-m2 = load_matrix([
+m2 = load_matrix3x3([
     "0.2104542553", "0.7936177850", "-0.0040720468",
     "1.9779984951", "-2.4285922050", "0.4505937099",
     "0.0259040371", "0.7827717662", "-0.8086757660"
@@ -79,4 +83,7 @@ print_header("Oklab matrices")
 print_matrix("M1", m1)
 print_matrix("M1^-1", inv(m1))
 print_matrix("M2", m2)
+# The first column is almost 1.0, should it be 1.0?
+# Looking here that is the case, gonna need to dig in a little more.
+# https://www.w3.org/TR/css-color-4/#color-conversion-code
 print_matrix("M2^-1", inv(m2))

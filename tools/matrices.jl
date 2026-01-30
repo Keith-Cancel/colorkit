@@ -19,6 +19,13 @@ function rgb_matrix(p::Array{BigFloat}, wp::Vector{BigFloat})
     return M
 end
 
+function print_matrix(name::String, m::Matrix{BigFloat})
+    println("$(name):")
+    @printf("    %.016lf, %.016lf, %.016lf,\n", m[1, 1], m[1, 2], m[1, 3])
+    @printf("    %.016lf, %.016lf, %.016lf,\n", m[2, 1], m[2, 2], m[2, 3])
+    @printf("    %.016lf, %.016lf, %.016lf,\n", m[3, 1], m[3, 2], m[3, 3])
+end
+
 function print_matrices(name::String, m::Matrix{BigFloat})
     name = " $(name) "
     fill = 40 - length(name)
@@ -27,25 +34,19 @@ function print_matrices(name::String, m::Matrix{BigFloat})
     header = repeat("~", left) * name * repeat("~", right)
     println(header)
     println(repeat("=", length(header)))
-    println("Into XYZ (M):")
-    @printf("    %.016lf, %.016lf, %.016lf,\n", m[1, 1], m[1, 2], m[1, 3])
-    @printf("    %.016lf, %.016lf, %.016lf,\n", m[2, 1], m[2, 2], m[2, 3])
-    @printf("    %.016lf, %.016lf, %.016lf,\n", m[3, 1], m[3, 2], m[3, 3])
-    m = inv(m)
-    println("From XYZ (M^-1):")
-    @printf("    %.016lf, %.016lf, %.016lf,\n", m[1, 1], m[1, 2], m[1, 3])
-    @printf("    %.016lf, %.016lf, %.016lf,\n", m[2, 1], m[2, 2], m[2, 3])
-    @printf("    %.016lf, %.016lf, %.016lf,\n", m[3, 1], m[3, 2], m[3, 3])
+    print_matrix("Into XYZ (M)", m)
+    print_matrix("From XYZ (M^-1)", inv(m))
 end
 
 
-#sRGB D65
+#sRGB D65, and primaries.
 m = rgb_matrix(
     BigFloat[
         parse(BigFloat, "0.64") parse(BigFloat, "0.33");
         parse(BigFloat, "0.30") parse(BigFloat, "0.60");
         parse(BigFloat, "0.15") parse(BigFloat, "0.06")
     ],
+    # This value is from spectrum_xyz.jl
     BigFloat[parse(BigFloat, "0.9504705586542830"), 1.0, parse(BigFloat, "1.0888287363958847")],
 )
 print_matrices("Linear sRGB Matrices", m)

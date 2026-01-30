@@ -3,9 +3,13 @@ use core::borrow::BorrowMut;
 use core::ops::Index;
 use core::ops::IndexMut;
 
+use colorkit::convert::FromColor;
 use colorkit::convert::XyzConvert;
 use colorkit::math::BoundF32;
 use colorkit::wp::WhitePoint;
+
+use crate::colors::Xyz;
+use crate::convert::IntoColor;
 
 /// Information about a Color Space
 pub trait ColorData: Default {
@@ -76,7 +80,7 @@ pub trait ColorArray:
 }
 
 /// The main ColorSpace Trait
-pub trait ColorSpace: ColorData + ColorArray + XyzConvert {
+pub trait ColorSpace: ColorData + ColorArray + FromColor<Xyz<<Self as ColorData>::WhitePoint>> {
     /// Number Channels
     #[inline]
     fn channels(&self) -> usize {
@@ -129,6 +133,10 @@ pub trait ColorSpace: ColorData + ColorArray + XyzConvert {
             }
             v
         });
+    }
+    /// Create an instance of this color from a CIE XYZ color.
+    fn from_xyz(color: Xyz<Self::WhitePoint>) -> Self {
+        return color.into_color();
     }
 }
 

@@ -1,3 +1,4 @@
+//! Floating point math functions. (e.g. [`sqrtf`], [`cbrtf`], [`quirtf`] ect..)
 pub(crate) mod arch;
 mod universal;
 
@@ -27,6 +28,7 @@ pub fn sqrtf(x: f32) -> f32 {
 // Const functions
 #[rustfmt::skip]
 /// Computes the square root with a `const fn`
+///
 pub use universal::sqrtf as sqrtf_const;
 
 /// Common math functions

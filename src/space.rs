@@ -1,3 +1,4 @@
+//! Traits for uniformly working with color spaces, see [`ColorSpace`] for the primary API.
 use core::borrow::Borrow;
 use core::borrow::BorrowMut;
 use core::ops::Index;

@@ -1,4 +1,4 @@
-//! Standard White Points
+//! Standard White Points (such as [`D65`]) and the [`WhitePoint`] trait.
 use colorkit::colors::Xyz;
 
 #[allow(non_camel_case_types)]

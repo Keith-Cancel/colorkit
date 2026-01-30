@@ -1,3 +1,4 @@
+//! Conversion Traits between color spaces.
 use colorkit::colors::Xyz;
 use colorkit::math::matrix_3x3_vec3_mul;
 use colorkit::space::ColorArray;
@@ -70,11 +71,13 @@ mod private {
 }
 
 /// Transformation Matrices to go between and from CIE XYZ
+///
+/// Expects that color space has a channel count of 3.
 // TODO
 // Maybe add my number item back to some these traits
 // since I can't do associated const equality in stable.
 // Mainly the length thing.
-// Ideally pub trait XyzMatrices: ColorData<CHANNELS = 3> 
+// Ideally pub trait XyzMatrices: ColorData<CHANNELS = 3>
 pub trait XyzMatrices: ColorData {
     // Looks like people generally represent these as a transformation matrix.
     // http://www.brucelindbloom.com/index.html?Eqn_RGB_to_XYZ.html

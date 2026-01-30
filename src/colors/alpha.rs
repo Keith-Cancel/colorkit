@@ -2,6 +2,7 @@ use colorkit::math::BoundF32;
 use colorkit::space2::ColorArray;
 use colorkit::space2::ColorData;
 use colorkit::space2::ColorTransmute;
+use colorkit::space2::XyzConvert;
 
 /// Wraps a color space with Alpha channel for transparency.
 #[repr(C)]
@@ -143,6 +144,11 @@ macro_rules! base_funcs {
                 return self.as_mut_slice();
             }
         }
+
+        /*
+        impl<S: ColorTransmute> XyzConvert for $name<S> {
+
+        }*/
 
         impl<S: ColorTransmute> $name<S> {
             const MAX: &'static [BoundF32] = &const {

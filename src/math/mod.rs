@@ -1,7 +1,6 @@
 //! Floating point math functions. (e.g. [`sqrtf`], [`cbrtf`], [`quirtf`] ect..)
 pub(crate) mod arch;
 mod universal;
-
 // TODO: arch and const fns
 // Ideally all the math functions would be `const fn`, but that means
 // I can't use hardware features =(
@@ -13,7 +12,6 @@ mod universal;
 // at the time of writing this sighs....
 // I guess in the mean time just add const version that
 // that calls the universal implementation.
-
 pub use universal::cbrtf;
 pub use universal::quirtf;
 pub use universal::ulp_int_diff_f32;
@@ -109,3 +107,7 @@ pub(crate) const fn matrix_3x3_vec3_mul(mat: &[f32; 9], vec: &[f32]) -> [f32; 3]
     }
     return res;
 }
+
+// Tests
+#[cfg(test)]
+mod tests;

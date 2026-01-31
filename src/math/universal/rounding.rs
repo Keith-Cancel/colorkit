@@ -118,6 +118,13 @@ pub const fn roundevenf(x: f32) -> f32 {
         // Over the half-way point so round up
         return f32::from_bits(neg | POS_ONE);
     }
+    let add = 1u32 << (23 - exp);
+    let half = 1u32 << (23 - exp - 1);
+    // decide:
+    // - if frac > half: round up (add)
+    // - if frac < half: trunc
+    // - if frac == half: tie -> round to even: add only if the integer bit is 1.
+
     todo!();
     let msk = (SHIFT_MSK >> exp) as u32;
     let new = bits & msk;

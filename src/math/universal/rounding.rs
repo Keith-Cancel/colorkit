@@ -125,7 +125,11 @@ pub const fn roundevenf(x: f32) -> f32 {
     // - if frac < half: trunc
     // - if frac == half: tie -> round to even: add only if the integer bit is 1.
 
-    if (bits & add) != 0 {} // odd
+    if (bits & add) != 0 { // odd
+        if (bits & half) == 0 { // less than half
+
+        }
+    }
 
     todo!();
     let msk = (SHIFT_MSK >> exp) as u32;

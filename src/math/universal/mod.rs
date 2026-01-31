@@ -6,6 +6,7 @@ mod ulp;
 
 pub use cbrt::cbrtf;
 pub use quirt::quirtf;
+pub use rounding::ceilf;
 pub use rounding::floorf;
 pub use rounding::truncf;
 pub use sqrt::sqrtf;

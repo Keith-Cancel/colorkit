@@ -86,6 +86,7 @@ pub trait Dither {
     fn advance(&mut self) {}
 }
 
+/// No-OP Dither just passes value unchanged.
 #[derive(Copy, Clone, Debug)]
 pub struct NoDither;
 impl Dither for NoDither {

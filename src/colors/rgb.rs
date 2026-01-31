@@ -192,14 +192,14 @@ const fn linear(s: f32) -> f32 {
     return l;
 }
 
-impl From<Srgb> for LinSrgb {
-    fn from(value: Srgb) -> Self {
+impl FromColor<Srgb> for LinSrgb {
+    fn from_color(value: Srgb) -> Self {
         return value.into_linear();
     }
 }
 
-impl From<LinSrgb> for Srgb {
-    fn from(value: LinSrgb) -> Self {
+impl FromColor<LinSrgb> for Srgb {
+    fn from_color(value: LinSrgb) -> Self {
         return value.into_nonlinear();
     }
 }

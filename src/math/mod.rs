@@ -23,6 +23,15 @@ pub fn sqrtf(x: f32) -> f32 {
     return universal::sqrtf(x);
 }
 
+/// Rounds to the nearest integer to the provided value.
+///
+/// In the event the value is exactly in the middle it
+/// will round to the nearest even integer.
+pub fn roundevenf(x: f32) -> f32 {
+    #[allow(unused)]
+    return universal::roundevenf(x);
+}
+
 /// Get the integer part of the float. Truncates the fraction always to zero.
 pub fn truncf(x: f32) -> f32 {
     arch::arch_fn!(name: truncf, args: x);
@@ -52,8 +61,7 @@ pub fn floorf(x: f32) -> f32 {
 #[rustfmt::skip]
 pub use universal::ceilf as ceilf_const;
 pub use universal::floorf as floorf_const;
-/// Computes the square root with a `const fn`
-///
+pub use universal::roundevenf as roundevenf_const;
 pub use universal::sqrtf as sqrtf_const;
 pub use universal::truncf as truncf_const;
 

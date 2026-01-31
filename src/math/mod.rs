@@ -30,8 +30,13 @@ pub fn truncf(x: f32) -> f32 {
     return universal::truncf(x);
 }
 
+pub fn floorf(x: f32) -> f32 {
+    return universal::floorf(x);
+}
+
 // Const functions
 #[rustfmt::skip]
+pub use universal::floorf as floorf_const;
 /// Computes the square root with a `const fn`
 ///
 pub use universal::sqrtf as sqrtf_const;

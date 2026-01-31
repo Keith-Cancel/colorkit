@@ -122,9 +122,8 @@ pub fn roundevenf(x: f32) -> f32 {
     let add = half << 1;
 
     // Rounding strategy:
-    //
-    // I add "half" and then truncate the fractional bits and then truncating
-    // the fractional bits.
+    // I add "half" and then truncate the fractional bits. (Note: This basically
+    // makes it round to nearest)
     //
     // This works for all cases except the exact halfway tie when the integer
     // part is already even. In that single case we must *not* add `half`,
@@ -132,12 +131,13 @@ pub fn roundevenf(x: f32) -> f32 {
     //
     // Therefore, I must conditionally add "half" to the bits.
     // The condition below detects when it is safe to add:
-    //   - if `bits & (half - 1) != 0` -> past the halfway point
+    //   - if `bits & (half - 1) != 0` -> past or under the halfway point
     //   - if `bits & add != 0`        -> integer part is odd
     //
     // If neither condition holds. This means the value is exactly halfway
-    // and the integer part is already even. So do not add "half". By doing this
-    // this yields round-to-even behavior
+    // and the integer part is already even. So do not add "half".
+    // Using this condition yields round-to-even behavior
+    //
     // It's possible to test this compactly with: `bits & (add | (half - 1))`
     let bits = if (bits & (add | (half - 1))) != 0 {
         bits + half

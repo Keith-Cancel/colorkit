@@ -17,6 +17,9 @@ mod uint8;
 
 use core::any::Any;
 
+use colorkit::math::truncf;
+
+#[rustfmt::skip]
 pub use bit_uint::BitUint;
 pub use bit_uint::BitUintType;
 pub use norm_f32::NormF32;
@@ -168,14 +171,12 @@ fn norm_to_u32<D: Dither>(norm: NormF32, round: Rounding, dither: &mut D, max: u
     let max = max as f32;
     let scaled = norm * max;
     let dith = dither.sample(scaled);
-    todo!("Add different rounding to math.");
-    let round = dith;
-    /*let round = match round {
-        Rounding::Nearest => dith.round(),
-        Rounding::Even => dith.round_ties_even(),
-        Rounding::TowardZero => dith.trunc(),
-        Rounding::Floor => dith.floor(),
-        Rounding::Ceil => dith.ceil(),
-    };*/
+    let round = match round {
+        Rounding::Nearest => todo!(), //dith.round(),
+        Rounding::Even => todo!(),    //dith.round_ties_even(),
+        Rounding::TowardZero => truncf(dith),
+        Rounding::Floor => todo!(), //dith.floor(),
+        Rounding::Ceil => todo!(),  //dith.ceil(),
+    };
     return round.clamp(0.0, max) as u32;
 }

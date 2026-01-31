@@ -1,5 +1,5 @@
-use std::any::Any;
-use std::any::TypeId;
+use core::any::Any;
+use core::any::TypeId;
 
 use super::Dither;
 use super::NormF32;

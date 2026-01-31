@@ -12,6 +12,11 @@ fn trunc_frac() {
     frac(super::truncf, 0.0, -0.0);
 }
 #[test]
+fn ceil_frac() {
+    frac(universal::ceilf, 1.0, -0.0);
+    frac(super::ceilf, 1.0, -0.0);
+}
+#[test]
 fn floor_frac() {
     frac(universal::floorf, 0.0, -1.0);
     frac(super::floorf, 0.0, -1.0);
@@ -30,6 +35,11 @@ fn frac<F: Fn(f32) -> f32>(func: F, pos: f32, neg: f32) {
 fn trunc_mixed() {
     mixed(universal::truncf, 0.0, 0.0);
     mixed(super::truncf, 0.0, 0.0);
+}
+#[test]
+fn ceil_mixed() {
+    mixed(universal::ceilf, 1.0, 0.0);
+    mixed(super::ceilf, 1.0, 0.0);
 }
 #[test]
 fn floor_mixed() {
@@ -53,6 +63,11 @@ fn mixed<F: Fn(f32) -> f32>(func: F, pos: f32, neg: f32) {
 fn trunc_large() {
     large(universal::truncf);
     large(super::truncf);
+}
+#[test]
+fn ceil_large() {
+    large(universal::ceilf);
+    large(super::ceilf);
 }
 #[test]
 fn floor_large() {

@@ -120,6 +120,21 @@ pub fn roundevenf(x: f32) -> f32 {
     }
     let half = 1u32 << (23 - exp - 1);
     let add = half << 1;
+
+    // Rounding strategy:
+    //
+    // I add "half" and then truncate the fractional bits and then truncating
+    // the fractional bits.
+    //
+    // This works for all cases except the exact halfway tie when the integer
+    // part is already even. In that single case we must *not* add `half`,
+    // otherwise we would round to the next odd integer.
+    //
+    // Therefore, I must conditionally add "half" to the bits.
+    // The condition below detects when it is safe to add:
+    //   - if `bits & (half - 1) != 0` -> past the halfway point
+    //   - if `bits & add != 0`        -> integer part is odd
+
     // decide:
     // - if frac > half: round up (add)
     // - if frac < half: trunc

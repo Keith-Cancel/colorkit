@@ -79,7 +79,7 @@ mod private {
 /// If you implement this trait [`FromColor`] will be implemented
 /// both ways between [`Xyz`] and Self.
 // TODO
-// Maybe add my number item back to some these traits
+// Maybe add my number type trick back to some these traits
 // since I can't do associated const equality in stable.
 // Mainly the length thing.
 // Ideally pub trait XyzMatrices: ColorData<CHANNELS = 3>

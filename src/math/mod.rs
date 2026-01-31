@@ -75,7 +75,7 @@ pub use universal::truncf as truncf_const;
 /// I have also have some tests that evaluate the accuracy and
 /// performance of these functions in the root of this repo
 /// called `test_math`
-pub trait MathFuncs {
+pub trait MathFuncs: Sized {
     /// Computes the square root
     fn sqrt(self) -> Self;
     /// Compute the cube root.
@@ -98,6 +98,20 @@ pub trait MathFuncs {
     /// Similar to [`truncf`], but instead of torwards zero, it's
     /// torwards negative infinity.
     fn floor(self) -> Self;
+    /// Rounds to the nearest integer to the provided value.
+    ///
+    /// In the event the value is exactly in the middle it
+    /// will round to the nearest even integer.
+    fn roundeven(self) -> Self;
+    /// Rounds to the nearest integer to the provided value.
+    ///
+    /// In the event the value is exactly in the middle it
+    /// will round to the nearest even integer.
+    ///
+    /// Alias of [`MathFuncs::roundeven`]
+    fn round_ties_even(self) -> Self {
+        return Self::roundeven(self);
+    }
 }
 
 impl MathFuncs for f32 {
@@ -131,6 +145,10 @@ impl MathFuncs for f32 {
 
     fn floor(self) -> f32 {
         return floorf(self);
+    }
+
+    fn roundeven(self) -> Self {
+        return roundevenf(self);
     }
 }
 

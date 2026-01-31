@@ -16,6 +16,7 @@ mod universal;
 
 pub use universal::cbrtf;
 pub use universal::quirtf;
+pub use universal::truncf;
 pub use universal::ulp_int_diff_f32;
 
 /// Computes the square root

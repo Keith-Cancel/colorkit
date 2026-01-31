@@ -2,6 +2,7 @@ cfg_items!(
     #[cfg(target_feature = "sse2")] => {
         mod x86_64;
         pub use x86_64::sqrtf;
+        pub use x86_64::truncf;
     }
 );
 
@@ -22,6 +23,12 @@ macro_rules! arch_fn {
             all(target_arch = "aarch64", target_feature = "neon")
         ))]
         return colorkit::math::arch::sqrtf($($arg),+);
+    };
+    (@inner truncf, $($arg:expr),+) => {
+        #[cfg(any(
+            target_feature = "sse2",
+        ))]
+        return colorkit::math::arch::truncf($($arg),+);
     };
 }
 pub(crate) use arch_fn;

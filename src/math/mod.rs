@@ -16,7 +16,6 @@ mod universal;
 
 pub use universal::cbrtf;
 pub use universal::quirtf;
-pub use universal::truncf;
 pub use universal::ulp_int_diff_f32;
 
 /// Computes the square root
@@ -26,11 +25,19 @@ pub fn sqrtf(x: f32) -> f32 {
     return universal::sqrtf(x);
 }
 
+/// Get the integer part of the float. Truncates the fraction always to zero.
+pub fn truncf(x: f32) -> f32 {
+    //arch::arch_fn!(name: truncf, args: x);
+    #[allow(unused)]
+    return universal::truncf(x);
+}
+
 // Const functions
 #[rustfmt::skip]
 /// Computes the square root with a `const fn`
 ///
 pub use universal::sqrtf as sqrtf_const;
+pub use universal::truncf as truncf_const;
 
 /// Common math functions
 ///

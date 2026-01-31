@@ -118,8 +118,8 @@ pub fn roundevenf(x: f32) -> f32 {
         // Over the half-way point so round up
         return f32::from_bits(neg | POS_ONE);
     }
-    let add = 1u32 << (23 - exp);
     let half = 1u32 << (23 - exp - 1);
+    let add = half << 1;
     // decide:
     // - if frac > half: round up (add)
     // - if frac < half: trunc
@@ -140,7 +140,9 @@ pub fn roundevenf(x: f32) -> f32 {
     // 1    1    fine to add then trunc
 
     let tmp = bits & (half - 1);
-    println!("\nTMP {:#x}\n", tmp);
+    println!("\nTMP {:#x}, {}", tmp, x);
+    let tmp = bits & add;
+    println!("TMP {:#x}, {}\n", tmp, x);
     //if todo!() {
     //    bits += half;
     //}

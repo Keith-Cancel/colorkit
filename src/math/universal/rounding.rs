@@ -32,9 +32,9 @@ pub const fn floorf(x: f32) -> f32 {
     let neg = bits & 0x80000000;
     // Purely fractional so will just be zero or -1
     if exp < 0 {
+        // Only keep the sign for neg zero.
         let dwn = if (bits << 1) == 0 { neg } else { 0xbf800000 };
-        let ret = if neg > 0 { dwn } else { neg };
-        // Only keep the sign.
+        let ret = if neg > 0 { dwn } else { 0 };
         return f32::from_bits(ret);
     }
     todo!();

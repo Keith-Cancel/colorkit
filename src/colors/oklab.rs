@@ -169,6 +169,7 @@ mod test {
     use colorkit::wp::WhitePoint;
 
     use super::*;
+    use crate::convert::IntoColor;
     use crate::math::MathFuncs;
 
     #[test]
@@ -190,5 +191,27 @@ mod test {
         let lab = OkLab::new(0.0, 0.0, 0.0);
         let xyz = lab.into_xyz().into_array();
         assert_eq!(xyz, [0.0, 0.0, 0.0]);
+    }
+    // Examples from:
+    // https://bottosson.github.io/posts/oklab/
+    #[test]
+    fn oklab_examples() {
+        let c: OkLab = <Xyz<D65>>::new(1.0, 0.0, 0.0).into_color();
+        // He only gives 3 digits of precision, in his blog post
+        // but still good check to make sure we are in the right
+        // ball park.
+        assert!(c[0].almost_eq(0.450, 1e-3));
+        assert!(c[1].almost_eq(1.236, 1e-3));
+        assert!(c[2].almost_eq(-0.019, 1e-3));
+
+        let c: OkLab = <Xyz<D65>>::new(0.0, 1.0, 0.0).into_color();
+        assert!(c[0].almost_eq(0.922, 1e-3));
+        assert!(c[1].almost_eq(-0.671, 1e-3));
+        assert!(c[2].almost_eq(0.263, 1e-3));
+
+        let c: OkLab = <Xyz<D65>>::new(0.0, 0.0, 1.0).into_color();
+        assert!(c[0].almost_eq(0.153, 1e-3));
+        assert!(c[1].almost_eq(-1.415, 1e-3));
+        assert!(c[2].almost_eq(-0.449, 1e-3));
     }
 }

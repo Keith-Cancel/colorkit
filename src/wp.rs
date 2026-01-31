@@ -26,6 +26,10 @@ pub trait WhitePoint: WhitePoint_xy {
     /// Calculate the `X` value using a different `Y`
     /// using the white point [`WhitePoint_xy::x_i`]
     /// and [`WhitePoint_xy::y_i`] values.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the white point's `y_i` is zero (division by zero).
     fn calc_x(y: f32) -> f32 {
         return white_point_x::<Self>(y);
     }
@@ -33,6 +37,10 @@ pub trait WhitePoint: WhitePoint_xy {
     /// Calculate the `Z` value using a different `Y`
     /// using the white point [`WhitePoint_xy::x_i`]
     /// and [`WhitePoint_xy::y_i`] values.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the white point's `y_i` is zero (division by zero).
     fn calc_z(y: f32) -> f32 {
         return white_point_z::<Self>(y);
     }
@@ -46,9 +54,13 @@ pub trait WhitePoint: WhitePoint_xy {
 /// Calculate the `X` value using a different `Y`
 /// using the white point [`WhitePoint_xy::x_i`]
 /// and [`WhitePoint_xy::y_i`] values.
+///
+/// # Panics
+///
+/// Panics if the white point's `y_i` is zero (division by zero).
 pub const fn white_point_x<W: WhitePoint>(y: f32) -> f32 {
     if W::y_i == 0.0 {
-        panic!("White point y_i is zero");
+        panic!("White point y_i is zero (division by zero)");
     }
     return (W::x_i / W::y_i) * y;
 }
@@ -56,9 +68,13 @@ pub const fn white_point_x<W: WhitePoint>(y: f32) -> f32 {
 /// Calculate the `Z` value using a different `Y`
 /// using the white point [`WhitePoint_xy::x_i`]
 /// and [`WhitePoint_xy::y_i`] values.
+///
+/// # Panics
+///
+/// Panics if the white point's `y_i` is zero (division by zero).
 pub const fn white_point_z<W: WhitePoint>(y: f32) -> f32 {
     if W::y_i == 0.0 {
-        panic!("White point y_i is zero");
+        panic!("White point y_i is zero (division by zero)");
     }
     let tmp = (1.0 - W::x_i - W::y_i) / W::y_i;
     return tmp * y;

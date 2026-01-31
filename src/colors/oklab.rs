@@ -266,4 +266,33 @@ mod test {
         assert!(c[1].almost_eq(-1.415, 1e-3));
         assert!(c[2].almost_eq(-0.449, 1e-3));
     }
+
+    // Just rough sanity check.
+    #[test]
+    fn rgb() {
+        let red = Srgb::new(1.0, 0.0, 0.0);
+        let lab = OkLab::from_color(red);
+
+        assert!(lab[0].almost_eq(0.628, 1e-3));
+        assert!(lab[1].almost_eq(0.225, 1e-3));
+        assert!(lab[2].almost_eq(0.126, 1e-3));
+
+        let grn = Srgb::new(0.0, 1.0, 0.0);
+        let lab = OkLab::from_color(grn);
+        assert!(lab[0].almost_eq(0.866, 1e-3));
+        assert!(lab[1].almost_eq(-0.234, 1e-3));
+        assert!(lab[2].almost_eq(0.179, 1e-3));
+
+        let blu = Srgb::new(0.0, 0.0, 1.0);
+        let lab = OkLab::from_color(blu);
+        assert!(lab[0].almost_eq(0.452, 1e-3));
+        assert!(lab[1].almost_eq(-0.032, 1e-3));
+        assert!(lab[2].almost_eq(-0.312, 1e-3));
+
+        let mag = Srgb::new(1.0, 0.0, 1.0);
+        let lab = OkLab::from_color(mag);
+        assert!(lab[0].almost_eq(0.702, 1e-3));
+        assert!(lab[1].almost_eq(0.275, 1e-3));
+        assert!(lab[2].almost_eq(-0.169, 1e-3));
+    }
 }

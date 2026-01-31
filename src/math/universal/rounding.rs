@@ -125,29 +125,24 @@ pub const fn roundevenf(x: f32) -> f32 {
     // - if frac < half: trunc
     // - if frac == half: tie -> round to even: add only if the integer bit is 1.
 
-    if (bits & add) != 0 { // odd
-        if (bits & half) == 0 { // less than half
+    // Hmm i feel like this is method might be to branchy
+    // let see if the int part is even I always truncate unless we already half-way
+    // if it's odd we always truncate for less then half-way
+    // so regardless of parity if under half truncate
+    // if we always add half and truncate this will be correct for all intial odd parity.
+    // if I do the same for even parity it always be correct except if halfway.
+    // So for even parity we don't want to add half if at exactly halfway
+    // Hmm seems like there should be away to combine that in one check.
+    // Ones Half
+    // 0    0    fine to add then trunc
+    // 0    1    if any bits after half are set safe to add then trunc, otherwise we just trunc
+    // 1    0    fine to add then trunc
+    // 1    1    fine to add then trunc
 
-        }
-        // Hmm i feel like this is method might be to branchy
-        // let see if the int part is even I always truncate unless we already half-way
-        // if it's odd we always truncate for less then half-way
-        // so regardless of parity if under half truncate
-        // if we always add half and truncate this will be correct for all intial odd parity.
-        // if I do the same for even parity it always be correct except if halfway.
-        // So for even parity we don't want to add half if at exactly halfway
-        // Hmm seems like there should be away to combine that in one check.
+    if todo!() {
+        bits += half;
     }
-
-    todo!();
+    // truncate.
     let msk = (SHIFT_MSK >> exp) as u32;
-    let new = bits & msk;
-
-    // If not negative and there was a fractional part, add 1.0.
-    if neg == 0 && bits != new {
-        let add = 1u32 << (23 - exp);
-        // This correctly carries into he exponent if necessary
-        return f32::from_bits(new.wrapping_add(add));
-    }
-    return f32::from_bits(new);
+    return f32::from_bits(bits & msk);
 }

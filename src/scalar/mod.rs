@@ -19,6 +19,7 @@ use core::any::Any;
 
 use colorkit::math::ceilf;
 use colorkit::math::floorf;
+use colorkit::math::roundevenf;
 use colorkit::math::truncf;
 
 #[rustfmt::skip]
@@ -176,7 +177,7 @@ fn norm_to_u32<D: Dither>(norm: NormF32, round: Rounding, dither: &mut D, max: u
     let dith = dither.sample(scaled);
     let round = match round {
         Rounding::Nearest => todo!(), //dith.round(),
-        Rounding::Even => todo!(),    //dith.round_ties_even(),
+        Rounding::Even => roundevenf(dith),
         Rounding::TowardZero => truncf(dith),
         Rounding::Floor => floorf(dith),
         Rounding::Ceil => ceilf(dith),

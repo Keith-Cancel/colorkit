@@ -1,5 +1,6 @@
 use colorkit::convert::ColorTransmute;
 use colorkit::convert::FromColor;
+use colorkit::convert::IntoColor;
 use colorkit::math::BoundF32;
 use colorkit::math::cbrtf;
 use colorkit::math::matrix_3x3_vec3_mul;
@@ -8,6 +9,7 @@ use colorkit::space::ColorSpace;
 use colorkit::wp::D65;
 
 use super::LinSrgb;
+use super::Srgb;
 use super::Xyz;
 use super::macros::impl_color_array;
 
@@ -198,6 +200,19 @@ impl FromColor<OkLab> for LinSrgb {
     fn from_color(color: OkLab) -> Self {
         let lms = OkLab::lab_into_lms(color.0);
         return LinSrgb::from_array(OkLab::lms_into_rgb(lms));
+    }
+}
+
+impl FromColor<Srgb> for OkLab {
+    fn from_color(color: Srgb) -> Self {
+        return color.into_linear().into_color();
+    }
+}
+
+impl FromColor<OkLab> for Srgb {
+    fn from_color(color: OkLab) -> Self {
+        let c = LinSrgb::from_color(color);
+        return c.into_nonlinear();
     }
 }
 

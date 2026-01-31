@@ -35,6 +35,8 @@ pub fn truncf(x: f32) -> f32 {
 /// Similar to [`truncf`], but instead of torwards zero, it's
 /// torwards negative infinity.
 pub fn floorf(x: f32) -> f32 {
+    arch::arch_fn!(name: floorf, args: x);
+    #[allow(unused)]
     return universal::floorf(x);
 }
 

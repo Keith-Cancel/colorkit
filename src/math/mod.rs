@@ -14,6 +14,7 @@ mod universal;
 // that calls the universal implementation.
 pub use universal::cbrtf;
 pub use universal::quirtf;
+pub use universal::roundf;
 pub use universal::ulp_int_diff_f32;
 
 /// Computes the square root
@@ -101,6 +102,11 @@ pub trait MathFuncs: Sized {
     /// Rounds to the nearest integer to the provided value.
     ///
     /// In the event the value is exactly in the middle it
+    /// will round away from zero.
+    fn round(self) -> Self;
+    /// Rounds to the nearest integer to the provided value.
+    ///
+    /// In the event the value is exactly in the middle it
     /// will round to the nearest even integer.
     fn roundeven(self) -> Self;
     /// Rounds to the nearest integer to the provided value.
@@ -145,6 +151,10 @@ impl MathFuncs for f32 {
 
     fn floor(self) -> f32 {
         return floorf(self);
+    }
+
+    fn round(self) -> f32 {
+        return roundf(self);
     }
 
     fn roundeven(self) -> Self {

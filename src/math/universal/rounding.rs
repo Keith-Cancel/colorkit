@@ -148,3 +148,31 @@ pub const fn roundevenf(x: f32) -> f32 {
     let msk = (SHIFT_MSK >> exp) as u32;
     return f32::from_bits(bits & msk);
 }
+
+/// Rounds to the nearest integer to the provided value.
+///
+/// In the event the value is exactly in the middle it
+/// will round away from zero.
+pub const fn roundf(x: f32) -> f32 {
+    let bits = x.to_bits();
+    let exp = exponentf(bits);
+
+    // Exponent is too large to have a fraction so just return x
+    if exp >= 23 {
+        return x;
+    }
+    let neg = bits & F32_MSK_SIGN;
+    let abs = bits & F32_MSK_ABS;
+    // Purely fractional so it will always goto zero if at or below +- 0.5
+    if exp < 0 {
+        if abs < HALF {
+            return f32::from_bits(neg);
+        }
+        // Over the half-way point so round up
+        return f32::from_bits(neg | POS_ONE);
+    }
+    let half = 1u32 << (23 - exp - 1);
+    // truncate.
+    let msk = (SHIFT_MSK >> exp) as u32;
+    return f32::from_bits((bits + half) & msk);
+}

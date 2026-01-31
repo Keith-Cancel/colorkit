@@ -72,7 +72,12 @@ mod private {
 
 /// Transformation Matrices to go between and from CIE XYZ
 ///
-/// Expects that color space has a channel count of 3.
+/// This trait expects that [`ColorData::CHANNELS`] is equal
+/// to *3*, and slices/arrays gotten via [`ColorArray`] are also
+/// length 3.
+///
+/// If you implement this trait [`FromColor`] will be implemented
+/// both ways between [`Xyz`] and Self.
 // TODO
 // Maybe add my number item back to some these traits
 // since I can't do associated const equality in stable.

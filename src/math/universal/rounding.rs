@@ -1,9 +1,11 @@
+use super::F32_MSK_ABS;
 use super::F32_MSK_SIGN;
 use super::exponentf;
 
 const HALF: u32 = (0.5f32).to_bits();
 const POS_ONE: u32 = (1.0f32).to_bits();
 const NEG_ONE: u32 = (-1.0f32).to_bits();
+const SHIFT_MSK: i32 = 0xff80_0000u32 as i32;
 
 /// Get the integer part of the float. Truncates the fraction always to zero.
 pub const fn truncf(x: f32) -> f32 {
@@ -18,7 +20,7 @@ pub const fn truncf(x: f32) -> f32 {
         // Only keep the sign.
         return f32::from_bits(bits & F32_MSK_SIGN);
     }
-    let msk = ((0xff800000u32 as i32) >> exp) as u32;
+    let msk = (SHIFT_MSK >> exp) as u32;
     // Otherwise just mask the fractional part out.
     return f32::from_bits(bits & msk);
 }
@@ -47,7 +49,7 @@ pub const fn floorf(x: f32) -> f32 {
         return f32::from_bits(ret);
     }
 
-    let msk = ((0xff800000u32 as i32) >> exp) as u32;
+    let msk = (SHIFT_MSK >> exp) as u32;
     let new = bits & msk;
 
     // If negative and there was a fractional part, subtract 1.0.
@@ -82,7 +84,7 @@ pub const fn ceilf(x: f32) -> f32 {
         let ret = if neg > 0 { neg } else { POS_ONE };
         return f32::from_bits(ret);
     }
-    let msk = ((0xff800000u32 as i32) >> exp) as u32;
+    let msk = (SHIFT_MSK >> exp) as u32;
     let new = bits & msk;
 
     // If not negative and there was a fractional part, add 1.0.
@@ -107,7 +109,7 @@ pub const fn roundevenf(x: f32) -> f32 {
         return x;
     }
     let neg = bits & F32_MSK_SIGN;
-    let abs = bits & 0x7fffffff;
+    let abs = bits & F32_MSK_ABS;
     // Purely fractional so it will always goto zero if at or below +- 0.5
     if exp < 0 {
         if abs <= HALF {
@@ -116,7 +118,7 @@ pub const fn roundevenf(x: f32) -> f32 {
         todo!();
     }
     todo!();
-    let msk = ((0xff800000u32 as i32) >> exp) as u32;
+    let msk = (SHIFT_MSK >> exp) as u32;
     let new = bits & msk;
 
     // If not negative and there was a fractional part, add 1.0.

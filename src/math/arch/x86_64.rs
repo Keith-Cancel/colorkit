@@ -51,3 +51,16 @@ pub fn ceilf(mut x: f32) -> f32 {
     };
     return x;
 }
+
+#[inline(always)]
+pub fn roundevenf(mut x: f32) -> f32 {
+    unsafe {
+        asm!(
+            "roundss {r}, {r}, 0x8",
+            r = inout(xmm_reg) x,
+            // https://doc.rust-lang.org/rust-by-example/unsafe/asm.html#options
+            options(nomem, nostack, pure),
+        )
+    };
+    return x;
+}

@@ -28,6 +28,7 @@ pub fn sqrtf(x: f32) -> f32 {
 /// In the event the value is exactly in the middle it
 /// will round to the nearest even integer.
 pub fn roundevenf(x: f32) -> f32 {
+    arch::arch_fn!(name: roundevenf, args: x);
     #[allow(unused)]
     return universal::roundevenf(x);
 }

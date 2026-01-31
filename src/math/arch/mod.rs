@@ -3,6 +3,7 @@ cfg_items!(
         mod x86_64;
         pub use x86_64::ceilf;
         pub use x86_64::floorf;
+        pub use x86_64::roundevenf;
         pub use x86_64::sqrtf;
         pub use x86_64::truncf;
     }
@@ -30,6 +31,12 @@ macro_rules! arch_fn {
             target_feature = "sse2",
         )))]
         return colorkit::math::arch::floorf($($arg),+);
+    };
+    (@inner roundevenf, $($arg:expr),+) => {
+        #[cfg(all(not(miri), any(
+            target_feature = "sse2",
+        )))]
+        return colorkit::math::arch::roundevenf($($arg),+);
     };
     (@inner sqrtf, $($arg:expr),+) => {
         #[cfg(all(not(miri), any(

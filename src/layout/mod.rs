@@ -1,11 +1,10 @@
-//! Types that can be a color [`Layout`] for [`Color`](`colorkit::color::Color`)
+//! Types that can be [`ColorSpace`](`colorkit::space::ColorSpace`) data provider.
 //!
 //! This module defines the [`Layout`] trait and conversion traits:
 //!
 //! - [`FromLayout`] / [`IntoLayout`] Converts between the [Scalar] types of layouts.
 //!
 //! - [`GrowLayout`] / [`TruncateLayout`] Converts channel width of Layouts, and [Scalar] types.
-
 mod packed_565;
 mod planar;
 
@@ -14,13 +13,11 @@ use colorkit::scalar::NoDither;
 use colorkit::scalar::NormF32;
 use colorkit::scalar::Rounding;
 use colorkit::scalar::Scalar;
-/// Packed 5-6-5 channel layout in a [u16].
+
+#[rustfmt::skip]
 pub use packed_565::Packed565;
-/// Planar or array like channel layout
 pub use planar::Planar;
-/// Alias of [Planar<S, 3>]
 pub use planar::Planar3;
-/// Alias of [Planar<S, 4>]
 pub use planar::Planar4;
 
 /// Bridge between a layout and its underlying storage.
@@ -63,7 +60,7 @@ pub trait Layout: Copy + Default + LayoutStorage {
 
     /// Create a layout by calling `fun` for each channel index.
     ///
-    /// Similar to [std::array::from_fn]
+    /// Similar to [`core::array::from_fn`]
     fn from_fn_raw<F: FnMut(usize) -> Self::ChannelType>(fun: F) -> Self;
 
     /// Create a layout by calling `fun` for each channel from the returned
@@ -111,7 +108,7 @@ pub trait Layout: Copy + Default + LayoutStorage {
     ///
     /// # Panics
     /// May panic if the channel counts do not match.
-    fn requantize<L: Layout<CHANNELS = { Self::CHANNELS }>>(self, round: Rounding) -> L {
+    fn requantize<L: Layout>(self, round: Rounding) -> L {
         debug_assert!(L::CHANNELS == Self::CHANNELS);
         return L::from_fn_norm(|i| self.get_norm(i), round);
     }
@@ -120,17 +117,13 @@ pub trait Layout: Copy + Default + LayoutStorage {
     ///
     /// # Panics
     /// May panic if the channel counts do not match.
-    fn requantize_dither<L: Layout<CHANNELS = { Self::CHANNELS }>, D: Dither>(
-        self,
-        round: Rounding,
-        dither: &mut D,
-    ) -> L {
+    fn requantize_dither<L: Layout, D: Dither>(self, round: Rounding, dither: &mut D) -> L {
         debug_assert!(L::CHANNELS == Self::CHANNELS);
         return L::from_fn_norm_dither(|i| self.get_norm(i), round, dither);
     }
 }
 
-/// A [`LayoutScalar`] is layout whose [Layout::ChannelType] is a [`Scalar`] and uses its full value range.
+/// A [`LayoutScalar`] is layout whose [`Layout::ChannelType`] is a [`Scalar`] and uses its full value range.
 ///
 /// All channels are assumed to have the same bit width and use the entire range
 /// of the scalar type.
@@ -147,25 +140,21 @@ pub trait Layout: Copy + Default + LayoutStorage {
 pub trait LayoutScalar: Layout<ChannelType: Scalar> {
     /// Create a layout by calling `fun` for each channel index.
     ///
-    /// Similar to [std::array::from_fn]
+    /// Similar to [`core::array::from_fn`]
     fn from_fn<F: FnMut(usize) -> Self::ChannelType>(fun: F) -> Self {
         return Self::from_fn_raw(fun);
     }
     /// Return the raw value at `index`.
     ///
     /// # Panics
-    /// May Panic if `index` >= the `COUNT` constant on [`Layout::Channels`]
-    ///
-    /// (see [`ChannelCount::COUNT`] for the definition).
+    /// May Panic if `index` >= [`Layout::CHANNELS`]
     fn get(&self, index: usize) -> Self::ChannelType {
         return self.get_raw(index);
     }
     /// Set the scalar at `index`.
     ///
     /// # Panics
-    /// May Panic if `index` >= the `COUNT` constant on [`Layout::Channels`]
-    ///
-    /// (see [`ChannelCount::COUNT`] for the definition).
+    /// May Panic if `index` >= [`Layout::CHANNELS`]
     fn set(&mut self, index: usize, value: Self::ChannelType) {
         return self.set_raw(index, value);
     }
@@ -175,31 +164,31 @@ pub trait LayoutScalar: Layout<ChannelType: Scalar> {
 // ==================================================
 /// Convert from another layout `L` into `Self`.
 ///
-/// This is like [std::convert::From] but does not imply lossless conversion.
+/// This is like [core::convert::From] but does not imply lossless conversion.
 /// Implementations should not change channel count.
 pub trait FromLayout<L: Layout>: Layout {
     fn from_layout(layout: L) -> Self;
 }
 
-impl<L1: Layout<CHANNELS = { L2::CHANNELS }>, L2: Layout> FromLayout<L1> for L2 {
-    fn from_layout(layout: L1) -> Self {
-        return layout.requantize(Rounding::Nearest);
-    }
-}
+//impl<L1: Layout<CHANNELS = { L2::CHANNELS }>, L2: Layout> FromLayout<L1> for L2 {
+//    fn from_layout(layout: L1) -> Self {
+//        return layout.requantize(Rounding::Nearest);
+//    }
+//}
 
 /// Convert this layout into another layout `L`
 ///
-/// This is like [std::convert::Into] but does not imply lossless conversion.
+/// This is like [core::convert::Into] but does not imply lossless conversion.
 /// Implementations should not change channel count.
 pub trait IntoLayout<L: Layout>: Layout {
     fn into_layout(self) -> L;
 }
 
-impl<L1: Layout<CHANNELS = { L2::CHANNELS }>, L2: FromLayout<L1>> IntoLayout<L1> for L2 {
-    fn into_layout(self) -> L1 {
-        return L1::from_layout(self);
-    }
-}
+//impl<L1: Layout<CHANNELS = { L2::CHANNELS }>, L2: FromLayout<L1>> IntoLayout<L1> for L2 {
+//    fn into_layout(self) -> L1 {
+//        return L1::from_layout(self);
+//    }
+//}
 
 /*
 /// Convert a layout into another layout `L` with the same or more channels.

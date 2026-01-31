@@ -1,4 +1,10 @@
+use super::F32_MSK_SIGN;
 use super::exponentf;
+
+const HALF: u32 = (0.5f32).to_bits();
+const POS_ONE: u32 = (1.0f32).to_bits();
+const NEG_ONE: u32 = (-1.0f32).to_bits();
+
 /// Get the integer part of the float. Truncates the fraction always to zero.
 pub const fn truncf(x: f32) -> f32 {
     let bits = x.to_bits();
@@ -10,7 +16,7 @@ pub const fn truncf(x: f32) -> f32 {
     // Purely fractional so will just be zero.
     if exp < 0 {
         // Only keep the sign.
-        return f32::from_bits(bits & 0x80000000);
+        return f32::from_bits(bits & F32_MSK_SIGN);
     }
     let msk = ((0xff800000u32 as i32) >> exp) as u32;
     // Otherwise just mask the fractional part out.
@@ -29,7 +35,7 @@ pub const fn floorf(x: f32) -> f32 {
     if exp >= 23 {
         return x;
     }
-    let neg = bits & 0x80000000;
+    let neg = bits & F32_MSK_SIGN;
     // Purely fractional so will just be zero or -1
     if exp < 0 {
         // preserve zero
@@ -37,7 +43,7 @@ pub const fn floorf(x: f32) -> f32 {
             return x;
         }
         // Minus one or zero.
-        let ret = if neg > 0 { 0xbf800000 } else { 0 };
+        let ret = if neg > 0 { NEG_ONE } else { 0 };
         return f32::from_bits(ret);
     }
 
@@ -65,7 +71,7 @@ pub const fn ceilf(x: f32) -> f32 {
     if exp >= 23 {
         return x;
     }
-    let neg = bits & 0x80000000;
+    let neg = bits & F32_MSK_SIGN;
     // Purely fractional so will just be zero or one
     if exp < 0 {
         // preserve zero
@@ -73,7 +79,7 @@ pub const fn ceilf(x: f32) -> f32 {
             return x;
         }
         // One or negative zero.
-        let ret = if neg > 0 { neg } else { 0x3f800000 };
+        let ret = if neg > 0 { neg } else { POS_ONE };
         return f32::from_bits(ret);
     }
     let msk = ((0xff800000u32 as i32) >> exp) as u32;
@@ -100,11 +106,11 @@ pub const fn roundevenf(x: f32) -> f32 {
     if exp >= 23 {
         return x;
     }
-    let neg = bits & 0x80000000;
+    let neg = bits & F32_MSK_SIGN;
     let abs = bits & 0x7fffffff;
     // Purely fractional so it will always goto zero if at or below +- 0.5
     if exp < 0 {
-        if abs <= 0x3f000000 {
+        if abs <= HALF {
             return f32::from_bits(neg);
         }
         todo!();

@@ -15,6 +15,8 @@ pub use ulp::ulp_int_diff_f32;
 
 /// The mask to get the floating point biased exponent.
 pub const F32_MSK_EXP: u32 = 0x7f800000;
+/// The mask to isolate the floating point sign bit.
+pub const F32_MSK_SIGN: u32 = 0x80000000;
 /// The bias amount for an f32 exponent.
 pub const F32_BIAS: i32 = 127;
 // Got this idea of adding to the exponent by looking at some cbrt

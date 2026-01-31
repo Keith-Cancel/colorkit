@@ -139,14 +139,19 @@ pub fn roundevenf(x: f32) -> f32 {
     // 1    0    fine to add then trunc
     // 1    1    fine to add then trunc
 
-    let tmp = bits & (half - 1);
-    println!("\nTMP {:#x}, {}", tmp, x);
-    let tmp = bits & add;
-    println!("TMP {:#x}, {}", tmp, x);
-    println!("ADD: {}\n", (bits & add) != 0 || bits & (half - 1) != 0);
-    //if todo!() {
-    //    bits += half;
-    //}
+    // If either of this are not zero safe to add.
+    // let tmp = bits & (half - 1);
+    // println!("\nTMP {:#x}, {}", tmp, x);
+    // let tmp = bits & add;
+    // println!("TMP {:#x}, {}", tmp, x);
+    // println!("ADD: {}\n", (bits & add) != 0 || bits & (half - 1) != 0);
+
+    // Improve the logic above to use `|` instead of ||
+    let bits = if (bits & (add | (half - 1))) != 0 {
+        bits + half
+    } else {
+        bits
+    };
     // truncate.
     let msk = (SHIFT_MSK >> exp) as u32;
     return f32::from_bits(bits & msk);

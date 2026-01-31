@@ -70,6 +70,11 @@ fn ceil_large() {
     large(super::ceilf);
 }
 #[test]
+fn even_large() {
+    large(universal::roundevenf);
+    large(super::roundevenf);
+}
+#[test]
 fn floor_large() {
     large(universal::floorf);
     large(super::floorf);
@@ -84,4 +89,37 @@ fn large<F: Fn(f32) -> f32>(func: F) {
     assert!(bit_eq(func(8589934592.0), 8589934592.0));
     assert!(bit_eq(func(f32::INFINITY), f32::INFINITY));
     assert!(bit_eq(func(f32::NEG_INFINITY), f32::NEG_INFINITY));
+}
+
+#[test]
+fn even_frac() {
+    even_frac_cases(universal::roundevenf);
+    even_frac_cases(super::roundevenf);
+}
+fn even_frac_cases<F: Fn(f32) -> f32>(func: F) {
+    const HALF_PLUS: f32 = f32::from_bits(0x3f000000 + 1);
+    const HALF_MINUS: f32 = f32::from_bits(0x3f000000 - 1);
+    const ONE_MINUS: f32 = f32::from_bits(0x3f800000 - 1);
+    let val = [
+        0.0,
+        0.125,
+        0.25,
+        1.0 / 3.0,
+        0.4,
+        HALF_MINUS,
+        0.5,
+        HALF_PLUS,
+        0.53125,
+        2.0 / 3.0,
+        0.6,
+        0.75,
+        ONE_MINUS,
+    ];
+    let exp = [
+        0.0f32, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+    ];
+    for (i, (&v, e)) in val.iter().zip(exp).enumerate() {
+        assert!(bit_eq(func(v), e), "Possitive failed at: {}", i);
+        assert!(bit_eq(func(-v), -e), "Negative failed at: {}", i);
+    }
 }

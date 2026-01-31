@@ -18,16 +18,16 @@ macro_rules! arch_fn {
         colorkit::math::arch::arch_fn!(@inner $name, $($arg),+);
     };
     (@inner sqrtf, $($arg:expr),+) => {
-        #[cfg(any(
+        #[cfg(all(not(miri), any(
             target_feature = "sse2",
             all(target_arch = "aarch64", target_feature = "neon")
-        ))]
+        )))]
         return colorkit::math::arch::sqrtf($($arg),+);
     };
     (@inner truncf, $($arg:expr),+) => {
-        #[cfg(any(
+        #[cfg(all(not(miri), any(
             target_feature = "sse2",
-        ))]
+        )))]
         return colorkit::math::arch::truncf($($arg),+);
     };
 }

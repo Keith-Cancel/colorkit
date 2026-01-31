@@ -21,6 +21,7 @@ use colorkit::math::ceilf;
 use colorkit::math::floorf;
 use colorkit::math::roundevenf;
 use colorkit::math::truncf;
+use colorkit::math::roundf;
 
 #[rustfmt::skip]
 pub use bit_uint::BitUint;
@@ -175,8 +176,13 @@ fn norm_to_u32<D: Dither>(norm: NormF32, round: Rounding, dither: &mut D, max: u
     let max = max as f32;
     let scaled = norm * max;
     let dith = dither.sample(scaled);
+    // TODO:
+    // We are only outputting to unsigned an integer so
+    // this match maybe could be more optimal.
+    // Also maybe take advantage of hardware instructions
+    // such as `cvttss2si` ect...
     let round = match round {
-        Rounding::Nearest => todo!(), //dith.round(),
+        Rounding::Nearest => roundf(dith),
         Rounding::Even => roundevenf(dith),
         Rounding::TowardZero => truncf(dith),
         Rounding::Floor => floorf(dith),

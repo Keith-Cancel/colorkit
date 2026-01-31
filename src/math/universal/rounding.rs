@@ -100,18 +100,16 @@ pub const fn roundevenf(x: f32) -> f32 {
     if exp >= 23 {
         return x;
     }
-    todo!();
     let neg = bits & 0x80000000;
-    // Purely fractional so will just be zero or one
+    let abs = bits & 0x7fffffff;
+    // Purely fractional so it will always goto zero if at or below +- 0.5
     if exp < 0 {
-        // preserve zero
-        if (bits << 1) == 0 {
-            return x;
+        if abs <= 0x3f000000 {
+            return f32::from_bits(neg);
         }
-        // One or negative zero.
-        let ret = if neg > 0 { neg } else { 0x3f800000 };
-        return f32::from_bits(ret);
+        todo!();
     }
+    todo!();
     let msk = ((0xff800000u32 as i32) >> exp) as u32;
     let new = bits & msk;
 

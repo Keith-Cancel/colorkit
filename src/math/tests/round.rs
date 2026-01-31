@@ -163,6 +163,24 @@ fn round_even_frac_<F: Fn(f32) -> f32>(func: F) {
 }
 
 #[test]
+fn round_mixed() {
+    round_mixed_(universal::roundf);
+    round_mixed_(super::roundf);
+}
+fn round_mixed_<F: Fn(f32) -> f32>(func: F) {
+    let val = [
+        1.0, 1.1, 1.25, 1.5, 1.9, PI, 8.125, 8.5, 4194303.25, 4194303.5, 4194304.5, 8388607.5,
+    ];
+    let exp = [
+        1.0, 1.0, 1.00, 2.0, 2.0, 3.0, 8.000, 9.0, 4194303.00, 4194304.0, 4194305.0, 8388608.0,
+    ];
+    for (&v, e) in val.iter().zip(exp) {
+        assert!(bit_eq(func(v), e));
+        assert!(bit_eq(func(-v), -e));
+    }
+}
+
+#[test]
 fn round_even_mixed() {
     round_even_mixed_(universal::roundevenf);
     round_even_mixed_(super::roundevenf);

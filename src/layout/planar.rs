@@ -1,6 +1,6 @@
-use std::array;
-use std::ops::Index;
-use std::ops::IndexMut;
+use core::array;
+use core::ops::Index;
+use core::ops::IndexMut;
 
 use colorkit::scalar::Dither;
 use colorkit::scalar::IntoScalar;

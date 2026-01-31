@@ -11,6 +11,7 @@ pub use uint_type::BitUintType;
 #[derive(Debug)]
 pub struct RangeError<T>(T);
 
+/// A variable bit-width unsigned integer.
 #[derive(Copy, Debug, Eq)]
 #[repr(transparent)]
 pub struct BitUint<const BITS: u32, T: BitUintType = u32>(T);

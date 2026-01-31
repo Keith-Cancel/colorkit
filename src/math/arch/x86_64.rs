@@ -17,7 +17,7 @@ pub fn sqrtf(mut x: f32) -> f32 {
 pub fn truncf(mut x: f32) -> f32 {
     unsafe {
         asm!(
-            "roundss {r}, {r}, 0x3",
+            "roundss {r}, {r}, 0xb",
             r = inout(xmm_reg) x,
             // https://doc.rust-lang.org/rust-by-example/unsafe/asm.html#options
             options(nomem, nostack, pure),
@@ -30,7 +30,7 @@ pub fn truncf(mut x: f32) -> f32 {
 pub fn floorf(mut x: f32) -> f32 {
     unsafe {
         asm!(
-            "roundss {r}, {r}, 0x1",
+            "roundss {r}, {r}, 0x9",
             r = inout(xmm_reg) x,
             // https://doc.rust-lang.org/rust-by-example/unsafe/asm.html#options
             options(nomem, nostack, pure),

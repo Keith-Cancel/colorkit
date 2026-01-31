@@ -93,10 +93,10 @@ fn large<F: Fn(f32) -> f32>(func: F) {
 
 #[test]
 fn even_frac() {
-    even_frac_cases(universal::roundevenf);
-    even_frac_cases(super::roundevenf);
+    even_frac_(universal::roundevenf);
+    even_frac_(super::roundevenf);
 }
-fn even_frac_cases<F: Fn(f32) -> f32>(func: F) {
+fn even_frac_<F: Fn(f32) -> f32>(func: F) {
     const HALF_PLUS: f32 = f32::from_bits(0x3f000000 + 1);
     const HALF_MINUS: f32 = f32::from_bits(0x3f000000 - 1);
     const ONE_MINUS: f32 = f32::from_bits(0x3f800000 - 1);
@@ -121,5 +121,23 @@ fn even_frac_cases<F: Fn(f32) -> f32>(func: F) {
     for (i, (&v, e)) in val.iter().zip(exp).enumerate() {
         assert!(bit_eq(func(v), e), "Possitive failed at: {}", i);
         assert!(bit_eq(func(-v), -e), "Negative failed at: {}", i);
+    }
+}
+
+#[test]
+fn even_mixed() {
+    even_mixed_(universal::roundevenf);
+    even_mixed_(super::roundevenf);
+}
+fn even_mixed_<F: Fn(f32) -> f32>(func: F) {
+    let val = [
+        1.0, 1.1, 1.25, 1.5, 1.9, PI, 8.125, 8.5, 4194303.25, 4194303.5, 4194304.5, 8388607.5,
+    ];
+    let exp = [
+        1.0, 1.0, 1.00, 2.0, 2.0, 3.0, 8.000, 8.0, 4194303.00, 4194304.0, 4194304.0, 8388608.0,
+    ];
+    for (&v, e) in val.iter().zip(exp) {
+        assert!(bit_eq(func(v), e));
+        assert!(bit_eq(func(-v), -e));
     }
 }

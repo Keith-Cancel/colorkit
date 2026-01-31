@@ -8,6 +8,7 @@ pub use cbrt::cbrtf;
 pub use quirt::quirtf;
 pub use rounding::ceilf;
 pub use rounding::floorf;
+pub use rounding::roundevenf;
 pub use rounding::truncf;
 pub use sqrt::sqrtf;
 pub use ulp::ulp_int_diff_f32;

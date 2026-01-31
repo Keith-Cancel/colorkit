@@ -7,10 +7,10 @@ pub extern crate self as colorkit;
 #[rustfmt::skip]
 pub mod colors;
 pub mod convert;
+pub mod math;
+pub mod scalar;
 pub mod space;
+pub mod wp;
 //pub mod channels;
 //pub mod layout;
-//pub mod scalar;
-pub mod math;
-pub mod utils;
-pub mod wp;
+//pub mod utils;

@@ -27,7 +27,7 @@ pub fn sqrtf(x: f32) -> f32 {
 
 /// Get the integer part of the float. Truncates the fraction always to zero.
 pub fn truncf(x: f32) -> f32 {
-    //arch::arch_fn!(name: truncf, args: x);
+    arch::arch_fn!(name: truncf, args: x);
     #[allow(unused)]
     return universal::truncf(x);
 }

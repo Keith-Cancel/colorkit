@@ -134,34 +134,11 @@ pub fn roundevenf(x: f32) -> f32 {
     // The condition below detects when it is safe to add:
     //   - if `bits & (half - 1) != 0` -> past the halfway point
     //   - if `bits & add != 0`        -> integer part is odd
-
-    // decide:
-    // - if frac > half: round up (add)
-    // - if frac < half: trunc
-    // - if frac == half: tie -> round to even: add only if the integer bit is 1.
-
-    // Hmm i feel like this is method might be to branchy
-    // let see if the int part is even I always truncate unless we already half-way
-    // if it's odd we always truncate for less then half-way
-    // so regardless of parity if under half truncate
-    // if we always add half and truncate this will be correct for all intial odd parity.
-    // if I do the same for even parity it always be correct except if halfway.
-    // So for even parity we don't want to add half if at exactly halfway
-    // Hmm seems like there should be away to combine that in one check.
-    // Ones Half
-    // 0    0    fine to add then trunc
-    // 0    1    if any bits after half are set safe to add then trunc, otherwise we just trunc
-    // 1    0    fine to add then trunc
-    // 1    1    fine to add then trunc
-
-    // If either of this are not zero safe to add.
-    // let tmp = bits & (half - 1);
-    // println!("\nTMP {:#x}, {}", tmp, x);
-    // let tmp = bits & add;
-    // println!("TMP {:#x}, {}", tmp, x);
-    // println!("ADD: {}\n", (bits & add) != 0 || bits & (half - 1) != 0);
-
-    // Improve the logic above to use `|` instead of ||
+    //
+    // If neither condition holds. This means the value is exactly halfway
+    // and the integer part is already even. So do not add "half". By doing this
+    // this yields round-to-even behavior
+    // It's possible to test this compactly with: `bits & (add | (half - 1))`
     let bits = if (bits & (add | (half - 1))) != 0 {
         bits + half
     } else {

@@ -8,25 +8,22 @@ fn bit_eq(a: f32, b: f32) -> bool {
 
 #[test]
 fn trunc_frac() {
-    frac(universal::truncf);
-    frac(super::truncf);
+    frac(universal::truncf, 0.0, -0.0);
+    frac(super::truncf, 0.0, -0.0);
 }
-#[rustfmt::skip]
-fn frac<F: Fn(f32) -> f32>(func: F) {
-    assert!(bit_eq(func( 0.0),    0.0));
-    assert!(bit_eq(func(-0.0),   -0.0));
-    assert!(bit_eq(func( 0.1),   0.0));
-    assert!(bit_eq(func(-0.1),  -0.0));
-    assert!(bit_eq(func( 0.75),   0.0));
-    assert!(bit_eq(func(-0.75),  -0.0));
-    assert!(bit_eq(func( 0.5),    0.0));
-    assert!(bit_eq(func(-0.5),   -0.0));
-    assert!(bit_eq(func( 0.25),   0.0));
-    assert!(bit_eq(func(-0.25),  -0.0));
-    assert!(bit_eq(func(2e-32),   0.0));
-    assert!(bit_eq(func(-2e-32), -0.0));
-    assert!(bit_eq(func(2e-45),   0.0));
-    assert!(bit_eq(func(-2e-45), -0.0));
+#[test]
+fn floor_frac() {
+    frac(universal::floorf, 0.0, -1.0);
+    frac(super::floorf, 0.0, -1.0);
+}
+fn frac<F: Fn(f32) -> f32>(func: F, pos: f32, neg: f32) {
+    let fracs = [0.1, 0.9, 0.75, 0.5, 0.25, 2e-32, 2e-45];
+    assert!(bit_eq(func(0.0), 0.0));
+    assert!(bit_eq(func(-0.0), -0.0));
+    for v in fracs {
+        assert!(bit_eq(func(v), pos));
+        assert!(bit_eq(func(-v), neg));
+    }
 }
 
 #[test]
@@ -55,6 +52,11 @@ fn trunc_large() {
     large(universal::truncf);
     large(super::truncf);
 }
+#[test]
+fn floor_large() {
+    large(universal::floorf);
+    large(super::floorf);
+}
 fn large<F: Fn(f32) -> f32>(func: F) {
     assert!(bit_eq(func(8388608.0), 8388608.0));
     assert!(bit_eq(func(-8388608.0), -8388608.0));
@@ -65,10 +67,4 @@ fn large<F: Fn(f32) -> f32>(func: F) {
     assert!(bit_eq(func(8589934592.0), 8589934592.0));
     assert!(bit_eq(func(f32::INFINITY), f32::INFINITY));
     assert!(bit_eq(func(f32::NEG_INFINITY), f32::NEG_INFINITY));
-}
-
-#[test]
-fn floor_large() {
-    large(universal::floorf);
-    large(super::floorf);
 }

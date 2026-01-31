@@ -36,7 +36,8 @@ impl NormF32 {
     }
 
     /// unsafe unchecked constructor — caller guarantees invariant
-    /// (pattern similar to std::NonZero types).
+    /// 
+    /// (pattern similar to [`core::num::NonZero`] types).
     #[inline]
     pub const unsafe fn new_unchecked(value: f32) -> Self {
         return Self(value);

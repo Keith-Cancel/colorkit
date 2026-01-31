@@ -142,7 +142,7 @@ pub trait Scalar: Copy + PartialEq + PartialOrd + 'static {
 
 /// Requantize from `S` into `Self` with nearest rounding.
 ///
-/// Similar to [`std::convert::From`] but does not imply a lossless conversion.
+/// Similar to [`core::convert::From`] but does not imply a lossless conversion.
 pub trait FromScalar<S: Scalar>: Scalar {
     fn from_scalar(s: S) -> Self;
 }

@@ -44,17 +44,25 @@ pub use universal::sqrtf as sqrtf_const;
 pub trait MathFuncs {
     /// Computes the square root
     fn sqrt(self) -> Self;
+    /// Compute the cube root.
+    fn cbrt(self) -> Self;
     /// Computes the quintic root or 5th root.
     fn quirt(self) -> Self;
     /// ULP int difference between two values.
     fn ulp_int_diff(self, other: Self) -> u32;
     /// Compare to floats are close enough with some tolerance/epsilon
     fn almost_eq(self, other: Self, tol: f32) -> bool;
+    /// Get the integer part of the float. Truncates the fraction always to zero.
+    fn trunc(self) -> Self;
 }
 
 impl MathFuncs for f32 {
     fn sqrt(self) -> f32 {
         return sqrtf(self);
+    }
+
+    fn cbrt(self) -> f32 {
+        return cbrtf(self);
     }
 
     fn quirt(self) -> f32 {
@@ -67,6 +75,10 @@ impl MathFuncs for f32 {
 
     fn almost_eq(self, other: f32, tol: f32) -> bool {
         return (self - other).abs() < tol;
+    }
+
+    fn trunc(self) -> f32 {
+        return truncf(self);
     }
 }
 

@@ -139,8 +139,8 @@ pub fn roundevenf(x: f32) -> f32 {
     // 1    0    fine to add then trunc
     // 1    1    fine to add then trunc
 
-    let tmp = bits & !(half - 1);
-    println!("\nTMP {:x}\n", tmp);
+    let tmp = bits & (half - 1);
+    println!("\nTMP {:#x}\n", tmp);
     //if todo!() {
     //    bits += half;
     //}

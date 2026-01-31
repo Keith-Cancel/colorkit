@@ -60,6 +60,9 @@ fn large<F: Fn(f32) -> f32>(func: F) {
     assert!(bit_eq(func(-8388608.0), -8388608.0));
     assert!(bit_eq(func(16777216.0), 16777216.0));
     assert!(bit_eq(func(-16777216.0), -16777216.0));
+    assert!(bit_eq(func(25165824.0), 25165824.0));
+    assert!(bit_eq(func(-25165824.0), -25165824.0));
+    assert!(bit_eq(func(8589934592.0), 8589934592.0));
     assert!(bit_eq(func(f32::INFINITY), f32::INFINITY));
     assert!(bit_eq(func(f32::NEG_INFINITY), f32::NEG_INFINITY));
 }

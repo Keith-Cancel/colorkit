@@ -15,7 +15,7 @@ mod norm_f32;
 mod uint16;
 mod uint8;
 
-use std::any::Any;
+use core::any::Any;
 
 pub use bit_uint::BitUint;
 pub use bit_uint::BitUintType;
@@ -168,12 +168,14 @@ fn norm_to_u32<D: Dither>(norm: NormF32, round: Rounding, dither: &mut D, max: u
     let max = max as f32;
     let scaled = norm * max;
     let dith = dither.sample(scaled);
-    let round = match round {
+    todo!("Add different rounding to math.");
+    let round = dith;
+    /*let round = match round {
         Rounding::Nearest => dith.round(),
         Rounding::Even => dith.round_ties_even(),
         Rounding::TowardZero => dith.trunc(),
         Rounding::Floor => dith.floor(),
         Rounding::Ceil => dith.ceil(),
-    };
+    };*/
     return round.clamp(0.0, max) as u32;
 }

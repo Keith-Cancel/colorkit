@@ -70,6 +70,11 @@ pub trait MathFuncs {
     fn almost_eq(self, other: Self, tol: f32) -> bool;
     /// Get the integer part of the float. Truncates the fraction always to zero.
     fn trunc(self) -> Self;
+    /// Rounds the integer less than or equal the provided value.
+    ///
+    /// Similar to [`truncf`], but instead of torwards zero, it's
+    /// torwards negative infinity.
+    fn floorf(self) -> Self;
 }
 
 impl MathFuncs for f32 {
@@ -95,6 +100,10 @@ impl MathFuncs for f32 {
 
     fn trunc(self) -> f32 {
         return truncf(self);
+    }
+
+    fn floorf(self) -> f32 {
+        return floorf(self);
     }
 }
 

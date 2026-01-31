@@ -63,3 +63,9 @@ fn large<F: Fn(f32) -> f32>(func: F) {
     assert!(bit_eq(func(f32::INFINITY), f32::INFINITY));
     assert!(bit_eq(func(f32::NEG_INFINITY), f32::NEG_INFINITY));
 }
+
+#[test]
+fn floor_large() {
+    large(universal::floorf);
+    large(super::floorf);
+}

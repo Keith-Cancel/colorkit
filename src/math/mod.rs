@@ -29,7 +29,15 @@ pub fn truncf(x: f32) -> f32 {
     #[allow(unused)]
     return universal::truncf(x);
 }
-
+/// Rounds the integer greater than or equal to the provided value.
+///
+/// Similar to [`truncf`], but instead of torwards zero, it's
+/// torwards positive infinity.
+pub fn ceilf(x: f32) -> f32 {
+    arch::arch_fn!(name: ceilf, args: x);
+    #[allow(unused)]
+    return universal::ceilf(x);
+}
 /// Rounds the integer less than or equal the provided value.
 ///
 /// Similar to [`truncf`], but instead of torwards zero, it's
@@ -42,6 +50,7 @@ pub fn floorf(x: f32) -> f32 {
 
 // Const functions
 #[rustfmt::skip]
+pub use universal::ceilf as ceilf_const;
 pub use universal::floorf as floorf_const;
 /// Computes the square root with a `const fn`
 ///
@@ -70,11 +79,16 @@ pub trait MathFuncs {
     fn almost_eq(self, other: Self, tol: f32) -> bool;
     /// Get the integer part of the float. Truncates the fraction always to zero.
     fn trunc(self) -> Self;
+    /// Rounds the integer greater than or equal to the provided value.
+    ///
+    /// Similar to [`truncf`], but instead of torwards zero, it's
+    /// torwards positive infinity.
+    fn ceil(self) -> Self;
     /// Rounds the integer less than or equal the provided value.
     ///
     /// Similar to [`truncf`], but instead of torwards zero, it's
     /// torwards negative infinity.
-    fn floorf(self) -> Self;
+    fn floor(self) -> Self;
 }
 
 impl MathFuncs for f32 {
@@ -102,7 +116,11 @@ impl MathFuncs for f32 {
         return truncf(self);
     }
 
-    fn floorf(self) -> f32 {
+    fn ceil(self) -> f32 {
+        return ceilf(self);
+    }
+
+    fn floor(self) -> f32 {
         return floorf(self);
     }
 }

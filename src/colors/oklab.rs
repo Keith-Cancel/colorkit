@@ -7,6 +7,7 @@ use colorkit::space::ColorData;
 use colorkit::space::ColorSpace;
 use colorkit::wp::D65;
 
+use super::LinSrgb;
 use super::Xyz;
 use super::macros::impl_color_array;
 
@@ -54,6 +55,20 @@ impl OkLab {
         1.0, -0.1055613458156586, -0.0638541728258133,
         1.0, -0.0894841775298119, -1.2914855480194092,
     ];
+    /// Linear sRGB to LMS
+    #[rustfmt::skip]
+    pub const L_SRGB_LMS: [f32; 9] = [
+        0.4122709801829559, 0.5362975720566723, 0.0514314477603717,
+        0.2119393935361401, 0.6806887252266035, 0.1073718812372563,
+        0.0883294833137031, 0.2817528442280716, 0.6299176724582253,
+    ];
+    /// LMS to linear sRGB, the inverse of [`OkLab::L_SRGB_LMS`]
+    #[rustfmt::skip]
+    pub const LMS_L_SRGB: [f32; 9] = [
+         4.0762520493926093, -3.3071512880696345,  0.2308992386770251,
+        -1.2685206721376014,  2.6097988538914582, -0.3412781817538568,
+        -0.0041972628456039, -0.7035828725078884,  1.7077801353534923,
+    ];
 
     /// Create a new color from `Lab` values.
     pub const fn new(l: f32, a: f32, b: f32) -> Self {
@@ -90,12 +105,20 @@ impl OkLab {
         self.0[2] = value;
     }
 
+    fn rgb_into_lms(rgb: [f32; 3]) -> [f32; 3] {
+        return matrix_3x3_vec3_mul(&Self::L_SRGB_LMS, &rgb);
+    }
+
     fn xyz_into_lms(xyz: [f32; 3]) -> [f32; 3] {
         return matrix_3x3_vec3_mul(&Self::M1, &xyz);
     }
 
     fn lms_into_xyz(lms: [f32; 3]) -> [f32; 3] {
         return matrix_3x3_vec3_mul(&Self::M1_INV, &lms);
+    }
+
+    fn lms_into_rgb(lms: [f32; 3]) -> [f32; 3] {
+        return matrix_3x3_vec3_mul(&Self::LMS_L_SRGB, &lms);
     }
 
     fn lms_into_lab(mut lms: [f32; 3]) -> [f32; 3] {
@@ -161,6 +184,20 @@ impl FromColor<OkLab> for Xyz<D65> {
     fn from_color(color: OkLab) -> Self {
         let lms = OkLab::lab_into_lms(color.0);
         return <Xyz<D65>>::from_array(OkLab::lms_into_xyz(lms));
+    }
+}
+
+impl FromColor<LinSrgb> for OkLab {
+    fn from_color(color: LinSrgb) -> Self {
+        let lms = Self::rgb_into_lms(color.into_array());
+        return Self(Self::lms_into_lab(lms));
+    }
+}
+
+impl FromColor<OkLab> for LinSrgb {
+    fn from_color(color: OkLab) -> Self {
+        let lms = OkLab::lab_into_lms(color.0);
+        return LinSrgb::from_array(OkLab::lms_into_rgb(lms));
     }
 }
 

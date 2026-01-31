@@ -129,6 +129,14 @@ pub const fn roundevenf(x: f32) -> f32 {
         if (bits & half) == 0 { // less than half
 
         }
+        // Hmm i feel like this is method might be to branchy
+        // let see if the int part is even I always truncate unless we already half-way
+        // if it's odd we always truncate for less then half-way
+        // so regardless of parity if under half truncate
+        // if we always add half and truncate this will be correct for all intial odd parity.
+        // if I do the same for even parity it always be correct except if halfway.
+        // So for even parity we don't want to add half if at exactly halfway
+        // Hmm seems like there should be away to combine that in one check.
     }
 
     todo!();

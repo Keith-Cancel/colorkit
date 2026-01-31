@@ -100,7 +100,7 @@ pub const fn ceilf(x: f32) -> f32 {
 ///
 /// In the event the value is exactly in the middle it
 /// will round to the nearest even integer.
-pub fn roundevenf(x: f32) -> f32 {
+pub const fn roundevenf(x: f32) -> f32 {
     let bits = x.to_bits();
     let exp = exponentf(bits);
 

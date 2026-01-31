@@ -57,7 +57,7 @@ end
 # This value is from spectrum_xyz.jl printed with more precision than probably necessary.
 D65 = load_vector(["0.9504705586542829699097014291854001056630", "1.0", "1.0888287363958846603044439158088782923057"])
 #sRGB D65, and primaries.
-m = rgb_matrix(
+rgb_m = rgb_matrix(
     BigFloat[
         parse(BigFloat, "0.64") parse(BigFloat, "0.33");
         parse(BigFloat, "0.30") parse(BigFloat, "0.60");
@@ -65,7 +65,7 @@ m = rgb_matrix(
     ],
     D65
 )
-print_matrices("Linear sRGB Matrices", m)
+print_matrices("Linear sRGB Matrices", rgb_m)
 
 # OkLab Matrices
 # https://bottosson.github.io/posts/oklab/
@@ -105,7 +105,8 @@ print_matrix("M1", m1)
 print_matrix("M1^-1", inv(m1))
 print_matrix("M2", m2)
 print_matrix("M2^-1", m2_inv)
-
+print_matrix("RGB_LMS", m1 * rgb_m)
+print_matrix("RGB_LMS^-1", inv(m1 * rgb_m))
 
 #=
 Don't uses these directly.

@@ -17,6 +17,7 @@ mod uint8;
 
 use core::any::Any;
 
+use colorkit::math::floorf;
 use colorkit::math::truncf;
 
 #[rustfmt::skip]
@@ -175,8 +176,8 @@ fn norm_to_u32<D: Dither>(norm: NormF32, round: Rounding, dither: &mut D, max: u
         Rounding::Nearest => todo!(), //dith.round(),
         Rounding::Even => todo!(),    //dith.round_ties_even(),
         Rounding::TowardZero => truncf(dith),
-        Rounding::Floor => todo!(), //dith.floor(),
-        Rounding::Ceil => todo!(),  //dith.ceil(),
+        Rounding::Floor => floorf(dith),
+        Rounding::Ceil => todo!(),       //dith.ceil(),
     };
     return round.clamp(0.0, max) as u32;
 }

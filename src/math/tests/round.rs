@@ -28,23 +28,25 @@ fn frac<F: Fn(f32) -> f32>(func: F, pos: f32, neg: f32) {
 
 #[test]
 fn trunc_mixed() {
-    mixed(universal::truncf);
-    mixed(super::truncf);
+    mixed(universal::truncf, 0.0, 0.0);
+    mixed(super::truncf, 0.0, 0.0);
 }
-#[rustfmt::skip]
-fn mixed<F: Fn(f32) -> f32>(func: F) {
-    assert!(bit_eq(func( 1.1),   1.0));
-    assert!(bit_eq(func(-1.1),  -1.0));
-    assert!(bit_eq(func( 1.25),  1.0));
-    assert!(bit_eq(func(-1.25), -1.0));
-    assert!(bit_eq(func( 1.9),   1.0));
-    assert!(bit_eq(func(-1.9),  -1.0));
-    assert!(bit_eq(func(PI),     3.0));
-    assert!(bit_eq(func(8.125),  8.0));
-
-    assert!(bit_eq(func( 4194303.25), 4194303.0));
-    assert!(bit_eq(func(-4194304.5), -4194304.0));
-    assert!(bit_eq(func( 8388607.5), 8388607.0));
+#[test]
+fn floor_mixed() {
+    mixed(universal::floorf, 0.0, -1.0);
+    mixed(super::floorf, 0.0, -1.0);
+}
+fn mixed<F: Fn(f32) -> f32>(func: F, pos: f32, neg: f32) {
+    let val = [
+        1.1, 1.25, 1.9, PI, 8.125, 4194303.25, 4194304.5, 8388607.5,
+    ];
+    let exp = [
+        1.0, 1.00, 1.0, 3.0, 8.000, 4194303.00, 4194304.0, 8388607.0,
+    ];
+    for (&v, e) in val.iter().zip(exp) {
+        assert!(bit_eq(func(v), e + pos));
+        assert!(bit_eq(func(-v), (-e) + neg));
+    }
 }
 
 #[test]

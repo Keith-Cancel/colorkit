@@ -30,6 +30,10 @@ pub fn truncf(x: f32) -> f32 {
     return universal::truncf(x);
 }
 
+/// Rounds the integer less than or equal the provided value.
+///
+/// Similar to [`truncf`], but instead of torwards zero, it's
+/// torwards negative infinity.
 pub fn floorf(x: f32) -> f32 {
     return universal::floorf(x);
 }

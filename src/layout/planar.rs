@@ -30,7 +30,9 @@ use super::LayoutStorage;
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Planar<S: Scalar, const N: usize = 3>([S; N]);
 
+/// Alias of [Planar<S, 3>]
 pub type Planar3<S> = Planar<S, 3>;
+/// Alias of [Planar<S, 4>]
 pub type Planar4<S> = Planar<S, 4>;
 
 impl<S: Scalar, const N: usize> Planar<S, N> {
@@ -113,7 +115,6 @@ impl<S: Scalar, const N: usize> LayoutStorage for Planar<S, N> {
 
 impl<S: Scalar, const N: usize> Layout for Planar<S, N> {
     const DEFAULT: Self = Self([S::DEFAULT; N]);
-    #[type_const]
     const CHANNELS: usize = N;
     type ChannelType = S;
 

@@ -115,7 +115,8 @@ pub const fn roundevenf(x: f32) -> f32 {
         if abs <= HALF {
             return f32::from_bits(neg);
         }
-        todo!();
+        // Over the half-way point so round up
+        return f32::from_bits(neg | POS_ONE);
     }
     todo!();
     let msk = (SHIFT_MSK >> exp) as u32;

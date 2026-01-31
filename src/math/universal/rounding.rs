@@ -87,3 +87,39 @@ pub const fn ceilf(x: f32) -> f32 {
     }
     return f32::from_bits(new);
 }
+
+/// Rounds to the nearest integer to the provided value.
+///
+/// In the event the value is exactly in the middle it
+/// will round to the nearest even integer.
+pub const fn round_ties_evenf(x: f32) -> f32 {
+    let bits = x.to_bits();
+    let exp = exponentf(bits);
+
+    // Exponent is too large to have a fraction so just return x
+    if exp >= 23 {
+        return x;
+    }
+    todo!();
+    let neg = bits & 0x80000000;
+    // Purely fractional so will just be zero or one
+    if exp < 0 {
+        // preserve zero
+        if (bits << 1) == 0 {
+            return x;
+        }
+        // One or negative zero.
+        let ret = if neg > 0 { neg } else { 0x3f800000 };
+        return f32::from_bits(ret);
+    }
+    let msk = ((0xff800000u32 as i32) >> exp) as u32;
+    let new = bits & msk;
+
+    // If not negative and there was a fractional part, add 1.0.
+    if neg == 0 && bits != new {
+        let add = 1u32 << (23 - exp);
+        // This correctly carries into he exponent if necessary
+        return f32::from_bits(new.wrapping_add(add));
+    }
+    return f32::from_bits(new);
+}

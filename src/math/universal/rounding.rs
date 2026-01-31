@@ -29,5 +29,13 @@ pub const fn floorf(x: f32) -> f32 {
     if exp >= 23 {
         return x;
     }
+    let neg = bits & 0x80000000;
+    // Purely fractional so will just be zero or -1
+    if exp < 0 {
+        let dwn = if (bits << 1) == 0 { neg } else { 0xbf800000 };
+        let ret = if neg > 0 { dwn } else { neg };
+        // Only keep the sign.
+        return f32::from_bits(ret);
+    }
     todo!();
 }

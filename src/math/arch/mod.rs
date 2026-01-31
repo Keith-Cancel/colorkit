@@ -1,6 +1,7 @@
 cfg_items!(
     #[cfg(target_feature = "sse2")] => {
         mod x86_64;
+        pub use x86_64::ceilf;
         pub use x86_64::floorf;
         pub use x86_64::sqrtf;
         pub use x86_64::truncf;
@@ -17,6 +18,12 @@ cfg_items!(
 macro_rules! arch_fn {
     (name: $name:ident, args: $($arg:expr),+) => {
         colorkit::math::arch::arch_fn!(@inner $name, $($arg),+);
+    };
+    (@inner ceilf, $($arg:expr),+) => {
+        #[cfg(all(not(miri), any(
+            target_feature = "sse2",
+        )))]
+        return colorkit::math::arch::ceilf($($arg),+);
     };
     (@inner floorf, $($arg:expr),+) => {
         #[cfg(all(not(miri), any(

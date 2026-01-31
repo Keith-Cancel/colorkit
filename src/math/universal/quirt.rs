@@ -1,12 +1,5 @@
 use super::*;
 
-#[allow(unused)]
-#[inline]
-const fn exponent(bits: u32) -> i8 {
-    let e = ((bits >> 23) & 0xff) as i32 - F32_BIAS;
-    return e as i8;
-}
-
 //const NORM_ADD: u32 = root_const(127 * 5, 127, 5);
 //const SUBNORM_ADD: u32 = root_const(127 * 5, 127 + 24, 5);
 const NORM_ADD: u32 = root_const2(5, 0);
@@ -68,23 +61,4 @@ pub const fn quirtf(x: f32) -> f32 {
     return x as f32;
 }
 
-#[cfg(test)]
-mod test {
-    use super::*;
-    #[test]
-    fn check_exponent() {
-        let mut v: f32 = 1.0;
-        assert_eq!(exponent(v.to_bits()), 0);
 
-        for i in 1..=128i32 {
-            v *= 2.0;
-            assert_eq!(exponent(v.to_bits()), i as i8);
-        }
-
-        v = 1.0;
-        for i in 1..=127 {
-            v *= 0.5;
-            assert_eq!(exponent(v.to_bits()), (-i));
-        }
-    }
-}

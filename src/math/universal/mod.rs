@@ -84,3 +84,30 @@ const fn root_const2(n: u32, shift: u32) -> u32 {
 
     return (c >> 9) as u32;
 }
+
+#[inline]
+const fn exponent(bits: u32) -> i8 {
+    let e = ((bits >> 23) & 0xff) as i32 - F32_BIAS;
+    return e as i8;
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    #[test]
+    fn check_exponent() {
+        let mut v: f32 = 1.0;
+        assert_eq!(exponent(v.to_bits()), 0);
+
+        for i in 1..=128i32 {
+            v *= 2.0;
+            assert_eq!(exponent(v.to_bits()), i as i8);
+        }
+
+        v = 1.0;
+        for i in 1..=127 {
+            v *= 0.5;
+            assert_eq!(exponent(v.to_bits()), (-i));
+        }
+    }
+}

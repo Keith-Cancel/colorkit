@@ -37,5 +37,15 @@ pub const fn floorf(x: f32) -> f32 {
         let ret = if neg > 0 { dwn } else { 0 };
         return f32::from_bits(ret);
     }
-    todo!();
+
+    let msk = ((0xff800000u32 as i32) >> exp) as u32;
+    let new = bits & msk;
+
+    // If negative and there was a fractional part, subtract 1.0.
+    if neg > 0 && bits != new {
+        let add = 1u32 << (23 - exp);
+        // This correctly carries into he exponent if necessary
+        return f32::from_bits(new.wrapping_add(add));
+    }
+    return f32::from_bits(new);
 }

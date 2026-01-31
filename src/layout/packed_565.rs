@@ -17,6 +17,10 @@ use super::LayoutStorage;
 /// * Channel 0: 5 Bits
 /// * Channel 1: 6 Bits
 /// * Channel 2: 5 Bits
+///
+/// # Note
+/// The type is `repr(transparent)`, and all bit patterns
+/// are valid.
 #[repr(transparent)]
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub struct Packed565(u16);

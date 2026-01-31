@@ -11,8 +11,12 @@ use super::LayoutStorage;
 //use super::TruncateLayout;
 //use super::private::LayoutSealed;
 
-// Not likely gonna use myself more just a type to make what I come handles cases
-// like this.
+/// Packed 5-6-5 channel layout in a [u16].
+///
+/// The channel bit-widths are:
+/// * Channel 0: 5 Bits
+/// * Channel 1: 6 Bits
+/// * Channel 2: 5 Bits
 #[repr(transparent)]
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub struct Packed565(u16);
@@ -71,7 +75,6 @@ impl LayoutStorage for Packed565 {
 
 impl Layout for Packed565 {
     const DEFAULT: Self = Self(0);
-    #[type_const]
     const CHANNELS: usize = 3;
     type ChannelType = u8;
 

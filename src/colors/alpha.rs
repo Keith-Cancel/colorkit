@@ -263,6 +263,11 @@ macro_rules! base_funcs {
                 debug_assert!(<L::Channels as Number>::N == Self::LEN);
                 return L::from_fn_norm(|i| self.get_norm(i), round);
             }
+
+            fn into_layout_dither<L: Layout, D: crate::scalar::Dither>(self, round: Rounding, dither: &mut D) -> L {
+                debug_assert!(<L::Channels as Number>::N == Self::LEN);
+                return L::from_fn_norm_dither(|i| self.get_norm(i), round, dither);
+            }
         }
 
         impl<S: ColorTransmute> ColorSpace for $name<S> {

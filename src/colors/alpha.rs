@@ -101,6 +101,10 @@ impl<S: ColorTransmute> AlphaPre<S> {
     }
     /// Set the alpha channel, and update all other channels.
     pub fn update_alpha(&mut self, alpha: f32) {
+        // All channels will be zero, avoid division.
+        if self.1 == 0.0 {
+            return self.set_alpha(alpha);
+        }
         for v in self.0.as_mut_slice() {
             *v = (*v / self.1) * alpha;
         }
@@ -108,6 +112,10 @@ impl<S: ColorTransmute> AlphaPre<S> {
     /// Convert to normal alpha with no premultiplication.
     pub fn into_alpha(self) -> Alpha<S> {
         let mut s = self;
+        // All channels will be zero, avoid division.
+        if s.1 == 0.0 {
+            return Alpha::new(self.0, self.1);
+        }
         for v in s.0.as_mut_slice() {
             *v = *v / s.1;
         }

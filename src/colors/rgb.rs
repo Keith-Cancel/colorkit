@@ -164,11 +164,10 @@ impl_color_array! {
 impl Srgb {
     /// Convert Srgb into Linear Srgb
     pub const fn into_linear(self) -> LinSrgb {
-        let v = self.clamp();
         return LinSrgb([
-            linear(v.0[0]),
-            linear(v.0[1]),
-            linear(v.0[2]),
+            linear(self.0[0]),
+            linear(self.0[1]),
+            linear(self.0[2]),
         ]);
     }
 }
@@ -202,11 +201,10 @@ impl_color_array! {
 impl LinSrgb {
     /// Convert Linear Srgb into Srgb
     pub fn into_nonlinear(self) -> Srgb {
-        let v = self.clamp();
         return Srgb([
-            nonlinear(v.0[0]),
-            nonlinear(v.0[1]),
-            nonlinear(v.0[2]),
+            nonlinear(self.0[0]),
+            nonlinear(self.0[1]),
+            nonlinear(self.0[2]),
         ]);
     }
 }

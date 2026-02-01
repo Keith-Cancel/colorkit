@@ -271,3 +271,63 @@ impl<
         rev
     };
 }
+
+/// Width `10` Marker type specifying the mapping of color channels
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct Map10<
+    const A: usize = 0,
+    const B: usize = 1,
+    const C: usize = 2,
+    const D: usize = 3,
+    const E: usize = 4,
+    const F: usize = 5,
+    const G: usize = 6,
+    const H: usize = 7,
+    const I: usize = 8,
+    const J: usize = 9,
+>;
+
+impl<
+    const A: usize,
+    const B: usize,
+    const C: usize,
+    const D: usize,
+    const E: usize,
+    const F: usize,
+    const G: usize,
+    const H: usize,
+    const I: usize,
+    const J: usize,
+> MapSealed for Map10<A, B, C, D, E, F, G, H, I, J>
+{
+}
+impl<
+    const A: usize,
+    const B: usize,
+    const C: usize,
+    const D: usize,
+    const E: usize,
+    const F: usize,
+    const G: usize,
+    const H: usize,
+    const I: usize,
+    const J: usize,
+> LayoutMap for Map10<A, B, C, D, E, F, G, H, I, J>
+{
+    type Channels = N10;
+    const MAP: &'static [usize] = &[A, B, C, D, E, F, G, H, I, J];
+    const MAP_REVERSE: &'static [usize] = &const {
+        let mut rev = [0usize; 10];
+        rev[A] = 0;
+        rev[B] = 1;
+        rev[C] = 2;
+        rev[D] = 3;
+        rev[E] = 4;
+        rev[F] = 5;
+        rev[G] = 6;
+        rev[H] = 7;
+        rev[I] = 8;
+        rev[J] = 9;
+        rev
+    };
+}

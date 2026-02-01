@@ -15,6 +15,14 @@ use colorkit::scalar::NormF32;
 use colorkit::scalar::Rounding;
 use colorkit::wp::WhitePoint;
 
+/// The type of Alpha the color space is using.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum AlphaKind {
+    None = 1,
+    Normal,
+    PreMul,
+}
+
 /// Information about a Color Space
 pub trait ColorData: Default {
     /// Number of channels or also should be the length of the array.
@@ -29,6 +37,10 @@ pub trait ColorData: Default {
     const CHANNEL_MAX: &'static [BoundF32];
     /// Lower or min bound of each channel.
     const CHANNEL_MIN: &'static [BoundF32];
+    /// The kinda of Alpha Channel the color space has
+    const ALPHA_KIND: AlphaKind;
+    /// If the color has an alpha channel the index of the channel.
+    const ALPHA_INDEX: Option<usize>;
 
     // what else to add?
     // primaries?
@@ -184,6 +196,20 @@ pub trait ColorSpace: ColorArray + ColorData + ColorLayout + FromColorBoth<Xyz<S
     /// Create a CIE XYZ Color from this color
     fn into_xyz(self) -> Xyz<Self::WhitePoint> {
         return self.into_color();
+    }
+    /// Try returning a reference to the alpha channel, if present.
+    ///
+    /// Returns [`None`] if this color has no alpha channel.
+    #[inline]
+    fn try_alpha(&self) -> Option<&f32> {
+        return self.get_ref(Self::ALPHA_INDEX?);
+    }
+    /// Try to returning a mutable reference to the alpha channel, if present.
+    ///
+    /// Returns [`None`] if this color has no alpha channel.
+    #[inline]
+    fn try_alpha_mut(&mut self) -> Option<&mut f32> {
+        return self.get_mut(Self::ALPHA_INDEX?);
     }
     /// Return channel at `index` normalized to the range `[0.0, 1.0]`.
     ///

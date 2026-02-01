@@ -158,7 +158,18 @@ impl_color_array! {
     gen_use: {}
 }
 
-impl ColorSpace for OkLab {}
+impl ColorSpace for OkLab {
+    /// Return the channel at `index` normalized into `[0.0, 1.0]`.
+    ///
+    /// Oklab `a` and `b` channels are theoretically unbounded, but for
+    /// normalization a practical range of `[-0.5, 0.5]` is assumed.
+    fn get_norm(&self, index: usize) -> NormF32 {
+        let v = self.0[index];
+        let v = if index > 0 { v + 0.5 } else { v };
+        return NormF32::new(v);
+    }
+}
+
 unsafe impl ColorTransmute for OkLab {}
 
 impl Default for OkLab {

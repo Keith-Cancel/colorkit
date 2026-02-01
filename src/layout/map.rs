@@ -2,7 +2,7 @@ use colorkit::num_type::*;
 
 pub trait MapSealed {}
 
-/// Describes the channel ordering used by a [`Layout`](super::Layout).
+/// Describes the logical channel ordering used by a [`Layout`](super::Layout).
 ///
 /// Implementors provide two compile-time permutations:
 /// - `MAP`: logical -> storage index (logical channel `i` is stored at `MAP[i]`)

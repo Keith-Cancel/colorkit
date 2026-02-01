@@ -148,6 +148,14 @@ impl OkLab {
         }
         return lms;
     }
+
+    fn into_norm(self) -> [NormF32; 3] {
+        return [
+            NormF32::new(self.l()),
+            NormF32::new(self.a() + 0.5),
+            NormF32::new(self.b() + 0.5),
+        ];
+    }
 }
 
 impl_color_array! {
@@ -233,12 +241,14 @@ impl ColorLayout for OkLab {
 
     fn into_layout<L: Layout>(self, round: Rounding) -> L {
         debug_assert!(<L::Channels as Number>::N == 3);
-        let a = [
-            NormF32::new(self.l()),
-            NormF32::new(self.a() + 0.5),
-            NormF32::new(self.b() + 0.5),
-        ];
+        let a = self.into_norm();
         return L::from_fn_norm(|i| a[i], round);
+    }
+
+    fn into_layout_dither<L: Layout, D: crate::scalar::Dither>(self, round: Rounding, dither: &mut D) -> L {
+        debug_assert!(<L::Channels as Number>::N == 3);
+        let a = self.into_norm();
+        return L::from_fn_norm_dither(|i| a[i], round, dither);
     }
 }
 

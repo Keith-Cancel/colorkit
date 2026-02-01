@@ -118,7 +118,12 @@ macro_rules! base_funcs {
             }
         }
 
-        impl ColorSpace for $name {}
+        impl ColorSpace for $name {
+            fn get_norm(&self, index: usize) -> NormF32 {
+                return NormF32::new(self.0[index]);
+            }
+        }
+
         unsafe impl ColorTransmute for $name {}
         impl RgbLike for $name {}
     };

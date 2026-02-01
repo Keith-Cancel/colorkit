@@ -21,6 +21,7 @@ pub use planar::Planar;
 pub use planar::Planar3;
 pub use planar::Planar4;
 
+/// Layout index mappings of various channel widths.
 pub mod maps {
     pub use super::map::Map1;
     pub use super::map::Map2;

@@ -113,7 +113,7 @@ impl<W: WhitePoint> ColorLayout for Xyz<W> {
         return Self([x, y, z], PhantomData);
     }
 
-    /// Create a [`Layout`] from a CIE XYZ color.s
+    /// Create a [`Layout`] from a CIE XYZ color.
     ///
     /// XYZ channels are unbounded, so to quantize the
     /// `XYZ` the values are normalized relative the
@@ -129,5 +129,19 @@ impl<W: WhitePoint> ColorLayout for Xyz<W> {
     }
 }
 
-impl<W: WhitePoint> ColorSpace for Xyz<W> {}
+impl<W: WhitePoint> ColorSpace for Xyz<W> {
+    /// Return the channel at `index` normalized into `[0.0, 1.0]`.
+    ///
+    /// CIE XYZ channels are unbounded, so the `XYZ` values are
+    /// normalized relative the white point.
+    ///
+    /// The value is computed by dividing the tristimulus channel by
+    /// the reference white component (`X / W::X`, `Y / W::Y`, `Z / W::Z`).
+    fn get_norm(&self, index: usize) -> NormF32 {
+        let wp = [W::X, W::Y, W::Z];
+        let v = self.0[index] / wp[index];
+        return NormF32::new(v);
+    }
+}
+
 unsafe impl<W: WhitePoint> ColorTransmute for Xyz<W> {}

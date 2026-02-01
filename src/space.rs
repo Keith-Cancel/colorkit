@@ -16,14 +16,6 @@ use colorkit::scalar::NormF32;
 use colorkit::scalar::Rounding;
 use colorkit::wp::WhitePoint;
 
-/// The type of Alpha the color space is using.
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum AlphaKind {
-    None = 1,
-    Normal,
-    PreMul,
-}
-
 /// Information about a Color Space
 pub trait ColorData: Default {
     /// Number of channels or also should be the length of the array.
@@ -108,6 +100,43 @@ pub trait ColorArray:
     fn get_mut(&mut self, index: usize) -> Option<&mut f32> {
         return self.as_mut_slice().get_mut(index);
     }
+}
+
+/// The type of Alpha the color space is using.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum AlphaKind {
+    None = 1,
+    Normal,
+    PreMul,
+}
+
+pub trait ColorMaybeAlpha {
+    /// The kinda of Alpha Channel the color space has
+    const ALPHA_KIND: AlphaKind;
+    /// If the color has an alpha channel the index of the channel.
+    const ALPHA_INDEX: Option<usize>;
+    /// The color's type with no alpha channel.
+    ///
+    /// This should is generally just equal to `Self`.
+    /// except in the case of wrapper types like
+    /// [`Alpha`](colorkit::colors::Alpha)
+    /// and [`AlphaPre`](colorkit::colors::AlphaPre)
+    type NoAlpha: ColorSpace;
+    /// Remove the alpha channel if present.
+    ///
+    /// Otherwise this should just return `Self`
+    fn strip_alpha(self) -> Self::NoAlpha;
+    /// Try to use the alpha channel if present, otherwise default to `1.0`
+    /// for fully opaque.
+    fn opacity(&self) -> f32;
+    /// Try returning a reference to the alpha channel, if present.
+    ///
+    /// Returns [`None`] if this color has no alpha channel.
+    fn try_alpha_ref(&self) -> Option<&f32>;
+    /// Try to returning a mutable reference to the alpha channel, if present.
+    ///
+    /// Returns [`None`] if this color has no alpha channel.
+    fn try_alpha_mut(&mut self) -> Option<&mut f32>;
 }
 
 /// Allows a [`ColorSpace`] converted to and from various [`Layout`].

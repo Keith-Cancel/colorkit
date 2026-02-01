@@ -19,6 +19,10 @@ pub trait Number: NumberSealed + Copy {
     type Inc: Number<Dec = Self>;
     /// Number decreased by 1
     type Dec: Number<Inc = Self>;
+
+    fn value() -> usize {
+        return Self::N;
+    }
 }
 
 /// Marker type that is paired with [`ToNumber`]

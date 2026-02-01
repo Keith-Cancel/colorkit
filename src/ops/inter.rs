@@ -32,8 +32,9 @@ pub trait Interpolation {
 
 impl<C: ColorSpace> Interpolation for C {
     fn lerp(&self, other: &Self, ratio: f32) -> Self {
+        let r = ratio.clamp(0.0, 1.0);
         if matches!(Self::ALPHA_KIND, AlphaKind::None) {
-            return C::lerp_naive(&self, other, ratio);
+            return C::lerp_naive(&self, other, r);
         }
         // I really just wish I could make an of array [f32; C::CHANNELS]
 
@@ -43,10 +44,11 @@ impl<C: ColorSpace> Interpolation for C {
     }
 
     fn lerp_naive(&self, other: &Self, ratio: f32) -> Self {
+        let r = ratio.clamp(0.0, 1.0);
         return Self::from_fn(|i| {
             let a = self[i];
             let b = other[i];
-            return a + ratio * (b - a);
+            return a + r * (b - a);
         });
     }
 }

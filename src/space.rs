@@ -96,7 +96,7 @@ pub trait ColorLayout {
     ///
     /// Channel count of the the [`Layout::Channels`] should be greater
     /// than or equal to the color space channels.
-    fn from_layout_map<L: Layout, M: LayoutMap<Channels = L::Channels>>() -> Self;
+    fn from_layout_map<L: Layout, M: LayoutMap<Channels = L::Channels>>(layout: L) -> Self;
 }
 
 /// The main ColorSpace Trait

@@ -123,6 +123,12 @@ impl<W: WhitePoint> ColorLayout for Xyz<W> {
         debug_assert!(<L::Channels as Number>::N == 3);
         return L::from_fn_norm(|i| self.get_norm(i), round);
     }
+
+    fn into_layout_map<L: Layout, M: LayoutMap>(self, round: Rounding) -> L {
+        debug_assert!(<L::Channels as Number>::N == 3);
+        return L::from_fn_norm(|i| self.get_norm(M::unmap(i)), round);
+    }
+
     /// Create a [`Layout`] from a CIE XYZ color and [`Dither`]
     ///
     /// XYZ channels are unbounded, so to quantize the

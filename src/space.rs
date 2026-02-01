@@ -105,6 +105,11 @@ pub trait ColorLayout: Sized {
     /// Channel count of the the [`Layout::Channels`] should
     /// equal the color space channels.
     fn into_layout<L: Layout>(self, round: Rounding) -> L;
+    /// Construct a [`Layout`] from a given color and [`LayoutMap`].
+    ///
+    /// Channel count of the the [`Layout::Channels`] should
+    /// equal the color space channels.
+    fn into_layout_map<L: Layout, M: LayoutMap>(self, round: Rounding) -> L;
     /// Construct a [`Layout`] from a given color and [`Dither`]
     ///
     /// Channel count of the the [`Layout::Channels`] should

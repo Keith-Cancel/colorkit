@@ -15,6 +15,18 @@ pub trait LayoutMap: Copy + MapSealed {
     type Channels: Number;
     const MAP: &'static [usize];
     const MAP_REVERSE: &'static [usize];
+
+    /// Map a logical index to a storage index.
+    #[inline]
+    fn map(index: usize) -> usize {
+        return Self::MAP[index];
+    }
+
+    /// Unmap a storage index to a logical index.
+    #[inline]
+    fn unmap(index: usize) -> usize {
+        return Self::MAP_REVERSE[index];
+    }
 }
 
 /// Width `1` Marker type specifying the mapping of color channels

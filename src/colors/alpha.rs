@@ -349,6 +349,16 @@ mod test {
     use super::*;
 
     #[test]
+    fn alpha_pre_new() {
+        // All fraction powers of 2 so results should be exact.
+        let a = AlphaPre::new(Srgb::new(0.75, 0.5, 0.25), 0.5);
+        assert_eq!(a[0], 0.375);
+        assert_eq!(a[1], 0.25);
+        assert_eq!(a[2], 0.125);
+        assert_eq!(a[3], 0.5);
+    }
+
+    #[test]
     fn min_max() {
         assert_eq!(<Alpha<Srgb>>::CHANNEL_MAX.len(), 4);
         assert_eq!(<Alpha<Srgb>>::CHANNEL_MIN.len(), 4);

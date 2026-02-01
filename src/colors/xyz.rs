@@ -133,7 +133,8 @@ impl<W: WhitePoint> ColorSpace for Xyz<W> {
     /// Return the channel at `index` normalized into `[0.0, 1.0]`.
     ///
     /// CIE XYZ channels are unbounded, so the `XYZ` values are
-    /// normalized relative the white point.
+    /// normalized relative the white point, and then clamped to
+    /// the normalized range.
     ///
     /// The value is computed by dividing the tristimulus channel by
     /// the reference white component (`X / W::X`, `Y / W::Y`, `Z / W::Z`).

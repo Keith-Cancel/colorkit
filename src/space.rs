@@ -65,7 +65,7 @@ pub trait ColorArray:
     fn as_mut_slice(&mut self) -> &mut [f32];
     /// Try to get a reference as an array.
     ///
-    /// If `N` is greater than [`ColorData::CHANNELS`] returns [`None`]`
+    /// If `N` is greater than [`ColorData::Channels`] returns [`None`]`
     fn try_as_array<const N: usize>(&self) -> Option<&[f32; N]> {
         let slc = self.as_slice();
         if N > slc.len() {
@@ -76,7 +76,7 @@ pub trait ColorArray:
     }
     /// Try to get a reference as an mutable array.
     ///
-    /// If `N` is greater than [`ColorData::CHANNELS`] returns [`None`]`
+    /// If `N` is greater than [`ColorData::Channels`] returns [`None`]`
     fn try_as_mut_array<const N: usize>(&mut self) -> Option<&mut [f32; N]> {
         let slc = self.as_mut_slice();
         if N > slc.len() {

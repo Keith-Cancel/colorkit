@@ -8,10 +8,10 @@ use colorkit::space::ColorData;
 use colorkit::space::ColorSpace;
 
 /// This marker trait marks that a color can be
-/// transmuted into an array of [f32; [`ColorData::CHANNELS`]]
+/// transmuted into an array of [f32; [`ColorData::Channels`]]
 ///
 /// Essentially `size_of::<Self>() / size_of::<f32>()` should
-/// equal [`ColorData::CHANNELS`], plus other constraints like
+/// equal [`ColorData::Channels`], plus other constraints like
 /// alignment ect...
 pub unsafe trait ColorTransmute: ColorSpace {}
 
@@ -74,7 +74,7 @@ mod private {
 
 /// Transformation Matrices to go between and from CIE XYZ
 ///
-/// This trait expects that [`ColorData::CHANNELS`] is equal
+/// This trait expects that [`ColorData::Channels`] is equal
 /// to *3*, and slices/arrays gotten via [`ColorArray`] are also
 /// length 3.
 ///

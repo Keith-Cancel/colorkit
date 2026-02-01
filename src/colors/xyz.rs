@@ -1,12 +1,14 @@
 use core::marker::PhantomData;
 
 use colorkit::convert::ColorTransmute;
+use colorkit::layout::Layout;
 use colorkit::math::BoundF32;
 use colorkit::space::ColorData;
 use colorkit::space::ColorSpace;
 use colorkit::wp::WhitePoint;
 
 use super::macros::impl_color_array;
+use crate::num_type::Number;
 
 /// Represention of an CIE XYZ color using [`f32`] values.
 #[repr(transparent)]
@@ -55,6 +57,17 @@ impl<W: WhitePoint> Xyz<W> {
     #[inline]
     pub const fn change_white_point<Wp: WhitePoint>(self) -> Xyz<Wp> {
         return Xyz::<Wp>(self.0, PhantomData);
+    }
+
+    pub(crate) fn from_layout_inner<L: Layout>(lay: L) -> Xyz<W> {
+        debug_assert!(<L::Channels as Number>::N >= 3);
+        // At least for XYZ the channels are not exactly bounded,
+        // but I guess we can assume that each channel was normalized
+        // using the white point. So unormalize the channels.
+        let x = lay.get_norm(0) * W::X;
+        let y = lay.get_norm(1) * W::Y;
+        let z = lay.get_norm(2) * W::Z;
+        return Self([x, y, z], PhantomData);
     }
 }
 

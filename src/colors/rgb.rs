@@ -117,6 +117,11 @@ macro_rules! base_funcs {
                 return L::from_fn_norm(|i| NormF32::new(self.0[i]), round);
             }
 
+            fn into_layout_map<L: Layout, M: LayoutMap>(self, round: Rounding) -> L {
+                debug_assert!(<L::Channels as Number>::N == 3);
+                return L::from_fn_norm(|i| NormF32::new(self.0[M::unmap(i)]), round);
+            }
+
             fn into_layout_dither<L: Layout, D: crate::scalar::Dither>(self, round: Rounding, dither: &mut D) -> L {
                 debug_assert!(<L::Channels as Number>::N == 3);
                 return L::from_fn_norm_dither(|i| NormF32::new(self.0[i]), round, dither);

@@ -2,11 +2,14 @@ use colorkit::convert::ColorTransmute;
 use colorkit::convert::FromColor;
 use colorkit::convert::XyzMatrices;
 use colorkit::layout::Layout;
+use colorkit::layout::LayoutMap;
 use colorkit::math::BoundF32;
 use colorkit::math::cbrtf;
 use colorkit::math::quirtf;
 use colorkit::math::sqrtf;
+use colorkit::num_type::Number;
 use colorkit::space::ColorData;
+use colorkit::space::ColorLayout;
 use colorkit::space::ColorSpace;
 use colorkit::space::RgbLike;
 use colorkit::wp::D65;
@@ -85,6 +88,24 @@ macro_rules! base_funcs {
             const LINEAR: bool = true;
             const CHANNEL_MAX: &'static [BoundF32] = &[BoundF32::Include(1.0); 3];
             const CHANNEL_MIN: &'static [BoundF32] = &[BoundF32::Include(0.0); 3];
+        }
+
+        impl ColorLayout for $name {
+            fn from_layout<L: Layout>(layout: L) -> Self {
+                debug_assert!(<L::Channels as Number>::N >= 3);
+                let r = layout.get_norm(0).get();
+                let g = layout.get_norm(1).get();
+                let b = layout.get_norm(2).get();
+                return Self([r, g, b]);
+            }
+
+            fn from_layout_map<L: Layout, M: LayoutMap<Channels = L::Channels>>(layout: L) -> Self {
+                debug_assert!(<L::Channels as Number>::N >= 3);
+                let r = layout.get_norm(M::map(0)).get();
+                let g = layout.get_norm(M::map(1)).get();
+                let b = layout.get_norm(M::map(2)).get();
+                return Self([r, g, b]);
+            }
         }
 
         impl ColorSpace for $name {}

@@ -115,6 +115,11 @@ pub trait ColorLayout: Sized {
     /// Channel count of the the [`Layout::Channels`] should
     /// equal the color space channels.
     fn into_layout_dither<L: Layout, D: Dither>(self, round: Rounding, dither: &mut D) -> L;
+    /// Construct a [`Layout`] from a given color, [`Dither`] and [`LayoutMap`]
+    ///
+    /// Channel count of the the [`Layout::Channels`] should
+    /// equal the color space channels.
+    fn into_layout_dither_map<L: Layout, D: Dither, M: LayoutMap>(self, round: Rounding, dither: &mut D) -> L;
 }
 
 /// The main ColorSpace Trait

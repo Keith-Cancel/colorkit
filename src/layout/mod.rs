@@ -8,6 +8,7 @@
 mod packed_565;
 mod planar;
 
+use colorkit::num_type::Number;
 use colorkit::scalar::Dither;
 use colorkit::scalar::NoDither;
 use colorkit::scalar::NormF32;
@@ -48,14 +49,14 @@ pub trait Layout: Copy + Default + LayoutStorage {
     /// Default Value
     const DEFAULT: Self;
     /// Total number of channels
-    const CHANNELS: usize;
+    type Channels: Number;
     /// A type capable of holding the raw value of each channel.
     type ChannelType;
 
     /// Total number of channels for this layout.
     #[inline(always)]
     fn channels() -> usize {
-        return Self::CHANNELS;
+        return Self::Channels::N;
     }
 
     /// Create a layout by calling `fun` for each channel index.
@@ -108,8 +109,7 @@ pub trait Layout: Copy + Default + LayoutStorage {
     ///
     /// # Panics
     /// May panic if the channel counts do not match.
-    fn requantize<L: Layout>(self, round: Rounding) -> L {
-        debug_assert!(L::CHANNELS == Self::CHANNELS);
+    fn requantize<L: Layout<Channels = Self::Channels>>(self, round: Rounding) -> L {
         return L::from_fn_norm(|i| self.get_norm(i), round);
     }
 
@@ -117,8 +117,7 @@ pub trait Layout: Copy + Default + LayoutStorage {
     ///
     /// # Panics
     /// May panic if the channel counts do not match.
-    fn requantize_dither<L: Layout, D: Dither>(self, round: Rounding, dither: &mut D) -> L {
-        debug_assert!(L::CHANNELS == Self::CHANNELS);
+    fn requantize_dither<L: Layout<Channels = Self::Channels>, D: Dither>(self, round: Rounding, dither: &mut D) -> L {
         return L::from_fn_norm_dither(|i| self.get_norm(i), round, dither);
     }
 }
@@ -170,11 +169,11 @@ pub trait FromLayout<L: Layout>: Layout {
     fn from_layout(layout: L) -> Self;
 }
 
-//impl<L1: Layout<CHANNELS = { L2::CHANNELS }>, L2: Layout> FromLayout<L1> for L2 {
-//    fn from_layout(layout: L1) -> Self {
-//        return layout.requantize(Rounding::Nearest);
-//    }
-//}
+impl<L1: Layout<Channels = L2::Channels>, L2: Layout> FromLayout<L1> for L2 {
+    fn from_layout(layout: L1) -> Self {
+        return layout.requantize(Rounding::Nearest);
+    }
+}
 
 /// Convert this layout into another layout `L`
 ///
@@ -184,11 +183,11 @@ pub trait IntoLayout<L: Layout>: Layout {
     fn into_layout(self) -> L;
 }
 
-//impl<L1: Layout<CHANNELS = { L2::CHANNELS }>, L2: FromLayout<L1>> IntoLayout<L1> for L2 {
-//    fn into_layout(self) -> L1 {
-//        return L1::from_layout(self);
-//    }
-//}
+impl<L1: Layout<Channels = L2::Channels>, L2: FromLayout<L1>> IntoLayout<L1> for L2 {
+    fn into_layout(self) -> L1 {
+        return L1::from_layout(self);
+    }
+}
 
 /*
 /// Convert a layout into another layout `L` with the same or more channels.

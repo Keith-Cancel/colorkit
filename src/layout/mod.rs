@@ -16,20 +16,23 @@ use colorkit::scalar::Scalar;
 
 #[rustfmt::skip]
 pub use map::LayoutMap;
-pub use map::Map1;
-pub use map::Map2;
-pub use map::Map3;
-pub use map::Map4;
-pub use map::Map5;
-pub use map::Map6;
-pub use map::Map7;
-pub use map::Map8;
-pub use map::Map9;
-pub use map::Map10;
 pub use packed_565::Packed565;
 pub use planar::Planar;
 pub use planar::Planar3;
 pub use planar::Planar4;
+
+pub mod maps {
+    pub use super::map::Map1;
+    pub use super::map::Map2;
+    pub use super::map::Map3;
+    pub use super::map::Map4;
+    pub use super::map::Map5;
+    pub use super::map::Map6;
+    pub use super::map::Map7;
+    pub use super::map::Map8;
+    pub use super::map::Map9;
+    pub use super::map::Map10;
+}
 
 /// Bridge between a layout and its underlying storage.
 ///

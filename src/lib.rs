@@ -14,3 +14,13 @@ pub mod ops;
 pub mod scalar;
 pub mod space;
 pub mod wp;
+
+// Few exports at the top level for convience.
+pub use colors::Alpha;
+pub use colors::LinSrgb;
+pub use colors::OkLab;
+pub use colors::Srgb;
+pub use colors::Xyz;
+pub use convert::FromColor;
+pub use convert::IntoColor;
+pub use space::ColorSpace;

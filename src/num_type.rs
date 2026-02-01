@@ -14,6 +14,10 @@ use private::NumberSealed;
 /// I can perform associated type equality instead.
 pub trait Number: NumberSealed + Copy {
     /// Value of the number
+    #[cfg(feature = "type_const")]
+    #[type_const]
+    const N: usize;
+    #[cfg(not(feature = "type_const"))]
     const N: usize;
     /// Number increased by 1
     type Inc: Number<Dec = Self>;

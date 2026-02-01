@@ -77,13 +77,13 @@ pub trait Layout: Copy + Default + LayoutStorage {
     /// Return the value at channel `index` as a [`NormF32`]
     ///
     /// # Panics
-    /// May Panic if `index` >= [`Layout::CHANNELS`]
+    /// May Panic if `index` >= [`Layout::Channels`]
     fn get_norm(&self, index: usize) -> NormF32;
 
     /// Sets the channel at `index` from a [`NormF32`] using the given rounding mode.
     ///
     /// # Panics
-    /// May Panic if `index` >= [`Layout::CHANNELS`]
+    /// May Panic if `index` >= [`Layout::Channels`]
     fn set_norm(&mut self, value: NormF32, index: usize, round: Rounding) {
         return self.set_norm_dither(value, index, round, &mut NoDither);
     }
@@ -91,18 +91,18 @@ pub trait Layout: Copy + Default + LayoutStorage {
     /// Sets the channel at `index` from a [`NormF32`] using rounding and dithering.
     ///
     /// # Panics
-    /// May Panic if `index` >= [`Layout::CHANNELS`]
+    /// May Panic if `index` >= [`Layout::Channels`]
     fn set_norm_dither<D: Dither>(&mut self, value: NormF32, index: usize, round: Rounding, dither: &mut D);
 
     /// Return the raw value at `index`.
     ///
     /// # Panics
-    /// May Panic if `index` >= [`Layout::CHANNELS`]
+    /// May Panic if `index` >= [`Layout::Channels`]
     fn get_raw(&self, index: usize) -> Self::ChannelType;
     /// Set the raw value at `index`.
     ///
     /// # Panics
-    /// May Panic if `index` >= [`Layout::CHANNELS`]
+    /// May Panic if `index` >= [`Layout::Channels`]
     fn set_raw(&mut self, index: usize, value: Self::ChannelType);
 
     /// Converts this layout into another layout with the same channel count.
@@ -140,14 +140,14 @@ pub trait LayoutScalar: Layout<ChannelType: Scalar> {
     /// Return the raw value at `index`.
     ///
     /// # Panics
-    /// May Panic if `index` >= [`Layout::CHANNELS`]
+    /// May Panic if `index` >= [`Layout::Channels`]
     fn get(&self, index: usize) -> Self::ChannelType {
         return self.get_raw(index);
     }
     /// Set the scalar at `index`.
     ///
     /// # Panics
-    /// May Panic if `index` >= [`Layout::CHANNELS`]
+    /// May Panic if `index` >= [`Layout::Channels`]
     fn set(&mut self, index: usize, value: Self::ChannelType) {
         return self.set_raw(index, value);
     }

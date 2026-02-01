@@ -1,5 +1,6 @@
 //use super::FromLayout;
 //use super::GrowLayout;
+use colorkit::num_type::N3;
 use colorkit::scalar::BitUint;
 use colorkit::scalar::Dither;
 use colorkit::scalar::NormF32;
@@ -79,7 +80,7 @@ impl LayoutStorage for Packed565 {
 
 impl Layout for Packed565 {
     const DEFAULT: Self = Self(0);
-    const CHANNELS: usize = 3;
+    type Channels = N3;
     type ChannelType = u8;
 
     fn from_fn_raw<F: FnMut(usize) -> u8>(fun: F) -> Self {

@@ -1,10 +1,14 @@
 use colorkit::convert::ColorTransmute;
 use colorkit::convert::FromColor;
 use colorkit::convert::IntoColor;
+use colorkit::layout::Layout;
+use colorkit::layout::LayoutMap;
 use colorkit::math::BoundF32;
 use colorkit::math::cbrtf;
 use colorkit::math::matrix_3x3_vec3_mul;
+use colorkit::num_type::Number;
 use colorkit::space::ColorData;
+use colorkit::space::ColorLayout;
 use colorkit::space::ColorSpace;
 use colorkit::wp::D65;
 
@@ -163,6 +167,9 @@ impl ColorData for OkLab {
     const DEFAULT: Self = Self([0.0, 0.0, 0.0]);
     const CHANNELS: usize = 3;
     const LINEAR: bool = true;
+    // Oklab a, and b channels in theory are unbounded
+    // but at least from understanding the practical
+    // range is only -0.5 to 0.5.
     const CHANNEL_MAX: &'static [BoundF32] = &[
         BoundF32::Include(1.0),
         BoundF32::Include(0.5),
@@ -173,6 +180,39 @@ impl ColorData for OkLab {
         BoundF32::Include(-0.5),
         BoundF32::Include(-0.5),
     ];
+}
+
+impl ColorLayout for OkLab {
+    /// Create an instance of [`OkLab`] from a [`Layout`]
+    ///
+    /// Oklab's channels `a` and `b` are in theory unbounded this
+    /// implementation assumes that range -0.5 to 0.5 inclusive.
+    ///
+    /// If we have some kind of quantization of Oklab a bound of
+    /// some kind would have been used. For example CSS uses
+    /// -0.4 to 0.4. If that range was reduced to like a [`u8`]
+    /// `-0.4` would be `0`, and `0.4` would `255`.
+    ///
+    /// Because of this ambiguity you might need to rescale the
+    /// [`Layout`] or the resulting [`OkLab`] if the range is
+    /// different.
+    ///
+    /// This calls `get_norm()` on the layout and shifts value by `+0.5`
+    fn from_layout<L: Layout>(layout: L) -> Self {
+        debug_assert!(<L::Channels as Number>::N >= 3);
+        let l = layout.get_norm(0).get();
+        let a = layout.get_norm(1).get();
+        let b = layout.get_norm(2).get();
+        return Self([l, a, b]);
+    }
+
+    fn from_layout_map<L: Layout, M: LayoutMap<Channels = L::Channels>>(layout: L) -> Self {
+        debug_assert!(<L::Channels as Number>::N >= 3);
+        let l = layout.get_norm(M::map(0)).get();
+        let a = layout.get_norm(M::map(1)).get();
+        let b = layout.get_norm(M::map(2)).get();
+        return Self([l, a, b]);
+    }
 }
 
 impl FromColor<Xyz<D65>> for OkLab {

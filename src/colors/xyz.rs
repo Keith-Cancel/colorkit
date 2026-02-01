@@ -4,6 +4,7 @@ use colorkit::convert::ColorTransmute;
 use colorkit::layout::Layout;
 use colorkit::layout::LayoutMap;
 use colorkit::math::BoundF32;
+use colorkit::scalar::Rounding;
 use colorkit::space::ColorData;
 use colorkit::space::ColorLayout;
 use colorkit::space::ColorSpace;
@@ -11,6 +12,7 @@ use colorkit::wp::WhitePoint;
 
 use super::macros::impl_color_array;
 use crate::num_type::Number;
+use crate::scalar::NormF32;
 
 /// Represention of an CIE XYZ color using [`f32`] values.
 #[repr(transparent)]
@@ -109,6 +111,21 @@ impl<W: WhitePoint> ColorLayout for Xyz<W> {
         let y = layout.get_norm(M::map(1)) * W::Y;
         let z = layout.get_norm(M::map(2)) * W::Z;
         return Self([x, y, z], PhantomData);
+    }
+
+    /// Create a [`Layout`] from a CIE XYZ color.s
+    ///
+    /// XYZ channels are unbounded, so to quantize the
+    /// `XYZ` the values are normalized relative the
+    /// white point, any values larger are clamped.
+    fn into_layout<L: Layout>(self, round: Rounding) -> L {
+        debug_assert!(<L::Channels as Number>::N == 3);
+        let c = [
+            NormF32::new_clamped(self.x() / W::X),
+            NormF32::new_clamped(self.y() / W::Y),
+            NormF32::new_clamped(self.z() / W::Z),
+        ];
+        return L::from_fn_norm(|i| c[i], round);
     }
 }
 

@@ -42,11 +42,6 @@ pub trait ColorArray:
 {
     /// Construct the Color calling `f(i)` for each index (same semantics as [`core::array::from_fn`]).
     fn from_fn<F: FnMut(usize) -> f32>(f: F) -> Self;
-    /// Construct a color from a [`Layout].
-    ///
-    /// Channel count of the the [`Layout`] be greater
-    /// or equal to the color space channels.
-    fn from_layout<L: Layout>(layout: L) -> Self;
     /// View color as a slice reference.
     fn as_slice(&self) -> &[f32];
     /// View color as a mutable slice.
@@ -82,6 +77,17 @@ pub trait ColorArray:
     /// Get a mutable channel value reference or `None`.
     fn get_mut(&mut self, index: usize) -> Option<&mut f32> {
         return self.as_mut_slice().get_mut(index);
+    }
+    /// Construct a color from a [`Layout].
+    ///
+    /// Channel count of the the [`Layout::Channels`] should be greater
+    /// than or equal to the color space channels.
+    ///
+    /// The provided default implementation calls [`Layout::get_norm`]
+    /// per channel. If the colorspace needs values shifted or scaled
+    /// you should provide a new implementation.
+    fn from_layout<L: Layout>(layout: L) -> Self {
+        return Self::from_fn(|i| layout.get_norm(i).get());
     }
 }
 

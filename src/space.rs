@@ -169,7 +169,7 @@ pub trait ColorSpace: ColorArray + ColorData + ColorLayout + FromColorBoth<Xyz<S
     fn into_xyz(self) -> Xyz<Self::WhitePoint> {
         return self.into_color();
     }
-    /// Get a channel of the color space, normalized `0.0` and `1.0`.
+    /// Return channel at `index` normalized to the range `[0.0, 1.0]`.
     ///
     /// As stated in [`ColorSpace::get_norm_bounds`] not all color
     /// spaces have bounds all channels. What bounds are chosen
@@ -179,7 +179,7 @@ pub trait ColorSpace: ColorArray + ColorData + ColorLayout + FromColorBoth<Xyz<S
     /// # Panics
     /// May panic if `index` is out of bounds.
     fn get_norm(&self, index: usize) -> NormF32;
-    /// Get a channel of the color space, normalized `0.0` and `1.0`.
+    /// Return channel at `index` normalized to the range `[0.0, 1.0]`.
     ///
     /// # Note
     /// Not all color spaces are bounded on all channels, what bounds

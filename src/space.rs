@@ -179,8 +179,9 @@ pub trait ColorSpace: ColorArray + ColorData + ColorLayout + FromColorBoth<Xyz<S
     /// ect...
     ///
     /// # Panics
-    /// May Panic if the range between is `min` and `max` is zero or
-    /// the index is out bounds for the color space.
+    /// * If `min >= max` or either bound is not finite (this would produce a
+    ///   division by zero or an invalid normalization range).
+    /// * If `index` is out of bounds for the color (same behavior as indexing).
     fn get_norm_bounds(&self, index: usize, min: f32, max: f32) -> NormF32 {
         let val = self[index];
         let rng = max - min;

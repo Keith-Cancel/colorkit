@@ -17,6 +17,7 @@ use colorkit::scalar::Rounding;
 use colorkit::scalar::Scalar;
 
 #[rustfmt::skip]
+pub use map::LayoutMap;
 pub use packed_565::Packed565;
 pub use planar::Planar;
 pub use planar::Planar3;

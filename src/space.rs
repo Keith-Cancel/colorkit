@@ -42,7 +42,13 @@ pub trait ColorData: Default {
     const ALPHA_KIND: AlphaKind;
     /// If the color has an alpha channel the index of the channel.
     const ALPHA_INDEX: Option<usize>;
-
+    /// The color's type with no alpha channel.
+    ///
+    /// This should is generally just equal to `Self`.
+    /// except in the case of wrapper types like
+    /// [`Alpha`](colorkit::colors::Alpha)
+    /// and [`AlphaPre`](colorkit::colors::AlphaPre)
+    type NoAlpha: ColorSpace;
     // what else to add?
     // primaries?
 }

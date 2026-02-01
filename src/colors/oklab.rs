@@ -187,6 +187,7 @@ impl Default for OkLab {
 impl ColorData for OkLab {
     type WhitePoint = D65;
     type Channels = N3;
+    type NoAlpha = Self;
     const DEFAULT: Self = Self([0.0, 0.0, 0.0]);
     const LINEAR: bool = true;
     const ALPHA_KIND: AlphaKind = AlphaKind::None;

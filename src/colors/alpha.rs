@@ -5,6 +5,7 @@ use colorkit::layout::Layout;
 use colorkit::layout::LayoutMap;
 use colorkit::math::BoundF32;
 use colorkit::num_type::Number;
+use colorkit::scalar::NormF32;
 use colorkit::scalar::Rounding;
 use colorkit::space::ColorArray;
 use colorkit::space::ColorData;
@@ -259,11 +260,19 @@ macro_rules! base_funcs {
             }
 
             fn into_layout<L: Layout>(self, round: Rounding) -> L {
-                todo!();
+                debug_assert!(<L::Channels as Number>::N == Self::LEN);
+                return L::from_fn_norm(|i| self.get_norm(i), round);
             }
         }
 
-        impl<S: ColorTransmute> ColorSpace for $name<S> {}
+        impl<S: ColorTransmute> ColorSpace for $name<S> {
+            fn get_norm(&self, index: usize) -> NormF32 {
+                if index == S::CHANNELS {
+                    return NormF32::new(self.1);
+                }
+                return self.0.get_norm(index);
+            }
+        }
 
         impl<S: ColorTransmute> $name<S> {
             const MAX: &'static [BoundF32] = &const {

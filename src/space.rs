@@ -10,6 +10,7 @@ use colorkit::convert::IntoColor;
 use colorkit::layout::Layout;
 use colorkit::layout::LayoutMap;
 use colorkit::math::BoundF32;
+use colorkit::scalar::Rounding;
 use colorkit::wp::WhitePoint;
 
 /// Information about a Color Space
@@ -82,7 +83,7 @@ pub trait ColorArray:
 }
 
 /// Allows a [`ColorSpace`] converted to and from various [`Layout`].
-pub trait ColorLayout {
+pub trait ColorLayout: Sized {
     /// Construct a color from a [`Layout].
     ///
     /// Channel count of the the [`Layout::Channels`] should be greater
@@ -97,6 +98,11 @@ pub trait ColorLayout {
     /// Channel count of the the [`Layout::Channels`] should be greater
     /// than or equal to the color space channels.
     fn from_layout_map<L: Layout, M: LayoutMap<Channels = L::Channels>>(layout: L) -> Self;
+    /// Construct a [`Layout`] from a given color.
+    ///
+    /// Channel count of the the [`Layout::Channels`] should
+    /// equal the color space channels.
+    fn into_layout<L: Layout>(self, round: Rounding) -> L;
 }
 
 /// The main ColorSpace Trait

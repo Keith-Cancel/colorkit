@@ -349,12 +349,24 @@ mod test {
     use super::*;
 
     #[test]
-    fn alpha_pre_new() {
+    fn alpha_pre() {
         // All fraction powers of 2 so results should be exact.
-        let a = AlphaPre::new(Srgb::new(0.75, 0.5, 0.25), 0.5);
+        let mut a = AlphaPre::new(Srgb::new(0.75, 0.5, 0.25), 0.5);
         assert_eq!(a[0], 0.375);
         assert_eq!(a[1], 0.25);
         assert_eq!(a[2], 0.125);
+        assert_eq!(a[3], 0.5);
+
+        let b = a.into_alpha();
+        assert_eq!(b[0], 0.75);
+        assert_eq!(b[1], 0.5);
+        assert_eq!(b[2], 0.25);
+        assert_eq!(b[3], 0.5);
+
+        a.update_alpha(0.25);
+        assert_eq!(a[0], 0.1875);
+        assert_eq!(a[1], 0.125);
+        assert_eq!(a[2], 0.0625);
         assert_eq!(a[3], 0.5);
     }
 

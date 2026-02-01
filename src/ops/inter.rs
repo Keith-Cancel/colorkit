@@ -3,10 +3,6 @@ use colorkit::space::ColorSpace;
 
 /// Extension trait for interpolation operations on colors
 pub trait Interpolation {
-    fn lerp_naive(&self, other: &Self, ratio: NormF32) -> Self;
-}
-
-impl<C: ColorSpace> Interpolation for C {
     /// Linearly interpolate between two colors.
     ///
     /// # Parameters
@@ -20,6 +16,10 @@ impl<C: ColorSpace> Interpolation for C {
     /// Further, performs channel-wise linear interpolation, this
     /// works in any color space, but the perceptual result depends
     /// on the space's linearity.
+    fn lerp_naive(&self, other: &Self, ratio: NormF32) -> Self;
+}
+
+impl<C: ColorSpace> Interpolation for C {
     fn lerp_naive(&self, other: &Self, ratio: NormF32) -> Self {
         return Self::from_fn(|i| {
             let a = self[i];

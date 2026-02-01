@@ -171,10 +171,9 @@ pub trait ColorSpace: ColorArray + ColorData + ColorLayout + FromColorBoth<Xyz<S
     }
     /// Return channel at `index` normalized to the range `[0.0, 1.0]`.
     ///
-    /// As stated in [`ColorSpace::get_norm_bounds`] not all color
-    /// spaces have bounds all channels. What bounds are chosen
-    /// depending on the color space. See the particular color space's
-    /// documentation for those if needed.
+    /// The normalization bounds are color-space specific - see the particular
+    /// color space's documentation for details. For explicit control over the
+    /// bounds, use [`ColorSpace::get_norm_bounds`].
     ///
     /// # Panics
     /// May panic if `index` is out of bounds.

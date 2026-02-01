@@ -8,6 +8,8 @@ use colorkit::math::cbrtf;
 use colorkit::math::quirtf;
 use colorkit::math::sqrtf;
 use colorkit::num_type::Number;
+use colorkit::scalar::NormF32;
+use colorkit::scalar::Rounding;
 use colorkit::space::ColorData;
 use colorkit::space::ColorLayout;
 use colorkit::space::ColorSpace;
@@ -108,6 +110,11 @@ macro_rules! base_funcs {
                 let g = layout.get_norm(M::map(1)).get();
                 let b = layout.get_norm(M::map(2)).get();
                 return Self([r, g, b]);
+            }
+
+            fn into_layout<L: Layout>(self, round: Rounding) -> L {
+                debug_assert!(<L::Channels as Number>::N == 3);
+                return L::from_fn_norm(|i| NormF32::new_clamped(self.0[i]), round);
             }
         }
 

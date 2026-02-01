@@ -2,8 +2,10 @@ use core::marker::PhantomData;
 
 use colorkit::convert::ColorTransmute;
 use colorkit::layout::Layout;
+use colorkit::layout::LayoutMap;
 use colorkit::math::BoundF32;
 use colorkit::space::ColorData;
+use colorkit::space::ColorLayout;
 use colorkit::space::ColorSpace;
 use colorkit::wp::WhitePoint;
 
@@ -58,17 +60,6 @@ impl<W: WhitePoint> Xyz<W> {
     pub const fn change_white_point<Wp: WhitePoint>(self) -> Xyz<Wp> {
         return Xyz::<Wp>(self.0, PhantomData);
     }
-
-    pub(crate) fn from_layout_inner<L: Layout>(lay: L) -> Xyz<W> {
-        debug_assert!(<L::Channels as Number>::N >= 3);
-        // At least for XYZ the channels are not exactly bounded,
-        // but I guess we can assume that each channel was normalized
-        // using the white point. So unormalize the channels.
-        let x = lay.get_norm(0) * W::X;
-        let y = lay.get_norm(1) * W::Y;
-        let z = lay.get_norm(2) * W::Z;
-        return Self([x, y, z], PhantomData);
-    }
 }
 
 impl_color_array! {
@@ -93,6 +84,32 @@ impl<W: WhitePoint> ColorData for Xyz<W> {
     const LINEAR: bool = true;
     const CHANNEL_MAX: &'static [BoundF32] = &[BoundF32::Unbounded; 3];
     const CHANNEL_MIN: &'static [BoundF32] = &[BoundF32::Include(0.0); 3];
+}
+
+impl<W: WhitePoint> ColorLayout for Xyz<W> {
+    /// Create an instance of CIE XYZ from a [`Layout`]
+    ///
+    /// XYZ channels are unbounded, so if we have some
+    /// kinda of quantization of `XYZ` it safe to assume
+    /// it was normalized relative to some white point.
+    ///
+    /// This calls `get_norm()` on the layout and scales
+    /// each channel by the white point.
+    fn from_layout<L: Layout>(layout: L) -> Self {
+        debug_assert!(<L::Channels as Number>::N >= 3);
+        let x = layout.get_norm(0) * W::X;
+        let y = layout.get_norm(1) * W::Y;
+        let z = layout.get_norm(2) * W::Z;
+        return Self([x, y, z], PhantomData);
+    }
+
+    fn from_layout_map<L: Layout, M: LayoutMap<Channels = L::Channels>>(layout: L) -> Self {
+        debug_assert!(<L::Channels as Number>::N >= 3);
+        let x = layout.get_norm(M::map(0)) * W::X;
+        let y = layout.get_norm(M::map(1)) * W::Y;
+        let z = layout.get_norm(M::map(2)) * W::Z;
+        return Self([x, y, z], PhantomData);
+    }
 }
 
 impl<W: WhitePoint> ColorSpace for Xyz<W> {}

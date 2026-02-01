@@ -60,3 +60,214 @@ impl<const A: usize, const B: usize, const C: usize> LayoutMap for Map3<A, B, C>
         rev
     };
 }
+
+/// Width `4` Marker type specifying the mapping of color channels
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct Map4<const A: usize = 0, const B: usize = 1, const C: usize = 2, const D: usize = 3>;
+
+impl<const A: usize, const B: usize, const C: usize, const D: usize> MapSealed for Map4<A, B, C, D> {}
+impl<const A: usize, const B: usize, const C: usize, const D: usize> LayoutMap for Map4<A, B, C, D> {
+    type Channels = N4;
+    const MAP: &'static [usize] = &[A, B, C, D];
+    const MAP_REVERSE: &'static [usize] = &const {
+        let mut rev = [0usize; 4];
+        rev[A] = 0;
+        rev[B] = 1;
+        rev[C] = 2;
+        rev[D] = 3;
+        rev
+    };
+}
+
+/// Width `5` Marker type specifying the mapping of color channels
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct Map5<const A: usize = 0, const B: usize = 1, const C: usize = 2, const D: usize = 3, const E: usize = 4>;
+
+impl<const A: usize, const B: usize, const C: usize, const D: usize, const E: usize> MapSealed for Map5<A, B, C, D, E> {}
+impl<const A: usize, const B: usize, const C: usize, const D: usize, const E: usize> LayoutMap for Map5<A, B, C, D, E> {
+    type Channels = N5;
+    const MAP: &'static [usize] = &[A, B, C, D, E];
+    const MAP_REVERSE: &'static [usize] = &const {
+        let mut rev = [0usize; 5];
+        rev[A] = 0;
+        rev[B] = 1;
+        rev[C] = 2;
+        rev[D] = 3;
+        rev[E] = 4;
+        rev
+    };
+}
+
+/// Width `6` Marker type specifying the mapping of color channels
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct Map6<
+    const A: usize = 0,
+    const B: usize = 1,
+    const C: usize = 2,
+    const D: usize = 3,
+    const E: usize = 4,
+    const F: usize = 5,
+>;
+
+impl<const A: usize, const B: usize, const C: usize, const D: usize, const E: usize, const F: usize> MapSealed
+    for Map6<A, B, C, D, E, F>
+{
+}
+impl<const A: usize, const B: usize, const C: usize, const D: usize, const E: usize, const F: usize> LayoutMap
+    for Map6<A, B, C, D, E, F>
+{
+    type Channels = N6;
+    const MAP: &'static [usize] = &[A, B, C, D, E, F];
+    const MAP_REVERSE: &'static [usize] = &const {
+        let mut rev = [0usize; 6];
+        rev[A] = 0;
+        rev[B] = 1;
+        rev[C] = 2;
+        rev[D] = 3;
+        rev[E] = 4;
+        rev[F] = 5;
+        rev
+    };
+}
+
+/// Width `7` Marker type specifying the mapping of color channels
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct Map7<
+    const A: usize = 0,
+    const B: usize = 1,
+    const C: usize = 2,
+    const D: usize = 3,
+    const E: usize = 4,
+    const F: usize = 5,
+    const G: usize = 6,
+>;
+
+impl<const A: usize, const B: usize, const C: usize, const D: usize, const E: usize, const F: usize, const G: usize>
+    MapSealed for Map7<A, B, C, D, E, F, G>
+{
+}
+impl<const A: usize, const B: usize, const C: usize, const D: usize, const E: usize, const F: usize, const G: usize>
+    LayoutMap for Map7<A, B, C, D, E, F, G>
+{
+    type Channels = N7;
+    const MAP: &'static [usize] = &[A, B, C, D, E, F, G];
+    const MAP_REVERSE: &'static [usize] = &const {
+        let mut rev = [0usize; 7];
+        rev[A] = 0;
+        rev[B] = 1;
+        rev[C] = 2;
+        rev[D] = 3;
+        rev[E] = 4;
+        rev[F] = 5;
+        rev[G] = 6;
+        rev
+    };
+}
+
+/// Width `8` Marker type specifying the mapping of color channels
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct Map8<
+    const A: usize = 0,
+    const B: usize = 1,
+    const C: usize = 2,
+    const D: usize = 3,
+    const E: usize = 4,
+    const F: usize = 5,
+    const G: usize = 6,
+    const H: usize = 7,
+>;
+
+impl<
+    const A: usize,
+    const B: usize,
+    const C: usize,
+    const D: usize,
+    const E: usize,
+    const F: usize,
+    const G: usize,
+    const H: usize,
+> MapSealed for Map8<A, B, C, D, E, F, G, H>
+{
+}
+impl<
+    const A: usize,
+    const B: usize,
+    const C: usize,
+    const D: usize,
+    const E: usize,
+    const F: usize,
+    const G: usize,
+    const H: usize,
+> LayoutMap for Map8<A, B, C, D, E, F, G, H>
+{
+    type Channels = N8;
+    const MAP: &'static [usize] = &[A, B, C, D, E, F, G, H];
+    const MAP_REVERSE: &'static [usize] = &const {
+        let mut rev = [0usize; 8];
+        rev[A] = 0;
+        rev[B] = 1;
+        rev[C] = 2;
+        rev[D] = 3;
+        rev[E] = 4;
+        rev[F] = 5;
+        rev[G] = 6;
+        rev[H] = 7;
+        rev
+    };
+}
+
+/// Width `9` Marker type specifying the mapping of color channels
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct Map9<
+    const A: usize = 0,
+    const B: usize = 1,
+    const C: usize = 2,
+    const D: usize = 3,
+    const E: usize = 4,
+    const F: usize = 5,
+    const G: usize = 6,
+    const H: usize = 7,
+    const I: usize = 8,
+>;
+
+impl<
+    const A: usize,
+    const B: usize,
+    const C: usize,
+    const D: usize,
+    const E: usize,
+    const F: usize,
+    const G: usize,
+    const H: usize,
+    const I: usize,
+> MapSealed for Map9<A, B, C, D, E, F, G, H, I>
+{
+}
+impl<
+    const A: usize,
+    const B: usize,
+    const C: usize,
+    const D: usize,
+    const E: usize,
+    const F: usize,
+    const G: usize,
+    const H: usize,
+    const I: usize,
+> LayoutMap for Map9<A, B, C, D, E, F, G, H, I>
+{
+    type Channels = N9;
+    const MAP: &'static [usize] = &[A, B, C, D, E, F, G, H, I];
+    const MAP_REVERSE: &'static [usize] = &const {
+        let mut rev = [0usize; 9];
+        rev[A] = 0;
+        rev[B] = 1;
+        rev[C] = 2;
+        rev[D] = 3;
+        rev[E] = 4;
+        rev[F] = 5;
+        rev[G] = 6;
+        rev[H] = 7;
+        rev[I] = 8;
+        rev
+    };
+}

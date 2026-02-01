@@ -59,6 +59,13 @@ pub trait ColorArray:
 {
     /// Construct the Color calling `f(i)` for each index (same semantics as [`core::array::from_fn`]).
     fn from_fn<F: FnMut(usize) -> f32>(f: F) -> Self;
+    /// Construct the color from a slice.
+    ///
+    /// # Panics
+    /// May panic the slice's length is less than the [`ColorData::Channels`]
+    fn from_slice(slice: &[f32]) -> Self {
+        return Self::from_fn(|i| slice[i]);
+    }
     /// View color as a slice reference.
     fn as_slice(&self) -> &[f32];
     /// View color as a mutable slice.

@@ -47,13 +47,6 @@ macro_rules! impl_color_array {
             fn from_fn<F: FnMut(usize) -> f32>(f: F) -> Self {
                 return Self(core::array::from_fn(f), $($args),*);
             }
-            fn from_layout<L: colorkit::layout::Layout>(layout: L) -> Self {
-                // Bounds and other things are potentionally unique per color
-                // space, not a good way to handle that in this boilerplate
-                // reduction macro. So just wrap a pub(crate) method if it's
-                // not defined it will produce compiler error which is fine.
-                return Self::from_layout_inner(layout);
-            }
             #[inline]
             fn as_slice(&self) -> &[f32] {
                 return &self.0;

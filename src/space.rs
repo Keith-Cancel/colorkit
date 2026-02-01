@@ -10,6 +10,7 @@ use colorkit::convert::IntoColor;
 use colorkit::layout::Layout;
 use colorkit::layout::LayoutMap;
 use colorkit::math::BoundF32;
+use colorkit::scalar::NormF32;
 use colorkit::scalar::Rounding;
 use colorkit::wp::WhitePoint;
 
@@ -167,6 +168,27 @@ pub trait ColorSpace: ColorArray + ColorData + ColorLayout + FromColorBoth<Xyz<S
     /// Create a CIE XYZ Color from this color
     fn into_xyz(self) -> Xyz<Self::WhitePoint> {
         return self.into_color();
+    }
+    /// Get a channel of the color space, normalized `0.0` and `1.0`.
+    ///
+    /// # Note
+    /// Not all color spaces are bounded on all channels, what bounds
+    /// to use depends on the color space. You might choose a practical
+    /// min and max that may be never reached in practice. Or in the case
+    /// of something like CIE XYZ use something based of the white point
+    /// ect...
+    ///
+    /// # Panics
+    /// May Panic if the range between is `min` and `max` is zero or
+    /// the index is out bounds for the color space.
+    fn get_norm_bounds(&self, index: usize, min: f32, max: f32) -> NormF32 {
+        let val = self[index];
+        let rng = max - min;
+        if (min >= max) || !rng.is_finite() {
+            panic!("Invalid normalization range: require finite min < max");
+        }
+        let n = (val - min) / rng;
+        return NormF32::new(n);
     }
 }
 

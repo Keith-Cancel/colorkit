@@ -1,8 +1,19 @@
-use colorkit::scalar::NormF32;
+use colorkit::space::AlphaKind;
 use colorkit::space::ColorSpace;
 
 /// Extension trait for interpolation operations on colors
 pub trait Interpolation {
+    /// Linearly interpolate between two colors.
+    ///
+    /// # Parameters
+    /// - `self`: Starting color (t = 0)
+    /// - `other`: Ending color (t = 1)
+    /// - `ratio`: Interpolation factor (0.0 to 1.0)
+    ///
+    /// Further, performs channel-wise linear interpolation, this
+    /// works in any color space, but the perceptual result depends
+    /// on the space's linearity.
+    fn lerp(&self, other: &Self, ratio: f32) -> Self;
     /// Linearly interpolate between two colors.
     ///
     /// # Parameters
@@ -16,11 +27,22 @@ pub trait Interpolation {
     /// Further, performs channel-wise linear interpolation, this
     /// works in any color space, but the perceptual result depends
     /// on the space's linearity.
-    fn lerp_naive(&self, other: &Self, ratio: NormF32) -> Self;
+    fn lerp_naive(&self, other: &Self, ratio: f32) -> Self;
 }
 
 impl<C: ColorSpace> Interpolation for C {
-    fn lerp_naive(&self, other: &Self, ratio: NormF32) -> Self {
+    fn lerp(&self, other: &Self, ratio: f32) -> Self {
+        if matches!(Self::ALPHA_KIND, AlphaKind::None) {
+            return C::lerp_naive(&self, other, ratio);
+        }
+        // I really just wish I could make an of array [f32; C::CHANNELS]
+
+        let a_0 = *self.try_alpha().unwrap_or(&1.0);
+        let a_1 = *other.try_alpha().unwrap_or(&1.0);
+        todo!();
+    }
+
+    fn lerp_naive(&self, other: &Self, ratio: f32) -> Self {
         return Self::from_fn(|i| {
             let a = self[i];
             let b = other[i];

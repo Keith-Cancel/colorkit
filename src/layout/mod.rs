@@ -5,6 +5,7 @@
 //! - [`FromLayout`] / [`IntoLayout`] Converts between the [Scalar] types of layouts.
 //!
 //! - [`GrowLayout`] / [`TruncateLayout`] Converts channel width of Layouts, and [Scalar] types.
+mod map;
 mod packed_565;
 mod planar;
 

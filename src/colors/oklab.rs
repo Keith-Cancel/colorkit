@@ -223,9 +223,9 @@ impl ColorLayout for OkLab {
     fn into_layout<L: Layout>(self, round: Rounding) -> L {
         debug_assert!(<L::Channels as Number>::N == 3);
         let a = [
-            NormF32::new_clamped(self.l()),
-            NormF32::new_clamped(self.a() + 0.5),
-            NormF32::new_clamped(self.b() + 0.5),
+            NormF32::new(self.l()),
+            NormF32::new(self.a() + 0.5),
+            NormF32::new(self.b() + 0.5),
         ];
         return L::from_fn_norm(|i| a[i], round);
     }

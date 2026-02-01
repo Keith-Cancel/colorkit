@@ -216,8 +216,8 @@ mod test {
         assert_eq!(p1[1], 0.0);
         assert_eq!(p1[2], 0.2);
 
-        p1.set(0, NormF32::new_clamped(0.4));
-        p1.set(1, NormF32::new_clamped(0.498));
+        p1.set(0, NormF32::new(0.4));
+        p1.set(1, NormF32::new(0.498));
         p0 = p1.into_layout();
         assert_eq!(p0[0], 102);
         assert_eq!(p0[1], 127);

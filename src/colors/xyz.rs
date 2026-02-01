@@ -121,9 +121,9 @@ impl<W: WhitePoint> ColorLayout for Xyz<W> {
     fn into_layout<L: Layout>(self, round: Rounding) -> L {
         debug_assert!(<L::Channels as Number>::N == 3);
         let c = [
-            NormF32::new_clamped(self.x() / W::X),
-            NormF32::new_clamped(self.y() / W::Y),
-            NormF32::new_clamped(self.z() / W::Z),
+            NormF32::new(self.x() / W::X),
+            NormF32::new(self.y() / W::Y),
+            NormF32::new(self.z() / W::Z),
         ];
         return L::from_fn_norm(|i| c[i], round);
     }

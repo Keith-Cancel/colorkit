@@ -114,7 +114,7 @@ macro_rules! base_funcs {
 
             fn into_layout<L: Layout>(self, round: Rounding) -> L {
                 debug_assert!(<L::Channels as Number>::N == 3);
-                return L::from_fn_norm(|i| NormF32::new_clamped(self.0[i]), round);
+                return L::from_fn_norm(|i| NormF32::new(self.0[i]), round);
             }
         }
 

@@ -1,3 +1,4 @@
+//! Marker types that act as a number, mainly used for [`Layout`](colorkit::layout::Layout).
 use core::fmt::Debug;
 
 mod private {

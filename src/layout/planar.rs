@@ -2,6 +2,8 @@ use core::array;
 use core::ops::Index;
 use core::ops::IndexMut;
 
+use colorkit::num_type::Num;
+use colorkit::num_type::ToNumber;
 use colorkit::scalar::Dither;
 use colorkit::scalar::IntoScalar;
 use colorkit::scalar::NormF32;
@@ -113,9 +115,12 @@ impl<S: Scalar, const N: usize> LayoutStorage for Planar<S, N> {
     }
 }
 
-impl<S: Scalar, const N: usize> Layout for Planar<S, N> {
+impl<S: Scalar, const N: usize> Layout for Planar<S, N>
+where
+    Num<N>: ToNumber,
+{
     const DEFAULT: Self = Self([S::DEFAULT; N]);
-    const CHANNELS: usize = N;
+    type Channels = <Num<N> as ToNumber>::Number;
     type ChannelType = S;
 
     fn get_norm(&self, index: usize) -> NormF32 {
@@ -162,7 +167,7 @@ impl<S: Scalar, const N: usize> Layout for Planar<S, N> {
     }
 }
 
-impl<S: Scalar, const N: usize> LayoutScalar for Planar<S, N> {}
+impl<S: Scalar, const N: usize> LayoutScalar for Planar<S, N> where Num<N>: ToNumber {}
 
 #[cfg(test)]
 mod test {

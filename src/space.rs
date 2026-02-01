@@ -171,6 +171,16 @@ pub trait ColorSpace: ColorArray + ColorData + ColorLayout + FromColorBoth<Xyz<S
     }
     /// Get a channel of the color space, normalized `0.0` and `1.0`.
     ///
+    /// As stated in [`ColorSpace::get_norm_bounds`] not all color
+    /// spaces have bounds all channels. What bounds are chosen
+    /// depending on the color space. See the particular color space's
+    /// documentation for those if needed.
+    ///
+    /// # Panics
+    /// May panic if `index` is out of bounds.
+    fn get_norm(&self, index: usize) -> NormF32;
+    /// Get a channel of the color space, normalized `0.0` and `1.0`.
+    ///
     /// # Note
     /// Not all color spaces are bounded on all channels, what bounds
     /// to use depends on the color space. You might choose a practical

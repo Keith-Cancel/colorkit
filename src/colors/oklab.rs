@@ -18,6 +18,10 @@ use super::Xyz;
 use super::macros::impl_color_array;
 
 /// Represention of an OkLab color using [`f32`] values.
+///
+/// Oklab's `a` and `b` channels are unbounded in theory, but
+/// some operations require bounds. So any operations that
+/// require bounds use `-0.5` and `0.5` as the bounds. 
 #[repr(transparent)]
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct OkLab([f32; 3]);

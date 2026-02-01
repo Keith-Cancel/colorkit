@@ -7,6 +7,8 @@ use colorkit::math::BoundF32;
 use colorkit::math::cbrtf;
 use colorkit::math::matrix_3x3_vec3_mul;
 use colorkit::num_type::Number;
+use colorkit::scalar::NormF32;
+use colorkit::scalar::Rounding;
 use colorkit::space::ColorData;
 use colorkit::space::ColorLayout;
 use colorkit::space::ColorSpace;
@@ -21,7 +23,7 @@ use super::macros::impl_color_array;
 ///
 /// Oklab's `a` and `b` channels are unbounded in theory, but
 /// some operations require bounds. So any operations that
-/// require bounds use `-0.5` and `0.5` as the bounds. 
+/// require bounds use `-0.5` and `0.5` as the bounds.
 #[repr(transparent)]
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct OkLab([f32; 3]);
@@ -216,6 +218,16 @@ impl ColorLayout for OkLab {
         let a = layout.get_norm(M::map(1)).get();
         let b = layout.get_norm(M::map(2)).get();
         return Self([l, a, b]);
+    }
+
+    fn into_layout<L: Layout>(self, round: Rounding) -> L {
+        debug_assert!(<L::Channels as Number>::N == 3);
+        let a = [
+            NormF32::new_clamped(self.l()),
+            NormF32::new_clamped(self.a() + 0.5),
+            NormF32::new_clamped(self.b() + 0.5),
+        ];
+        return L::from_fn_norm(|i| a[i], round);
     }
 }
 

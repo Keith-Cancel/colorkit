@@ -8,6 +8,7 @@ use colorkit::colors::Xyz;
 use colorkit::convert::FromColorBoth;
 use colorkit::convert::IntoColor;
 use colorkit::layout::Layout;
+use colorkit::layout::LayoutMap;
 use colorkit::math::BoundF32;
 use colorkit::wp::WhitePoint;
 
@@ -78,21 +79,28 @@ pub trait ColorArray:
     fn get_mut(&mut self, index: usize) -> Option<&mut f32> {
         return self.as_mut_slice().get_mut(index);
     }
+}
+
+/// Allows a [`ColorSpace`] converted to and from various [`Layout`].
+pub trait ColorLayout {
     /// Construct a color from a [`Layout].
     ///
     /// Channel count of the the [`Layout::Channels`] should be greater
     /// than or equal to the color space channels.
+    fn from_layout<L: Layout>(layout: L) -> Self;
+    /// Construct a color from a [`Layout`], and a [`LayoutMap`]
     ///
-    /// The provided default implementation calls [`Layout::get_norm`]
-    /// per channel. If the colorspace needs values shifted or scaled
-    /// you should provide a new implementation.
-    fn from_layout<L: Layout>(layout: L) -> Self {
-        return Self::from_fn(|i| layout.get_norm(i).get());
-    }
+    /// This function is similar to [`ColorLayout::from_layout`],
+    /// other than the map should be used to index the layout.
+    /// For example the layout is ARGB, RGBA ect...
+    ///
+    /// Channel count of the the [`Layout::Channels`] should be greater
+    /// than or equal to the color space channels.
+    fn from_layout_map<L: Layout, M: LayoutMap<Channels = L::Channels>>() -> Self;
 }
 
 /// The main ColorSpace Trait
-pub trait ColorSpace: ColorArray + ColorData + FromColorBoth<Xyz<Self::WhitePoint>> {
+pub trait ColorSpace: ColorArray + ColorData + ColorLayout + FromColorBoth<Xyz<Self::WhitePoint>> {
     /// Number Channels
     #[inline]
     fn channels(&self) -> usize {

@@ -150,7 +150,6 @@ impl<S: ColorTransmute> FromColor<AlphaPre<S>> for Alpha<S> {
 macro_rules! base_funcs {
     ($name:ident) => {
         impl<S: ColorTransmute> $name<S> {
-            const LEN: usize = S::CHANNELS + 1;
             /// Get the colors alpha channel value.
             pub const fn alpha(&self) -> f32 {
                 return self.1;
@@ -174,7 +173,7 @@ macro_rules! base_funcs {
                 // If min_const_generic_args is stabilized this
                 // can be replaced with safe constructs.
                 let p = self as *const _ as *const f32;
-                return unsafe { core::slice::from_raw_parts(p, Self::LEN) };
+                return unsafe { core::slice::from_raw_parts(p, <Self as ColorData>::Channels::N) };
             }
             /// View the alpha color as a mutable slice
             #[inline]
@@ -185,7 +184,7 @@ macro_rules! base_funcs {
                 // We also mark the alpha wrapper as repr(C)
                 // If min_const_generic_args is stabilized this
                 // can be replaced with safe constructs.
-                return unsafe { core::slice::from_raw_parts_mut(p, Self::LEN) };
+                return unsafe { core::slice::from_raw_parts_mut(p, <Self as ColorData>::Channels::N) };
             }
         }
 
@@ -240,19 +239,20 @@ macro_rules! base_funcs {
 
         impl<S: ColorTransmute> ColorData for $name<S> {
             type WhitePoint = S::WhitePoint;
+            type Channels = <S::Channels as Number>::Inc;
             const DEFAULT: Self = Self(S::DEFAULT, 1.0);
-            const CHANNELS: usize = Self::LEN;
             const LINEAR: bool = S::LINEAR;
-            const CHANNEL_MAX: &'static [BoundF32] = { Self::MAX.split_at(Self::LEN).0 };
-            const CHANNEL_MIN: &'static [BoundF32] = { Self::MIN.split_at(Self::LEN).0 };
+            const CHANNEL_MAX: &'static [BoundF32] = { Self::MAX.split_at(Self::Channels::N).0 };
+            const CHANNEL_MIN: &'static [BoundF32] = { Self::MIN.split_at(Self::Channels::N).0 };
             const ALPHA_KIND: AlphaKind = Self::KIND;
-            const ALPHA_INDEX: Option<usize> = Some(S::CHANNELS);
+            const ALPHA_INDEX: Option<usize> = Some(S::Channels::N);
         }
 
         impl<S: ColorTransmute> ColorArray for $name<S> {
             fn from_fn<F: FnMut(usize) -> f32>(f: F) -> Self {
                 let mut f = f;
-                return Self(S::from_fn(|i| f(i)), f(S::CHANNELS));
+                let c = S::from_fn(|i| f(i));
+                return Self(c, f(S::Channels::N));
             }
             #[inline]
             fn as_slice(&self) -> &[f32] {
@@ -266,29 +266,29 @@ macro_rules! base_funcs {
 
         impl<S: ColorTransmute> ColorLayout for $name<S> {
             fn from_layout<L: Layout>(layout: L) -> Self {
-                debug_assert!(<L::Channels as Number>::N >= Self::LEN);
-                let a = layout.get_norm(S::CHANNELS).get();
+                debug_assert!(<L::Channels as Number>::N >= <Self as ColorData>::Channels::N);
+                let a = layout.get_norm(S::Channels::N).get();
                 return Self(S::from_layout(layout), a);
             }
 
             fn from_layout_map<L: Layout, M: LayoutMap<Channels = L::Channels>>(layout: L) -> Self {
-                debug_assert!(<L::Channels as Number>::N >= Self::LEN);
-                let a = layout.get_norm(M::map(S::CHANNELS)).get();
+                debug_assert!(<L::Channels as Number>::N >= <Self as ColorData>::Channels::N);
+                let a = layout.get_norm(M::map(S::Channels::N)).get();
                 return Self(S::from_layout_map::<L, M>(layout), a);
             }
 
             fn into_layout<L: Layout>(self, round: Rounding) -> L {
-                debug_assert!(<L::Channels as Number>::N == Self::LEN);
+                debug_assert!(<L::Channels as Number>::N == <Self as ColorData>::Channels::N);
                 return L::from_fn_norm(|i| self.get_norm(i), round);
             }
 
             fn into_layout_map<L: Layout, M: LayoutMap>(self, round: Rounding) -> L {
-                debug_assert!(<L::Channels as Number>::N == Self::LEN);
+                debug_assert!(<L::Channels as Number>::N == <Self as ColorData>::Channels::N);
                 return L::from_fn_norm(|i| self.get_norm(M::unmap(i)), round);
             }
 
             fn into_layout_dither<L: Layout, D: crate::scalar::Dither>(self, round: Rounding, dither: &mut D) -> L {
-                debug_assert!(<L::Channels as Number>::N == Self::LEN);
+                debug_assert!(<L::Channels as Number>::N == <Self as ColorData>::Channels::N);
                 return L::from_fn_norm_dither(|i| self.get_norm(i), round, dither);
             }
 
@@ -297,14 +297,14 @@ macro_rules! base_funcs {
                 round: Rounding,
                 dither: &mut D,
             ) -> L {
-                debug_assert!(<L::Channels as Number>::N == Self::LEN);
+                debug_assert!(<L::Channels as Number>::N == <Self as ColorData>::Channels::N);
                 return L::from_fn_norm_dither(|i| self.get_norm(M::unmap(i)), round, dither);
             }
         }
 
         impl<S: ColorTransmute> ColorSpace for $name<S> {
             fn get_norm(&self, index: usize) -> NormF32 {
-                if index == S::CHANNELS {
+                if index == S::Channels::N {
                     return NormF32::new(self.1);
                 }
                 return self.0.get_norm(index);

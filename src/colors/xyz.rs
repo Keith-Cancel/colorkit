@@ -4,13 +4,14 @@ use colorkit::convert::ColorTransmute;
 use colorkit::layout::Layout;
 use colorkit::layout::LayoutMap;
 use colorkit::math::BoundF32;
+use colorkit::num_type::N3;
+use colorkit::num_type::Number;
 use colorkit::scalar::Dither;
 use colorkit::scalar::Rounding;
 use colorkit::space::*;
 use colorkit::wp::WhitePoint;
 
 use super::macros::impl_color_array;
-use crate::num_type::Number;
 use crate::scalar::NormF32;
 
 /// Represention of an CIE XYZ color using [`f32`] values.
@@ -80,8 +81,8 @@ impl<W: WhitePoint> Default for Xyz<W> {
 
 impl<W: WhitePoint> ColorData for Xyz<W> {
     type WhitePoint = W;
+    type Channels = N3;
     const DEFAULT: Self = Self([0.0, 0.0, 0.0], PhantomData);
-    const CHANNELS: usize = 3;
     const LINEAR: bool = true;
     const CHANNEL_MAX: &'static [BoundF32] = &[BoundF32::Unbounded; 3];
     const CHANNEL_MIN: &'static [BoundF32] = &[BoundF32::Include(0.0); 3];

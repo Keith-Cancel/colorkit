@@ -1,11 +1,10 @@
-use colorkit::convert::ColorTransmute;
-use colorkit::convert::FromColor;
-use colorkit::convert::IntoColor;
+use colorkit::convert::*;
 use colorkit::layout::Layout;
 use colorkit::layout::LayoutMap;
 use colorkit::math::BoundF32;
 use colorkit::math::cbrtf;
 use colorkit::math::matrix_3x3_vec3_mul;
+use colorkit::num_type::N3;
 use colorkit::num_type::Number;
 use colorkit::scalar::NormF32;
 use colorkit::scalar::Rounding;
@@ -187,8 +186,8 @@ impl Default for OkLab {
 
 impl ColorData for OkLab {
     type WhitePoint = D65;
+    type Channels = N3;
     const DEFAULT: Self = Self([0.0, 0.0, 0.0]);
-    const CHANNELS: usize = 3;
     const LINEAR: bool = true;
     const ALPHA_KIND: AlphaKind = AlphaKind::None;
     const ALPHA_INDEX: Option<usize> = None;

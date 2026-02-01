@@ -1,6 +1,8 @@
 //! Conversion Traits between color spaces.
 use colorkit::colors::Xyz;
 use colorkit::math::matrix_3x3_vec3_mul;
+use colorkit::num_type::N3;
+use colorkit::num_type::Number;
 use colorkit::space::ColorArray;
 use colorkit::space::ColorData;
 use colorkit::space::ColorSpace;
@@ -92,17 +94,17 @@ pub trait XyzMatrices: ColorData {
     const FROM_XYZ: [f32; 9];
 }
 
-impl<C: ColorArray + XyzMatrices> FromColor<Xyz<C::WhitePoint>> for C {
+impl<C: ColorArray + XyzMatrices<Channels = N3>> FromColor<Xyz<C::WhitePoint>> for C {
     fn from_color(color: Xyz<C::WhitePoint>) -> Self {
-        debug_assert!(C::CHANNELS == 3);
+        debug_assert!(C::Channels::N == 3);
         let c = matrix_3x3_vec3_mul(&Self::FROM_XYZ, color.as_slice());
         return Self::from_fn(|i| c[i]);
     }
 }
 
-impl<C: ColorArray + XyzMatrices> FromColor<C> for Xyz<C::WhitePoint> {
+impl<C: ColorArray + XyzMatrices<Channels = N3>> FromColor<C> for Xyz<C::WhitePoint> {
     fn from_color(color: C) -> Self {
-        debug_assert!(C::CHANNELS == 3);
+        debug_assert!(C::Channels::N == 3);
         return Xyz::from_array(matrix_3x3_vec3_mul(&C::INTO_XYZ, color.as_slice()));
     }
 }

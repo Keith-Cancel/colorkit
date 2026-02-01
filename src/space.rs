@@ -260,6 +260,11 @@ pub trait ColorSpace: ColorArray + ColorData + ColorLayout + FromColorBoth<Xyz<S
         let n = (val - min) / rng;
         return NormF32::new(n);
     }
+
+    /// Remove the alpha channel if present.
+    ///
+    /// Otherwise this should just return `Self`
+    fn strip_alpha(self) -> Self::NoAlpha;
 }
 
 /// Trait with common operations for RGB like color spaces.

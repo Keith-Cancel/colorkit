@@ -161,6 +161,10 @@ impl<W: WhitePoint> ColorSpace for Xyz<W> {
         let v = self.0[index] / wp[index];
         return NormF32::new(v);
     }
+
+    fn strip_alpha(self) -> Self::NoAlpha {
+        return self;
+    }
 }
 
 unsafe impl<W: WhitePoint> ColorTransmute for Xyz<W> {}

@@ -142,6 +142,10 @@ macro_rules! base_funcs {
             fn get_norm(&self, index: usize) -> NormF32 {
                 return NormF32::new(self.0[index]);
             }
+
+            fn strip_alpha(self) -> Self::NoAlpha {
+                return self;
+            }
         }
 
         unsafe impl ColorTransmute for $name {}

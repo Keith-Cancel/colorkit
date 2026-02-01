@@ -173,6 +173,10 @@ impl ColorSpace for OkLab {
         let v = if index > 0 { v + 0.5 } else { v };
         return NormF32::new(v);
     }
+
+    fn strip_alpha(self) -> Self::NoAlpha {
+        return self;
+    }
 }
 
 unsafe impl ColorTransmute for OkLab {}

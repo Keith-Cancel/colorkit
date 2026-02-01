@@ -319,6 +319,10 @@ macro_rules! base_funcs {
                 }
                 return self.0.get_norm(index);
             }
+
+            fn strip_alpha(self) -> Self::NoAlpha {
+                return $name::strip_alpha(self);
+            }
         }
 
         impl<S: ColorTransmute> $name<S> {

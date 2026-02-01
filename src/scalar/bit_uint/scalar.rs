@@ -31,7 +31,7 @@ impl<const N: u32, T: BitUintType> Scalar for BitUint<N, T> {
         let max = max as f32;
         let val = self.get().try_into_u32().unwrap() as f32;
         // Safety: `v` will always be <= 1.0
-        return NormF32::new_clamped(val / max);
+        return NormF32::new(val / max);
     }
 
     fn from_norm_dither<D: crate::scalar::Dither>(value: NormF32, round: Rounding, dither: &mut D) -> Self {

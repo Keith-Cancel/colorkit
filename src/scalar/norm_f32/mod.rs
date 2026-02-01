@@ -21,14 +21,16 @@ impl NormF32 {
     pub const MIN: Self = Self(0.0);
     pub const BITS: u32 = (size_of::<Self>() * 8) as u32;
 
-    pub const fn new_clamped(value: f32) -> Self {
+    /// Create a new [`NormF32`] clamping to the bounds `0.0` and `1.0`
+    pub const fn new(value: f32) -> Self {
         if value.is_nan() {
             return Self::MIN;
         }
         return Self(value.clamp(0.0, 1.0));
     }
 
-    pub const fn new(value: f32) -> Result<Self, NotNormalized> {
+    /// Create a new [`NormF32`] checking the bounds of the input.
+    pub const fn new_checked(value: f32) -> Result<Self, NotNormalized> {
         if value > 1.0 || value < 0.0 || value.is_nan() || value.is_infinite() {
             return Err(NotNormalized(value));
         }
@@ -36,7 +38,7 @@ impl NormF32 {
     }
 
     /// unsafe unchecked constructor — caller guarantees invariant
-    /// 
+    ///
     /// (pattern similar to [`core::num::NonZero`] types).
     #[inline]
     pub const unsafe fn new_unchecked(value: f32) -> Self {
@@ -133,7 +135,7 @@ impl From<NormF32> for f32 {
 impl TryFrom<f32> for NormF32 {
     type Error = NotNormalized;
     fn try_from(value: f32) -> Result<Self, Self::Error> {
-        return Self::new(value);
+        return Self::new_checked(value);
     }
 }
 
@@ -148,7 +150,7 @@ mod test {
 
     #[test]
     fn ops() {
-        let a = NormF32::new(0.5).unwrap();
+        let a = NormF32::new_checked(0.5).unwrap();
         let b = &a;
 
         let mut v = 100.0;

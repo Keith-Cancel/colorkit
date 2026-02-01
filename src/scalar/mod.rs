@@ -20,8 +20,8 @@ use core::any::Any;
 use colorkit::math::ceilf;
 use colorkit::math::floorf;
 use colorkit::math::roundevenf;
-use colorkit::math::truncf;
 use colorkit::math::roundf;
+use colorkit::math::truncf;
 
 #[rustfmt::skip]
 pub use bit_uint::BitUint;

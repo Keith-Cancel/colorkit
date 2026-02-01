@@ -256,6 +256,16 @@ impl ColorLayout for OkLab {
         let a = self.into_norm();
         return L::from_fn_norm_dither(|i| a[i], round, dither);
     }
+
+    fn into_layout_dither_map<L: Layout, D: crate::scalar::Dither, M: LayoutMap>(
+        self,
+        round: Rounding,
+        dither: &mut D,
+    ) -> L {
+        debug_assert!(<L::Channels as Number>::N == 3);
+        let a = self.into_norm();
+        return L::from_fn_norm_dither(|i| a[M::unmap(i)], round, dither);
+    }
 }
 
 impl FromColor<Xyz<D65>> for OkLab {

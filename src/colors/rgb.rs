@@ -126,6 +126,15 @@ macro_rules! base_funcs {
                 debug_assert!(<L::Channels as Number>::N == 3);
                 return L::from_fn_norm_dither(|i| NormF32::new(self.0[i]), round, dither);
             }
+
+            fn into_layout_dither_map<L: Layout, D: crate::scalar::Dither, M: LayoutMap>(
+                self,
+                round: Rounding,
+                dither: &mut D,
+            ) -> L {
+                debug_assert!(<L::Channels as Number>::N == 3);
+                return L::from_fn_norm_dither(|i| NormF32::new(self.0[M::unmap(i)]), round, dither);
+            }
         }
 
         impl ColorSpace for $name {

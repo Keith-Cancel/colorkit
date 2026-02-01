@@ -138,6 +138,11 @@ impl<W: WhitePoint> ColorLayout for Xyz<W> {
         debug_assert!(<L::Channels as Number>::N == 3);
         return L::from_fn_norm_dither(|i| self.get_norm(i), round, dither);
     }
+
+    fn into_layout_dither_map<L: Layout, D: Dither, M: LayoutMap>(self, round: Rounding, dither: &mut D) -> L {
+        debug_assert!(<L::Channels as Number>::N == 3);
+        return L::from_fn_norm_dither(|i| self.get_norm(M::unmap(i)), round, dither);
+    }
 }
 
 impl<W: WhitePoint> ColorSpace for Xyz<W> {

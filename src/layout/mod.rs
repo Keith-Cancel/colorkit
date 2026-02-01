@@ -106,17 +106,11 @@ pub trait Layout: Copy + Default + LayoutStorage {
     fn set_raw(&mut self, index: usize, value: Self::ChannelType);
 
     /// Converts this layout into another layout with the same channel count.
-    ///
-    /// # Panics
-    /// May panic if the channel counts do not match.
     fn requantize<L: Layout<Channels = Self::Channels>>(self, round: Rounding) -> L {
         return L::from_fn_norm(|i| self.get_norm(i), round);
     }
 
     /// Like [`Layout::requantize`], but applies dithering.
-    ///
-    /// # Panics
-    /// May panic if the channel counts do not match.
     fn requantize_dither<L: Layout<Channels = Self::Channels>, D: Dither>(self, round: Rounding, dither: &mut D) -> L {
         return L::from_fn_norm_dither(|i| self.get_norm(i), round, dither);
     }

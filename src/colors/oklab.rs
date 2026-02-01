@@ -9,9 +9,7 @@ use colorkit::math::matrix_3x3_vec3_mul;
 use colorkit::num_type::Number;
 use colorkit::scalar::NormF32;
 use colorkit::scalar::Rounding;
-use colorkit::space::ColorData;
-use colorkit::space::ColorLayout;
-use colorkit::space::ColorSpace;
+use colorkit::space::*;
 use colorkit::wp::D65;
 
 use super::LinSrgb;
@@ -192,6 +190,8 @@ impl ColorData for OkLab {
     const DEFAULT: Self = Self([0.0, 0.0, 0.0]);
     const CHANNELS: usize = 3;
     const LINEAR: bool = true;
+    const ALPHA_KIND: AlphaKind = AlphaKind::None;
+    const ALPHA_INDEX: Option<usize> = None;
     // Oklab a, and b channels in theory are unbounded
     // but at least from understanding the practical
     // range is only -0.5 to 0.5.

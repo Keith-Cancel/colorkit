@@ -7,10 +7,7 @@ use colorkit::math::BoundF32;
 use colorkit::num_type::Number;
 use colorkit::scalar::NormF32;
 use colorkit::scalar::Rounding;
-use colorkit::space::ColorArray;
-use colorkit::space::ColorData;
-use colorkit::space::ColorLayout;
-use colorkit::space::ColorSpace;
+use colorkit::space::*;
 
 use super::Xyz;
 
@@ -22,6 +19,7 @@ pub struct Alpha<S: ColorTransmute>(S, f32);
 base_funcs!(Alpha);
 
 impl<S: ColorTransmute> Alpha<S> {
+    const KIND: AlphaKind = AlphaKind::Normal;
     /// Create a new Alpha color with a color and alpha channel value.
     pub const fn new(color: S, alpha: f32) -> Self {
         return Self(color, alpha);
@@ -84,6 +82,7 @@ pub struct AlphaPre<S: ColorTransmute>(S, f32);
 base_funcs!(AlphaPre);
 
 impl<S: ColorTransmute> AlphaPre<S> {
+    const KIND: AlphaKind = AlphaKind::PreMul;
     /// Create a new premultiplied Alpha color with a color and alpha channel value.
     pub fn new(color: S, alpha: f32) -> Self {
         let mut c = color;
@@ -225,10 +224,12 @@ macro_rules! base_funcs {
         impl<S: ColorTransmute> ColorData for $name<S> {
             type WhitePoint = S::WhitePoint;
             const DEFAULT: Self = Self(S::DEFAULT, 1.0);
-            const CHANNELS: usize = 3;
+            const CHANNELS: usize = Self::LEN;
             const LINEAR: bool = S::LINEAR;
             const CHANNEL_MAX: &'static [BoundF32] = { Self::MAX.split_at(Self::LEN).0 };
             const CHANNEL_MIN: &'static [BoundF32] = { Self::MIN.split_at(Self::LEN).0 };
+            const ALPHA_KIND: AlphaKind = Self::KIND;
+            const ALPHA_INDEX: Option<usize> = Some(S::CHANNELS);
         }
 
         impl<S: ColorTransmute> ColorArray for $name<S> {

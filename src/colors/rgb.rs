@@ -10,10 +10,7 @@ use colorkit::math::sqrtf;
 use colorkit::num_type::Number;
 use colorkit::scalar::NormF32;
 use colorkit::scalar::Rounding;
-use colorkit::space::ColorData;
-use colorkit::space::ColorLayout;
-use colorkit::space::ColorSpace;
-use colorkit::space::RgbLike;
+use colorkit::space::*;
 use colorkit::wp::D65;
 
 use super::Xyz;
@@ -93,6 +90,8 @@ macro_rules! base_funcs {
             const LINEAR: bool = true;
             const CHANNEL_MAX: &'static [BoundF32] = &[BoundF32::Include(1.0); 3];
             const CHANNEL_MIN: &'static [BoundF32] = &[BoundF32::Include(0.0); 3];
+            const ALPHA_KIND: AlphaKind = AlphaKind::None;
+            const ALPHA_INDEX: Option<usize> = None;
         }
 
         impl ColorLayout for $name {

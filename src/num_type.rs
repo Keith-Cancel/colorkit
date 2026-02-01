@@ -29,7 +29,7 @@ pub struct Num<const N: usize>;
 ///
 /// For example:
 /// ```
-/// use colorkit::utils::{Num, ToNumber};
+/// use colorkit::num_type::{Num, ToNumber};
 /// pub trait Foo {}
 ///
 /// impl <const N: usize> Foo for [u8; N]

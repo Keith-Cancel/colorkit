@@ -42,6 +42,10 @@ impl<S: ColorTransmute> Alpha<S> {
     pub fn into_alpha_pre(self) -> AlphaPre<S> {
         return AlphaPre::new(self.0, self.1);
     }
+    /// Convert color space data while leaving alpha channel.
+    pub fn into_color_alpha<S1: ColorTransmute + FromColor<S>>(self) -> Alpha<S1> {
+        return Alpha(self.0.into_color(), self.1);
+    }
 }
 
 impl<S: ColorTransmute> FromColor<Xyz<S::WhitePoint>> for Alpha<S> {
@@ -108,6 +112,11 @@ impl<S: ColorTransmute> AlphaPre<S> {
             *v = *v / s.1;
         }
         return Alpha::new(s.0, s.1);
+    }
+    /// Convert color space data while leaving alpha channel.
+    pub fn into_color_alpha<S1: ColorTransmute + FromColor<S>>(self) -> AlphaPre<S1> {
+        let a = self.into_alpha().into_color_alpha::<S1>();
+        return a.into_alpha_pre();
     }
 }
 

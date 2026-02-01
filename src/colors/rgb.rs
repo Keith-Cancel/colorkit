@@ -1,6 +1,7 @@
 use colorkit::convert::ColorTransmute;
 use colorkit::convert::FromColor;
 use colorkit::convert::XyzMatrices;
+use colorkit::layout::Layout;
 use colorkit::math::BoundF32;
 use colorkit::math::cbrtf;
 use colorkit::math::quirtf;
@@ -60,6 +61,13 @@ macro_rules! base_funcs {
                     f32::clamp(self.0[1], 0.0, 1.0),
                     f32::clamp(self.0[2], 0.0, 1.0),
                 ]);
+            }
+
+            pub(crate) fn from_layout_inner<L: Layout>(lay: L) -> Self {
+                let r = lay.get_norm(0).get();
+                let g = lay.get_norm(1).get();
+                let b = lay.get_norm(2).get();
+                return Self([r, g, b]);
             }
         }
 

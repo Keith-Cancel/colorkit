@@ -93,7 +93,7 @@ impl<S: ColorTransmute> AlphaPre<S> {
         for v in c.as_mut_slice() {
             *v = *v * alpha;
         }
-        return Self(color, alpha);
+        return Self(c, alpha);
     }
     /// Set the colors alpha channel, but this will not update the other channels.
     pub const fn set_alpha(&mut self, alpha: f32) {

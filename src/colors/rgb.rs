@@ -25,6 +25,16 @@ macro_rules! base_funcs {
             pub const fn new(r: f32, g: f32, b: f32) -> Self {
                 return Self([r, g, b]);
             }
+            /// Create a new color from rgb octets.
+            #[inline]
+            pub const fn new_u8(r: u8, g: u8, b: u8) -> Self {
+                return Self([
+                    r as f32 / 255.0,
+                    g as f32 / 255.0,
+                    b as f32 / 255.0,
+                ]);
+            }
+
             /// Get the red channel's value.
             #[inline]
             pub const fn red(&self) -> f32 {

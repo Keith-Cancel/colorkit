@@ -10,6 +10,7 @@ use colorkit::convert::IntoColor;
 use colorkit::layout::Layout;
 use colorkit::layout::LayoutMap;
 use colorkit::math::BoundF32;
+use colorkit::scalar::Dither;
 use colorkit::scalar::NormF32;
 use colorkit::scalar::Rounding;
 use colorkit::wp::WhitePoint;
@@ -104,6 +105,11 @@ pub trait ColorLayout: Sized {
     /// Channel count of the the [`Layout::Channels`] should
     /// equal the color space channels.
     fn into_layout<L: Layout>(self, round: Rounding) -> L;
+    /// Construct a [`Layout`] from a given color and [`Dither`]
+    ///
+    /// Channel count of the the [`Layout::Channels`] should
+    /// equal the color space channels.
+    fn into_layout_dither<L: Layout, D: Dither>(self, round: Rounding, dither: &mut D) -> L;
 }
 
 /// The main ColorSpace Trait

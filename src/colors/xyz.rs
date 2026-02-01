@@ -4,6 +4,7 @@ use colorkit::convert::ColorTransmute;
 use colorkit::layout::Layout;
 use colorkit::layout::LayoutMap;
 use colorkit::math::BoundF32;
+use colorkit::scalar::Dither;
 use colorkit::scalar::Rounding;
 use colorkit::space::ColorData;
 use colorkit::space::ColorLayout;
@@ -121,6 +122,15 @@ impl<W: WhitePoint> ColorLayout for Xyz<W> {
     fn into_layout<L: Layout>(self, round: Rounding) -> L {
         debug_assert!(<L::Channels as Number>::N == 3);
         return L::from_fn_norm(|i| self.get_norm(i), round);
+    }
+    /// Create a [`Layout`] from a CIE XYZ color and [`Dither`]
+    ///
+    /// XYZ channels are unbounded, so to quantize the
+    /// `XYZ` the values are normalized relative the
+    /// white point, any values larger are clamped.
+    fn into_layout_dither<L: Layout, D: Dither>(self, round: Rounding, dither: &mut D) -> L {
+        debug_assert!(<L::Channels as Number>::N == 3);
+        return L::from_fn_norm_dither(|i| self.get_norm(i), round, dither);
     }
 }
 

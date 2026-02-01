@@ -1,9 +1,13 @@
 use colorkit::convert::ColorTransmute;
 use colorkit::convert::FromColor;
 use colorkit::convert::IntoColor;
+use colorkit::layout::Layout;
+use colorkit::layout::LayoutMap;
 use colorkit::math::BoundF32;
+use colorkit::num_type::Number;
 use colorkit::space::ColorArray;
 use colorkit::space::ColorData;
+use colorkit::space::ColorLayout;
 use colorkit::space::ColorSpace;
 
 use super::Xyz;
@@ -237,6 +241,20 @@ macro_rules! base_funcs {
             #[inline]
             fn as_mut_slice(&mut self) -> &mut [f32] {
                 return self.as_mut_slice();
+            }
+        }
+
+        impl<S: ColorTransmute> ColorLayout for $name<S> {
+            fn from_layout<L: Layout>(layout: L) -> Self {
+                debug_assert!(<L::Channels as Number>::N >= Self::LEN);
+                let a = layout.get_norm(S::CHANNELS).get();
+                return Self(S::from_layout(layout), a);
+            }
+
+            fn from_layout_map<L: Layout, M: LayoutMap<Channels = L::Channels>>(layout: L) -> Self {
+                debug_assert!(<L::Channels as Number>::N >= Self::LEN);
+                let a = layout.get_norm(M::map(S::CHANNELS)).get();
+                return Self(S::from_layout_map::<L, M>(layout), a);
             }
         }
 

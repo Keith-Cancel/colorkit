@@ -5,6 +5,7 @@ use colorkit::layout::Layout;
 use colorkit::layout::LayoutMap;
 use colorkit::math::BoundF32;
 use colorkit::num_type::Number;
+use colorkit::scalar::Rounding;
 use colorkit::space::ColorArray;
 use colorkit::space::ColorData;
 use colorkit::space::ColorLayout;
@@ -255,6 +256,10 @@ macro_rules! base_funcs {
                 debug_assert!(<L::Channels as Number>::N >= Self::LEN);
                 let a = layout.get_norm(M::map(S::CHANNELS)).get();
                 return Self(S::from_layout_map::<L, M>(layout), a);
+            }
+
+            fn into_layout<L: Layout>(self, round: Rounding) -> L {
+                todo!();
             }
         }
 

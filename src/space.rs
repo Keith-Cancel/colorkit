@@ -10,6 +10,7 @@ use colorkit::convert::IntoColor;
 use colorkit::layout::Layout;
 use colorkit::layout::LayoutMap;
 use colorkit::math::BoundF32;
+use colorkit::num_type::Number;
 use colorkit::scalar::Dither;
 use colorkit::scalar::NormF32;
 use colorkit::scalar::Rounding;
@@ -26,7 +27,7 @@ pub enum AlphaKind {
 /// Information about a Color Space
 pub trait ColorData: Default {
     /// Number of channels or also should be the length of the array.
-    const CHANNELS: usize;
+    type Channels: Number;
     /// Default color, should be black.
     const DEFAULT: Self;
     /// Color Spaces White Point
@@ -139,7 +140,7 @@ pub trait ColorSpace: ColorArray + ColorData + ColorLayout + FromColorBoth<Xyz<S
     /// Number Channels
     #[inline]
     fn channels(&self) -> usize {
-        return Self::CHANNELS;
+        return Self::Channels::value();
     }
 
     /// Get Max value for a given channel in the color space

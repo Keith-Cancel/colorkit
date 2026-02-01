@@ -3,8 +3,6 @@
 //! This module defines the [`Layout`] trait and conversion traits:
 //!
 //! - [`FromLayout`] / [`IntoLayout`] Converts between the [Scalar] types of layouts.
-//!
-//! - [`GrowLayout`] / [`TruncateLayout`] Converts channel width of Layouts, and [Scalar] types.
 mod map;
 mod packed_565;
 mod planar;
@@ -194,74 +192,3 @@ impl<L1: Layout<Channels = L2::Channels>, L2: FromLayout<L1>> IntoLayout<L1> for
         return L1::from_layout(self);
     }
 }
-
-/*
-/// Convert a layout into another layout `L` with the same or more channels.
-///
-/// If `L` has more channels, missing channels are filled according to `L`'s
-/// rules (for example using defaults). Scalar conversion may occur.
-pub trait GrowLayout<L: Layout>: Layout {
-    fn grow_layout(self) -> L;
-}
-
-/// Convert a layout into another layout `L` with the same or fewer channels.
-///
-/// If `L` has fewer channels, extra channels are discarded. Scalar conversion
-/// may occur.
-pub trait TruncateLayout<L: Layout>: Layout {
-    fn truncate_layout(self) -> L;
-}
-
-// Some Conversion implentations
-// ==================================================
-
-
-impl<S: Scalar> FromLayout<Packed565> for Planar<S, 3> {
-    fn from_layout(s: Packed565) -> Self {
-        let a = <Planar<S, 3>>::from_array([
-            s.get(0).into_scalar(),
-            s.get(1).into_scalar(),
-            s.get(2).into_scalar(),
-        ]);
-        return a;
-    }
-}
-
-impl<S: Scalar> FromLayout<Planar<S, 3>> for Packed565 {
-    fn from_layout(s: Planar<S, 3>) -> Self {
-        let mut ret = Self::default();
-        ret.set(0, s.get(0).into_scalar());
-        ret.set(1, s.get(1).into_scalar());
-        ret.set(2, s.get(2).into_scalar());
-        return ret;
-    }
-}
-
-impl<const N: usize, S: Scalar> GrowLayout<Planar<S, N>> for Packed565
-where
-    Planar<S, 3>: GrowLayout<Planar<S, N>>,
-{
-    fn grow_layout(self) -> Planar<S, N> {
-        let a = <Planar<S, 3>>::from_array([
-            self.get(0).into_scalar(),
-            self.get(1).into_scalar(),
-            self.get(2).into_scalar(),
-        ]);
-        return a.grow_layout();
-    }
-}
-
-impl<const N: usize, S: Scalar> TruncateLayout<Planar<S, N>> for Packed565
-where
-    Planar<S, 3>: TruncateLayout<Planar<S, N>>,
-{
-    fn truncate_layout(self) -> Planar<S, N> {
-        let a = <Planar<S, 3>>::from_array([
-            self.get(0).into_scalar(),
-            self.get(1).into_scalar(),
-            self.get(2).into_scalar(),
-        ]);
-        return a.truncate_layout();
-    }
-}
-*/

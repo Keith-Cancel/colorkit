@@ -10,7 +10,7 @@ pub trait MapSealed {}
 ///
 /// This lets `Layout`-based operations (e.g. `get`/`set`) work with different
 /// physical channel orderings (for example `ARGB` vs `RGBA`) without changing
-/// the logical channel API.
+/// the logical channel API or swapping values around.
 pub trait LayoutMap: Copy + MapSealed {
     type Channels: Number;
     const MAP: &'static [usize];

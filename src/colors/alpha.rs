@@ -24,6 +24,10 @@ impl<S: ColorTransmute> Alpha<S> {
     pub const fn new(color: S, alpha: f32) -> Self {
         return Self(color, alpha);
     }
+    /// Remove the alpha channel.
+    pub const fn strip_alpha(self) -> S {
+        return self.0;
+    }
     /// Set the colors alpha channel value.
     pub const fn set_alpha(&mut self, alpha: f32) {
         self.1 = alpha;
@@ -94,6 +98,11 @@ impl<S: ColorTransmute> AlphaPre<S> {
             *v = *v * alpha;
         }
         return Self(c, alpha);
+    }
+    /// Remove the alpha channel.
+    pub fn strip_alpha(self) -> S {
+        let a = self.into_alpha();
+        return a.strip_alpha();
     }
     /// Set the colors alpha channel, but this will not update the other channels.
     pub const fn set_alpha(&mut self, alpha: f32) {

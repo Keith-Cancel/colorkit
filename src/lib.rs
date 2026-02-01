@@ -10,7 +10,7 @@ pub mod convert;
 pub mod layout;
 pub mod math;
 pub mod num_type;
+pub mod ops;
 pub mod scalar;
 pub mod space;
 pub mod wp;
-//pub mod channels;

@@ -16,6 +16,8 @@ use colorkit::scalar::NormF32;
 use colorkit::scalar::Rounding;
 use colorkit::wp::WhitePoint;
 
+mod array;
+
 /// Information about a Color Space
 pub trait ColorData: Default {
     /// Number of channels or also should be the length of the array.

@@ -6,6 +6,16 @@ pub trait ColorSlice: AsRef<[f32]> + AsMut<[f32]> + Index<usize, Output = f32> +
     fn as_slice(&self) -> &[f32];
     /// View color as a mutable slice.
     fn as_mut_slice(&mut self) -> &mut [f32];
+    /// Try to view a slice as a reference to the color.
+    ///
+    /// If the slice's legnth is not equal to number channels in the color
+    /// this may return [`None`]`
+    fn try_slice_as_color(slice: &[f32]) -> Option<&Self>;
+    /// Try to view a mut able slice as a reference to the color.
+    ///
+    /// If the slice's legnth is not equal to number channels in the color
+    /// this may return [`None`]`
+    fn try_mut_slice_as_color(slice: &mut [f32]) -> Option<&mut Self>;
     /// Length of the slice
     fn len(&self) -> usize {
         return self.as_slice().len();

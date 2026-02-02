@@ -39,13 +39,13 @@ pub trait ColorSlice: AsRef<[f32]> + AsMut<[f32]> + Index<usize, Output = f32> +
     }
     /// Try to get a reference as an array.
     ///
-    /// If `N` not equal to the number of channels returns [`None`]`
+    /// If `N` not equal to the number of channels returns [`None`]
     fn as_array<const N: usize>(&self) -> Option<&[f32; N]> {
         return self.as_ref().as_array();
     }
     /// Try to get a reference as an mutable array.
     ///
-    /// If `N` not equal to the number of channels returns [`None`]`
+    /// If `N` not equal to the number of channels returns [`None`]
     fn as_mut_array<const N: usize>(&mut self) -> Option<&mut [f32; N]> {
         return self.as_mut().as_mut_array();
     }

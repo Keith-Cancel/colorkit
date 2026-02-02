@@ -30,17 +30,6 @@ pub trait ColorData: Default {
     const CHANNEL_MAX: &'static [BoundF32];
     /// Lower or min bound of each channel.
     const CHANNEL_MIN: &'static [BoundF32];
-    /// The kinda of Alpha Channel the color space has
-    const ALPHA_KIND: AlphaKind;
-    /// If the color has an alpha channel the index of the channel.
-    const ALPHA_INDEX: Option<usize>;
-    /// The color's type with no alpha channel.
-    ///
-    /// This should is generally just equal to `Self`.
-    /// except in the case of wrapper types like
-    /// [`Alpha`](colorkit::colors::Alpha)
-    /// and [`AlphaPre`](colorkit::colors::AlphaPre)
-    type NoAlpha: ColorSpace;
     // what else to add?
     // primaries?
 }
@@ -110,6 +99,12 @@ pub enum AlphaKind {
     PreMul,
 }
 
+/// Market trait stating the color does not have an alpha channel.
+///
+/// If implemented a default blanket implention of [`ColorMaybeAlpha`]
+/// is provided.
+pub trait ColorNoAlpha {}
+
 pub trait ColorMaybeAlpha {
     /// The kinda of Alpha Channel the color space has
     const ALPHA_KIND: AlphaKind;
@@ -121,6 +116,7 @@ pub trait ColorMaybeAlpha {
     /// except in the case of wrapper types like
     /// [`Alpha`](colorkit::colors::Alpha)
     /// and [`AlphaPre`](colorkit::colors::AlphaPre)
+    // Need Colorspace bound so after stripping we keep color space operations
     type NoAlpha: ColorSpace;
     /// Remove the alpha channel if present.
     ///
@@ -137,6 +133,31 @@ pub trait ColorMaybeAlpha {
     ///
     /// Returns [`None`] if this color has no alpha channel.
     fn try_alpha_mut(&mut self) -> Option<&mut f32>;
+}
+
+impl<T: ColorNoAlpha> ColorMaybeAlpha for T
+where
+    T: ColorMaybeAlpha<NoAlpha = T>, // equality constraint
+{
+    type NoAlpha = Self;
+    const ALPHA_KIND: AlphaKind = AlphaKind::None;
+    const ALPHA_INDEX: Option<usize> = None;
+    #[inline]
+    fn opacity(&self) -> f32 {
+        return 1.0;
+    }
+    #[inline]
+    fn strip_alpha(self) -> Self::NoAlpha {
+        return self;
+    }
+    #[inline]
+    fn try_alpha_mut(&mut self) -> Option<&mut f32> {
+        return None;
+    }
+    #[inline]
+    fn try_alpha_ref(&self) -> Option<&f32> {
+        return None;
+    }
 }
 
 /// Allows a [`ColorSpace`] converted to and from various [`Layout`].
@@ -178,7 +199,9 @@ pub trait ColorLayout: Sized {
 }
 
 /// The main ColorSpace Trait
-pub trait ColorSpace: ColorArray + ColorData + ColorLayout + FromColorBoth<Xyz<Self::WhitePoint>> {
+pub trait ColorSpace:
+    ColorArray + ColorData + ColorLayout + ColorMaybeAlpha + FromColorBoth<Xyz<Self::WhitePoint>>
+{
     /// Number Channels
     #[inline]
     fn channels(&self) -> usize {
@@ -240,20 +263,6 @@ pub trait ColorSpace: ColorArray + ColorData + ColorLayout + FromColorBoth<Xyz<S
     fn into_xyz(self) -> Xyz<Self::WhitePoint> {
         return self.into_color();
     }
-    /// Try returning a reference to the alpha channel, if present.
-    ///
-    /// Returns [`None`] if this color has no alpha channel.
-    #[inline]
-    fn try_alpha(&self) -> Option<&f32> {
-        return self.get_ref(Self::ALPHA_INDEX?);
-    }
-    /// Try to returning a mutable reference to the alpha channel, if present.
-    ///
-    /// Returns [`None`] if this color has no alpha channel.
-    #[inline]
-    fn try_alpha_mut(&mut self) -> Option<&mut f32> {
-        return self.get_mut(Self::ALPHA_INDEX?);
-    }
     /// Return channel at `index` normalized to the range `[0.0, 1.0]`.
     ///
     /// The normalization bounds are color-space specific - see the particular
@@ -289,11 +298,6 @@ pub trait ColorSpace: ColorArray + ColorData + ColorLayout + FromColorBoth<Xyz<S
         let n = (val - min) / rng;
         return NormF32::new(n);
     }
-
-    /// Remove the alpha channel if present.
-    ///
-    /// Otherwise this should just return `Self`
-    fn strip_alpha(self) -> Self::NoAlpha;
 }
 
 /// Trait with common operations for RGB like color spaces.

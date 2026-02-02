@@ -45,7 +45,19 @@ pub trait ColorSlice: AsRef<[f32]> + AsMut<[f32]> + Index<usize, Output = f32> +
 }
 
 /// Trait to let Color Spaces be handled mostly like an array.
-pub trait ColorArray {
+pub trait ColorArray: ColorSlice {
     /// Construct the Color calling `f(i)` for each index (same semantics as [`core::array::from_fn`]).
     fn from_fn<F: FnMut(usize) -> f32>(f: F) -> Self;
+    /// Try to get a reference as an array.
+    ///
+    /// If `N` not equal to the number of channels returns [`None`]`
+    fn try_as_array<const N: usize>(&self) -> Option<&[f32; N]> {
+        return self.as_slice().try_into().ok();
+    }
+    /// Try to get a reference as an mutable array.
+    ///
+    /// If `N` not equal to the number of channels returns [`None`]`
+    fn try_as_mut_array<const N: usize>(&mut self) -> Option<&mut [f32; N]> {
+        return self.as_mut_slice().try_into().ok();
+    }
 }

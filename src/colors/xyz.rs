@@ -82,13 +82,10 @@ impl<W: WhitePoint> Default for Xyz<W> {
 impl<W: WhitePoint> ColorData for Xyz<W> {
     type WhitePoint = W;
     type Channels = N3;
-    type NoAlpha = Self;
     const DEFAULT: Self = Self([0.0, 0.0, 0.0], PhantomData);
     const LINEAR: bool = true;
     const CHANNEL_MAX: &'static [BoundF32] = &[BoundF32::Unbounded; 3];
     const CHANNEL_MIN: &'static [BoundF32] = &[BoundF32::Include(0.0); 3];
-    const ALPHA_KIND: AlphaKind = AlphaKind::None;
-    const ALPHA_INDEX: Option<usize> = None;
 }
 
 impl<W: WhitePoint> ColorLayout for Xyz<W> {
@@ -147,6 +144,28 @@ impl<W: WhitePoint> ColorLayout for Xyz<W> {
     }
 }
 
+impl<W: WhitePoint> ColorMaybeAlpha for Xyz<W> {
+    type NoAlpha = Self;
+    const ALPHA_KIND: AlphaKind = AlphaKind::None;
+    const ALPHA_INDEX: Option<usize> = None;
+    #[inline]
+    fn opacity(&self) -> f32 {
+        return 1.0;
+    }
+    #[inline]
+    fn strip_alpha(self) -> Self::NoAlpha {
+        return self;
+    }
+    #[inline]
+    fn try_alpha_mut(&mut self) -> Option<&mut f32> {
+        return None;
+    }
+    #[inline]
+    fn try_alpha_ref(&self) -> Option<&f32> {
+        return None;
+    }
+}
+
 impl<W: WhitePoint> ColorSpace for Xyz<W> {
     /// Return the channel at `index` normalized into `[0.0, 1.0]`.
     ///
@@ -160,10 +179,6 @@ impl<W: WhitePoint> ColorSpace for Xyz<W> {
         let wp = [W::X, W::Y, W::Z];
         let v = self.0[index] / wp[index];
         return NormF32::new(v);
-    }
-
-    fn strip_alpha(self) -> Self::NoAlpha {
-        return self;
     }
 }
 

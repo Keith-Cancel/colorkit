@@ -87,13 +87,10 @@ macro_rules! base_funcs {
         impl ColorData for $name {
             type WhitePoint = D65;
             type Channels = N3;
-            type NoAlpha = Self;
             const DEFAULT: Self = Self([0.0, 0.0, 0.0]);
             const LINEAR: bool = true;
             const CHANNEL_MAX: &'static [BoundF32] = &[BoundF32::Include(1.0); 3];
             const CHANNEL_MIN: &'static [BoundF32] = &[BoundF32::Include(0.0); 3];
-            const ALPHA_KIND: AlphaKind = AlphaKind::None;
-            const ALPHA_INDEX: Option<usize> = None;
         }
 
         impl ColorLayout for $name {
@@ -138,13 +135,31 @@ macro_rules! base_funcs {
             }
         }
 
+        impl ColorMaybeAlpha for $name {
+            type NoAlpha = Self;
+            const ALPHA_KIND: AlphaKind = AlphaKind::None;
+            const ALPHA_INDEX: Option<usize> = None;
+            #[inline]
+            fn opacity(&self) -> f32 {
+                return 1.0;
+            }
+            #[inline]
+            fn strip_alpha(self) -> Self::NoAlpha {
+                return self;
+            }
+            #[inline]
+            fn try_alpha_mut(&mut self) -> Option<&mut f32> {
+                return None;
+            }
+            #[inline]
+            fn try_alpha_ref(&self) -> Option<&f32> {
+                return None;
+            }
+        }
+
         impl ColorSpace for $name {
             fn get_norm(&self, index: usize) -> NormF32 {
                 return NormF32::new(self.0[index]);
-            }
-
-            fn strip_alpha(self) -> Self::NoAlpha {
-                return self;
             }
         }
 

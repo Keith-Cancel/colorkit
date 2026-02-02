@@ -103,7 +103,7 @@ pub enum AlphaKind {
 ///
 /// If implemented a default blanket implention of [`ColorMaybeAlpha`]
 /// is provided.
-pub trait ColorNoAlpha {}
+//pub trait ColorNoAlpha {}
 
 pub trait ColorMaybeAlpha {
     /// The kinda of Alpha Channel the color space has
@@ -134,7 +134,7 @@ pub trait ColorMaybeAlpha {
     /// Returns [`None`] if this color has no alpha channel.
     fn try_alpha_mut(&mut self) -> Option<&mut f32>;
 }
-
+/*
 impl<T: ColorNoAlpha> ColorMaybeAlpha for T
 where
     T: ColorMaybeAlpha<NoAlpha = T>, // equality constraint
@@ -158,7 +158,7 @@ where
     fn try_alpha_ref(&self) -> Option<&f32> {
         return None;
     }
-}
+}*/
 
 /// Allows a [`ColorSpace`] converted to and from various [`Layout`].
 pub trait ColorLayout: Sized {

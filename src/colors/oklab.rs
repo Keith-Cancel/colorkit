@@ -163,6 +163,28 @@ impl_color_array! {
     gen_use: {}
 }
 
+impl ColorMaybeAlpha for OkLab {
+    type NoAlpha = Self;
+    const ALPHA_KIND: AlphaKind = AlphaKind::None;
+    const ALPHA_INDEX: Option<usize> = None;
+    #[inline]
+    fn opacity(&self) -> f32 {
+        return 1.0;
+    }
+    #[inline]
+    fn strip_alpha(self) -> Self::NoAlpha {
+        return self;
+    }
+    #[inline]
+    fn try_alpha_mut(&mut self) -> Option<&mut f32> {
+        return None;
+    }
+    #[inline]
+    fn try_alpha_ref(&self) -> Option<&f32> {
+        return None;
+    }
+}
+
 impl ColorSpace for OkLab {
     /// Return the channel at `index` normalized into `[0.0, 1.0]`.
     ///
@@ -172,10 +194,6 @@ impl ColorSpace for OkLab {
         let v = self.0[index];
         let v = if index > 0 { v + 0.5 } else { v };
         return NormF32::new(v);
-    }
-
-    fn strip_alpha(self) -> Self::NoAlpha {
-        return self;
     }
 }
 
@@ -191,11 +209,8 @@ impl Default for OkLab {
 impl ColorData for OkLab {
     type WhitePoint = D65;
     type Channels = N3;
-    type NoAlpha = Self;
     const DEFAULT: Self = Self([0.0, 0.0, 0.0]);
     const LINEAR: bool = true;
-    const ALPHA_KIND: AlphaKind = AlphaKind::None;
-    const ALPHA_INDEX: Option<usize> = None;
     // Oklab a, and b channels in theory are unbounded
     // but at least from understanding the practical
     // range is only -0.5 to 0.5.

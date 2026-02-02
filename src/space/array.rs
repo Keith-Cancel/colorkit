@@ -42,12 +42,3 @@ pub trait ColorSlice: AsRef<[f32]> + AsMut<[f32]> + Index<usize, Output = f32> +
         }
     }
 }
-
-// Hmm ideally I would provide a blanket impl like:
-// but blanket cause conherance issues.
-//impl<C: ColorArray> core::ops::Index<usize> for C {
-//    type Output = f32;
-//    fn index(&self, index: usize) -> &Self::Output {
-//        return &self.as_slice()[index];
-//    }
-//}

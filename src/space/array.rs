@@ -1,6 +1,7 @@
 use core::ops::Index;
 use core::ops::IndexMut;
 
+/// Trait to let Color Spaces be handled like slices.
 pub trait ColorSlice: AsRef<[f32]> + AsMut<[f32]> + Index<usize, Output = f32> + IndexMut<usize, Output = f32> {
     /// View color as a slice reference.
     fn as_slice(&self) -> &[f32];

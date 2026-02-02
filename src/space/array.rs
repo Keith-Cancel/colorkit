@@ -37,6 +37,18 @@ pub trait ColorSlice: AsRef<[f32]> + AsMut<[f32]> + Index<usize, Output = f32> +
     fn len(&self) -> usize {
         return self.as_ref().len();
     }
+    /// Try to get a reference as an array.
+    ///
+    /// If `N` not equal to the number of channels returns [`None`]`
+    fn as_array<const N: usize>(&self) -> Option<&[f32; N]> {
+        return self.as_ref().as_array();
+    }
+    /// Try to get a reference as an mutable array.
+    ///
+    /// If `N` not equal to the number of channels returns [`None`]`
+    fn as_mut_array<const N: usize>(&mut self) -> Option<&mut [f32; N]> {
+        return self.as_mut().as_mut_array();
+    }
     /// Swaps two channels in the color.
     fn swap(&mut self, a: usize, b: usize) {
         self.as_mut().swap(a, b);
@@ -64,16 +76,4 @@ pub trait ColorSlice: AsRef<[f32]> + AsMut<[f32]> + Index<usize, Output = f32> +
 pub trait ColorArray: ColorSlice {
     /// Construct the Color calling `f(i)` for each index (same semantics as [`core::array::from_fn`]).
     fn from_fn<F: FnMut(usize) -> f32>(f: F) -> Self;
-    /// Try to get a reference as an array.
-    ///
-    /// If `N` not equal to the number of channels returns [`None`]`
-    fn try_as_array<const N: usize>(&self) -> Option<&[f32; N]> {
-        return self.as_slice().try_into().ok();
-    }
-    /// Try to get a reference as an mutable array.
-    ///
-    /// If `N` not equal to the number of channels returns [`None`]`
-    fn try_as_mut_array<const N: usize>(&mut self) -> Option<&mut [f32; N]> {
-        return self.as_mut_slice().try_into().ok();
-    }
 }

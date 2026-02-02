@@ -249,13 +249,10 @@ macro_rules! base_funcs {
         impl<S: ColorTransmute> ColorData for $name<S> {
             type WhitePoint = S::WhitePoint;
             type Channels = <S::Channels as Number>::Inc;
-            type NoAlpha = S;
             const DEFAULT: Self = Self(S::DEFAULT, 1.0);
             const LINEAR: bool = S::LINEAR;
             const CHANNEL_MAX: &'static [BoundF32] = { Self::MAX.split_at(Self::Channels::N).0 };
             const CHANNEL_MIN: &'static [BoundF32] = { Self::MIN.split_at(Self::Channels::N).0 };
-            const ALPHA_KIND: AlphaKind = Self::KIND;
-            const ALPHA_INDEX: Option<usize> = Some(S::Channels::N);
         }
 
         impl<S: ColorTransmute> ColorArray for $name<S> {
@@ -312,16 +309,34 @@ macro_rules! base_funcs {
             }
         }
 
+        impl<S: ColorTransmute> ColorMaybeAlpha for $name<S> {
+            type NoAlpha = S;
+            const ALPHA_KIND: AlphaKind = Self::KIND;
+            const ALPHA_INDEX: Option<usize> = Some(S::Channels::N);
+            #[inline]
+            fn opacity(&self) -> f32 {
+                return self.1;
+            }
+            #[inline]
+            fn strip_alpha(self) -> Self::NoAlpha {
+                return self.0;
+            }
+            #[inline]
+            fn try_alpha_mut(&mut self) -> Option<&mut f32> {
+                return Some(&mut self.1);
+            }
+            #[inline]
+            fn try_alpha_ref(&self) -> Option<&f32> {
+                return Some(&self.1);
+            }
+        }
+
         impl<S: ColorTransmute> ColorSpace for $name<S> {
             fn get_norm(&self, index: usize) -> NormF32 {
                 if index == S::Channels::N {
                     return NormF32::new(self.1);
                 }
                 return self.0.get_norm(index);
-            }
-
-            fn strip_alpha(self) -> Self::NoAlpha {
-                return $name::strip_alpha(self);
             }
         }
 

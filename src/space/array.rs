@@ -3,14 +3,6 @@ use core::ops::IndexMut;
 
 /// Trait to let Color Spaces be handled like slices.
 pub trait ColorSlice: AsRef<[f32]> + AsMut<[f32]> + Index<usize, Output = f32> + IndexMut<usize, Output = f32> {
-    /// View color as a slice reference.
-    fn as_slice(&self) -> &[f32] {
-        return self.as_ref();
-    }
-    /// View color as a mutable slice.
-    fn as_mut_slice(&mut self) -> &mut [f32] {
-        return self.as_mut();
-    }
     /// Try to view a slice as a reference to this color type.
     ///
     /// If the slice's legnth is not equal to number channels in the color
@@ -21,6 +13,14 @@ pub trait ColorSlice: AsRef<[f32]> + AsMut<[f32]> + Index<usize, Output = f32> +
     /// If the slice's legnth is not equal to number channels in the color
     /// this may return [`None`]`
     fn try_as_mut_color(slice: &mut [f32]) -> Option<&mut Self>;
+    /// View color as a slice reference.
+    fn as_slice(&self) -> &[f32] {
+        return self.as_ref();
+    }
+    /// View color as a mutable slice.
+    fn as_mut_slice(&mut self) -> &mut [f32] {
+        return self.as_mut();
+    }
     /// Get a channel value reference or [`None`].
     ///
     /// Similar semantics as [`slice::get()`]

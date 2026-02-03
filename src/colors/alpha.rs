@@ -14,11 +14,11 @@ use super::Xyz;
 /// Wraps a color space with Alpha channel for transparency.
 #[repr(C)]
 #[derive(Copy, Clone, Debug, PartialEq)]
-pub struct Alpha<S: ColorTransmute>(S, f32);
+pub struct Alpha<S: ColorSpace + ColorTransmute>(S, f32);
 
 base_funcs!(Alpha);
 
-impl<S: ColorTransmute> Alpha<S> {
+impl<S: ColorSpace + ColorTransmute> Alpha<S> {
     const KIND: AlphaKind = AlphaKind::Normal;
     /// Create a new Alpha color with a color and alpha channel value.
     pub const fn new(color: S, alpha: f32) -> Self {
@@ -47,36 +47,36 @@ impl<S: ColorTransmute> Alpha<S> {
         return AlphaPre::new(self.0, self.1);
     }
     /// Convert color space data while leaving alpha channel.
-    pub fn into_color_alpha<S1: ColorTransmute + FromColor<S>>(self) -> Alpha<S1> {
+    pub fn into_color_alpha<S1: ColorSpace + ColorTransmute + FromColor<S>>(self) -> Alpha<S1> {
         return Alpha(self.0.into_color(), self.1);
     }
 }
 
-impl<S: ColorTransmute> FromColor<Xyz<S::WhitePoint>> for Alpha<S> {
+impl<S: ColorSpace + ColorTransmute> FromColor<Xyz<S::WhitePoint>> for Alpha<S> {
     fn from_color(color: Xyz<S::WhitePoint>) -> Self {
         return Self(color.into_color(), 1.0);
     }
 }
 
-impl<S: ColorTransmute> FromColor<Alpha<S>> for Xyz<S::WhitePoint> {
+impl<S: ColorSpace + ColorTransmute> FromColor<Alpha<S>> for Xyz<S::WhitePoint> {
     fn from_color(color: Alpha<S>) -> Self {
         return color.0.into_color();
     }
 }
 
-impl<S: ColorTransmute> FromColor<Alpha<S>> for AlphaPre<S> {
+impl<S: ColorSpace + ColorTransmute> FromColor<Alpha<S>> for AlphaPre<S> {
     fn from_color(color: Alpha<S>) -> Self {
         return color.into_premul_alpha();
     }
 }
 
-impl<S: ColorTransmute> AsRef<S> for Alpha<S> {
+impl<S: ColorSpace + ColorTransmute> AsRef<S> for Alpha<S> {
     fn as_ref(&self) -> &S {
         return &self.0;
     }
 }
 
-impl<S: ColorTransmute> AsMut<S> for Alpha<S> {
+impl<S: ColorSpace + ColorTransmute> AsMut<S> for Alpha<S> {
     fn as_mut(&mut self) -> &mut S {
         return &mut self.0;
     }
@@ -85,11 +85,11 @@ impl<S: ColorTransmute> AsMut<S> for Alpha<S> {
 /// A color with it's alpha premultiplied on all other channels.
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub struct AlphaPre<S: ColorTransmute>(S, f32);
+pub struct AlphaPre<S: ColorSpace + ColorTransmute>(S, f32);
 
 base_funcs!(AlphaPre);
 
-impl<S: ColorTransmute> AlphaPre<S> {
+impl<S: ColorSpace + ColorTransmute> AlphaPre<S> {
     const KIND: AlphaKind = AlphaKind::PreMul;
     /// Create a new premultiplied Alpha color with a color and alpha channel value.
     pub fn new(color: S, alpha: f32) -> Self {
@@ -131,26 +131,26 @@ impl<S: ColorTransmute> AlphaPre<S> {
         return Alpha::new(s.0, s.1);
     }
     /// Convert color space data while leaving alpha channel.
-    pub fn into_color_alpha<S1: ColorTransmute + FromColor<S>>(self) -> AlphaPre<S1> {
+    pub fn into_color_alpha<S1: ColorSpace + ColorTransmute + FromColor<S>>(self) -> AlphaPre<S1> {
         let a = self.into_alpha().into_color_alpha::<S1>();
         return a.into_premul_alpha();
     }
 }
 
-impl<S: ColorTransmute> FromColor<Xyz<S::WhitePoint>> for AlphaPre<S> {
+impl<S: ColorSpace + ColorTransmute> FromColor<Xyz<S::WhitePoint>> for AlphaPre<S> {
     fn from_color(color: Xyz<S::WhitePoint>) -> Self {
         return Self::new(color.into_color(), 1.0);
     }
 }
 
-impl<S: ColorTransmute> FromColor<AlphaPre<S>> for Xyz<S::WhitePoint> {
+impl<S: ColorSpace + ColorTransmute> FromColor<AlphaPre<S>> for Xyz<S::WhitePoint> {
     fn from_color(color: AlphaPre<S>) -> Self {
         let a = color.into_alpha();
         return a.into_color();
     }
 }
 
-impl<S: ColorTransmute> FromColor<AlphaPre<S>> for Alpha<S> {
+impl<S: ColorSpace + ColorTransmute> FromColor<AlphaPre<S>> for Alpha<S> {
     fn from_color(color: AlphaPre<S>) -> Self {
         return color.into_alpha();
     }
@@ -158,7 +158,7 @@ impl<S: ColorTransmute> FromColor<AlphaPre<S>> for Alpha<S> {
 
 macro_rules! base_funcs {
     ($name:ident) => {
-        impl<S: ColorTransmute> $name<S> {
+        impl<S: ColorSpace + ColorTransmute> $name<S> {
             /// Get the colors alpha channel value.
             pub const fn alpha(&self) -> f32 {
                 return self.1;
@@ -197,41 +197,41 @@ macro_rules! base_funcs {
             }
         }
 
-        impl<S: ColorTransmute> AsRef<[f32]> for $name<S> {
+        impl<S: ColorSpace + ColorTransmute> AsRef<[f32]> for $name<S> {
             #[inline]
             fn as_ref(&self) -> &[f32] {
                 return self.as_slice();
             }
         }
 
-        impl<S: ColorTransmute> AsMut<[f32]> for $name<S> {
+        impl<S: ColorSpace + ColorTransmute> AsMut<[f32]> for $name<S> {
             #[inline]
             fn as_mut(&mut self) -> &mut [f32] {
                 return self.as_mut_slice();
             }
         }
 
-        impl<S: ColorTransmute> core::borrow::Borrow<[f32]> for $name<S> {
+        impl<S: ColorSpace + ColorTransmute> core::borrow::Borrow<[f32]> for $name<S> {
             #[inline]
             fn borrow(&self) -> &[f32] {
                 return self.as_slice();
             }
         }
 
-        impl<S: ColorTransmute> core::borrow::BorrowMut<[f32]> for $name<S> {
+        impl<S: ColorSpace + ColorTransmute> core::borrow::BorrowMut<[f32]> for $name<S> {
             #[inline]
             fn borrow_mut(&mut self) -> &mut [f32] {
                 return self.as_mut_slice();
             }
         }
 
-        impl<S: ColorTransmute> Default for $name<S> {
+        impl<S: ColorSpace + ColorTransmute> Default for $name<S> {
             fn default() -> Self {
                 return Self(S::DEFAULT, 1.0);
             }
         }
 
-        impl<S: ColorTransmute> core::ops::Index<usize> for $name<S> {
+        impl<S: ColorSpace + ColorTransmute> core::ops::Index<usize> for $name<S> {
             type Output = f32;
             #[inline]
             fn index(&self, index: usize) -> &f32 {
@@ -239,14 +239,14 @@ macro_rules! base_funcs {
             }
         }
 
-        impl<S: ColorTransmute> core::ops::IndexMut<usize> for $name<S> {
+        impl<S: ColorSpace + ColorTransmute> core::ops::IndexMut<usize> for $name<S> {
             #[inline]
             fn index_mut(&mut self, index: usize) -> &mut f32 {
                 return &mut self.as_mut_slice()[index];
             }
         }
 
-        impl<S: ColorTransmute> ColorData for $name<S> {
+        impl<S: ColorSpace + ColorTransmute> ColorData for $name<S> {
             type WhitePoint = S::WhitePoint;
             type Channels = <S::Channels as Number>::Inc;
             const DEFAULT: Self = Self(S::DEFAULT, 1.0);
@@ -255,7 +255,7 @@ macro_rules! base_funcs {
             const CHANNEL_MIN: &'static [BoundF32] = { Self::MIN.split_at(Self::Channels::N).0 };
         }
 
-        impl<S: ColorTransmute> ColorArray for $name<S> {
+        impl<S: ColorSpace + ColorTransmute> ColorArray for $name<S> {
             fn from_fn<F: FnMut(usize) -> f32>(f: F) -> Self {
                 let mut f = f;
                 let c = S::from_fn(|i| f(i));
@@ -271,7 +271,7 @@ macro_rules! base_funcs {
             }
         }
 
-        impl<S: ColorTransmute> ColorLayout for $name<S> {
+        impl<S: ColorSpace + ColorTransmute> ColorLayout for $name<S> {
             fn from_layout<L: Layout>(layout: L) -> Self {
                 debug_assert!(<L::Channels as Number>::N >= <Self as ColorData>::Channels::N);
                 let a = layout.get_norm(S::Channels::N).get();
@@ -309,7 +309,7 @@ macro_rules! base_funcs {
             }
         }
 
-        impl<S: ColorTransmute> ColorMaybeAlpha for $name<S> {
+        impl<S: ColorSpace + ColorTransmute> ColorMaybeAlpha for $name<S> {
             type NoAlpha = S;
             const ALPHA_KIND: AlphaKind = Self::KIND;
             const ALPHA_INDEX: Option<usize> = Some(S::Channels::N);
@@ -331,7 +331,7 @@ macro_rules! base_funcs {
             }
         }
 
-        impl<S: ColorTransmute> ColorSpace for $name<S> {
+        impl<S: ColorSpace + ColorTransmute> ColorSpace for $name<S> {
             fn get_norm(&self, index: usize) -> NormF32 {
                 if index == S::Channels::N {
                     return NormF32::new(self.1);
@@ -340,7 +340,7 @@ macro_rules! base_funcs {
             }
         }
 
-        impl<S: ColorTransmute> $name<S> {
+        impl<S: ColorSpace + ColorTransmute> $name<S> {
             const MAX: &'static [BoundF32] = &const {
                 // Just make this larger than likely needed can't use
                 // S or Self in the len of an array =(

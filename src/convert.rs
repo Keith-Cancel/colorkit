@@ -13,7 +13,7 @@ use colorkit::space::ColorSpace;
 /// Essentially `size_of::<Self>() / size_of::<f32>()` should
 /// equal [`ColorData::Channels`], plus other constraints like
 /// alignment ect...
-pub unsafe trait ColorTransmute: ColorSpace {}
+pub unsafe trait ColorTransmute: ColorData {}
 
 /// This trait converts from one [ColorSpace] into an other.
 ///

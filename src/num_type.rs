@@ -1,5 +1,7 @@
 //! Marker types that act as a number, mainly used for [`Layout`](colorkit::layout::Layout).
 use core::fmt::Debug;
+use core::ops::Index;
+use core::ops::IndexMut;
 
 mod private {
     pub trait NumberSealed {}
@@ -23,6 +25,8 @@ pub trait Number: NumberSealed + Copy {
     type Inc: Number<Dec = Self>;
     /// Number decreased by 1
     type Dec: Number<Inc = Self>;
+    /// Array the same length as the number.
+    type Arr<T>: AsRef<[T]> + AsMut<[T]> + Index<usize, Output = T> + IndexMut<usize, Output = T>;
 
     fn value() -> usize {
         return Self::N;
@@ -64,6 +68,8 @@ macro_rules! impl_num {
             const N: usize = $n;
             #[cfg(not(feature = "type_const"))]
             const N: usize = $n;
+
+            type Arr<T> = [T; $n];
 
             type Inc = $inc;
             type Dec = $dec;

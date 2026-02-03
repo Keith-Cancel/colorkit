@@ -76,6 +76,10 @@ pub trait ColorNew: ColorData + Sized {
     fn from_array(array: [f32; <Self::Channels as Number>::N]) -> Self {
         return Self::from_fn(|i| array[i]);
     }
+    #[cfg(not(feature = "type_const"))]
+    fn from_array(array: <Self::Channels as Number>::Arr<f32>) -> Self {
+        return Self::from_fn(|i| array[i]);
+    }
     /// Creates a color by repeatedly copying the value to each channel.
     ///
     /// This similar to [`core::array::repeat`] except since [`f32`] is

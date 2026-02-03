@@ -5,10 +5,9 @@ use colorkit::num_type::N3;
 use colorkit::num_type::Number;
 use colorkit::space::ColorArray;
 use colorkit::space::ColorData;
-use colorkit::space::ColorSpace;
 
-/// This marker trait marks that a color can be
-/// transmuted into an array of [f32; [`ColorData::Channels`]]
+/// This marker trait marks that a color can be transmuted
+/// into and from array of [f32; [`ColorData::Channels`]]
 ///
 /// Essentially `size_of::<Self>() / size_of::<f32>()` should
 /// equal [`ColorData::Channels`], plus other constraints like

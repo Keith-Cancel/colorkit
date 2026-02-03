@@ -67,9 +67,25 @@ pub trait ColorSlice: AsRef<[f32]> + AsMut<[f32]> + Index<usize, Output = f32> +
 }
 
 /// Trait to let Color Spaces be handled mostly like an array.
-pub trait ColorArray: ColorSlice {
-    /// Construct the Color calling `f(i)` for each index (same semantics as [`core::array::from_fn`]).
-    fn from_fn<F: FnMut(usize) -> f32>(f: F) -> Self;
+pub trait ColorNew: Sized {
+    /// Construct the Color calling `f(i)` for each index
+    /// (same semantics as [`core::array::from_fn`]).
+    fn from_fn<F: FnMut(usize) -> f32>(fun: F) -> Self;
+    /// Construct the color from an array.
+    #[cfg(feature = "type_const")]
+    fn from_array(array: [f32; <Self::Channels as Number>::N]) -> Self
+    where
+        Self: ColorData,
+    {
+        return Self::from_fn(|i| array[i]);
+    }
+    /// Creates a color by repeatedly copying the value to each channel.
+    ///
+    /// This similar to [`core::array::repeat`] except since [`f32`] is
+    /// copiable so no need to clone.
+    fn repeat(value: f32) -> Self {
+        return Self::from_fn(|_| value);
+    }
 }
 
 // Traits for arrays and slice types

@@ -193,7 +193,3 @@ impl<C: ColorData + ColorTransmute, const N: usize> AsColorMut<C> for [f32; N] {
         return Some(unsafe { &mut *ptr });
     }
 }
-
-fn foo<C: ColorData + ColorTransmute>(a: &&mut [f32; 3]) {
-    let _: &C = a.as_color().unwrap();
-}

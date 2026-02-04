@@ -6,13 +6,8 @@ use colorkit::num_type::Number;
 use colorkit::space::ColorArray;
 use colorkit::space::ColorData;
 
-/// This marker trait marks that a color can be transmuted
-/// into and from array of [f32; [`ColorData::Channels`]]
-///
-/// Essentially `size_of::<Self>() / size_of::<f32>()` should
-/// equal [`ColorData::Channels`], plus other constraints like
-/// alignment ect...
-pub unsafe trait ColorTransmute: ColorData {}
+// Traits for converting between different color spaces.
+// ============================================================================
 
 /// This trait converts from one [ColorSpace] into an other.
 ///
@@ -110,6 +105,15 @@ impl<C: ColorArray + XyzMatrices<Channels = N3>> FromColor<C> for Xyz<C::WhitePo
 
 // Traits for arrays and slice types
 // ============================================================================
+
+/// This marker trait marks that a color can be transmuted
+/// into and from array of [f32; [`ColorData::Channels`]]
+///
+/// Essentially `size_of::<Self>() / size_of::<f32>()` should
+/// equal [`ColorData::Channels`], plus other constraints like
+/// alignment ect...
+pub unsafe trait ColorTransmute: ColorData {}
+
 /// Failable reference to color conversion.
 ///
 /// Similar to [`AsRef`], but only for colors and fail-able.

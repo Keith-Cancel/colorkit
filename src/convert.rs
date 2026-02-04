@@ -107,3 +107,125 @@ impl<C: ColorArray + XyzMatrices<Channels = N3>> FromColor<C> for Xyz<C::WhitePo
         return Xyz::from_array(matrix_3x3_vec3_mul(&C::INTO_XYZ, color.as_slice()));
     }
 }
+
+// Traits for arrays and slice types
+// ============================================================================
+/// Failable reference to color conversion.
+///
+/// Similar to [`AsRef`], but only for colors and fail-able.
+pub trait AsColorRef<C: ColorData> {
+    /// Try to view self as a reference to this color type.
+    ///
+    /// If self can't be viewed as the color returns [`None`]
+    fn as_color(&self) -> Option<&C>;
+}
+
+/// Failable mutable reference to color conversion.
+///
+/// Similar to [`AsRef`], but only for colors and fail-able.
+pub trait AsColorMut<C: ColorData> {
+    /// Try to view a self as a mutable reference to this color type.
+    ///
+    /// If self can't be viewed as the color returns [`None`]
+    fn as_mut_color(&mut self) -> Option<&mut C>;
+}
+
+// Impls for arrays and slice types
+// ============================================================================
+
+impl<T: AsColorRef<C>, C: ColorData> AsColorRef<C> for &T {
+    #[inline]
+    fn as_color(&self) -> Option<&C> {
+        return T::as_color(*self);
+    }
+}
+
+impl<T: AsColorRef<C>, C: ColorData> AsColorRef<C> for &mut T {
+    #[inline]
+    fn as_color(&self) -> Option<&C> {
+        return T::as_color(*self);
+    }
+}
+
+impl<T: AsColorMut<C>, C: ColorData> AsColorMut<C> for &mut T {
+    #[inline]
+    fn as_mut_color(&mut self) -> Option<&mut C> {
+        return T::as_mut_color(*self);
+    }
+}
+
+impl<C: ColorData + ColorTransmute> AsColorRef<C> for [f32] {
+    /// Try to view a slice as a reference to this color type.
+    ///
+    /// If the slice's legnth is not equal to number channels in the color
+    /// this may return [`None`]`
+    #[inline]
+    fn as_color(&self) -> Option<&C> {
+        if self.len() != <C::Channels as Number>::N {
+            return None;
+        }
+        let ptr = self.as_ptr() as *const C;
+        // Safety:
+        // ColorTransmute was implemnted so it's safe
+        // to treat a slice or array of the same length
+        // as channels as an instance of that color.
+        return Some(unsafe { &*ptr });
+    }
+}
+
+impl<C: ColorData + ColorTransmute> AsColorMut<C> for [f32] {
+    /// Try to view a slice as a mutable reference to this color type.
+    ///
+    /// If the slice's legnth is not equal to number channels in the color
+    /// this may return [`None`]`
+    #[inline]
+    fn as_mut_color(&mut self) -> Option<&mut C> {
+        if self.len() != <C::Channels as Number>::N {
+            return None;
+        }
+        let ptr = self.as_mut_ptr() as *mut C;
+        // Safety:
+        // ColorTransmute was implemnted so it's safe
+        // to treat a slice or array of the same length
+        // as channels as an instance of that color.
+        return Some(unsafe { &mut *ptr });
+    }
+}
+
+impl<C: ColorData + ColorTransmute, const N: usize> AsColorRef<C> for [f32; N] {
+    /// Try to view an array as a reference to this color type.
+    ///
+    /// If the array's legnth is not equal to number channels in the color
+    /// this may return [`None`]`
+    #[inline]
+    fn as_color(&self) -> Option<&C> {
+        if N != <C::Channels as Number>::N {
+            return None;
+        }
+        let ptr = self.as_ptr() as *const C;
+        // Safety:
+        // ColorTransmute was implemnted so it's safe
+        // to treat a slice or array of the same length
+        // as channels as an instance of that color.
+        return Some(unsafe { &*ptr });
+    }
+}
+
+impl<C: ColorData + ColorTransmute, const N: usize> AsColorMut<C> for [f32; N] {
+    /// Try to view a array as a mutable reference to this color type.
+    ///
+    /// If the array's legnth is not equal to number channels in the color
+    /// this may return [`None`]`
+    #[inline]
+    fn as_mut_color(&mut self) -> Option<&mut C> {
+        if N != <C::Channels as Number>::N {
+            return None;
+        }
+        let ptr = self.as_mut_ptr() as *mut C;
+        // Safety:
+        // ColorTransmute was implemnted so it's safe
+        // to treat a slice or array of the same length
+        // as channels as an instance of that color.
+        return Some(unsafe { &mut *ptr });
+    }
+}

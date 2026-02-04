@@ -20,14 +20,6 @@ pub trait FromColor<C>: Sized {
     fn from_color(color: C) -> Self;
 }
 
-// Blanket implentation for Self.
-impl<C> FromColor<C> for C {
-    #[inline]
-    fn from_color(color: C) -> Self {
-        return color;
-    }
-}
-
 /// This trait converts from one [ColorSpace] into an other.
 ///
 /// Also unlike the [core::convert::Into] it may be lossy
@@ -39,32 +31,8 @@ pub trait IntoColor<C> {
     fn into_color(self) -> C;
 }
 
-// Blanket impl of IntoColor for any implementation of FromColor
-impl<C1, C2: FromColor<C1>> IntoColor<C2> for C1 {
-    fn into_color(self) -> C2 {
-        return C2::from_color(self);
-    }
-}
-
 /// Marker trait stating conversion from `Self` <-> `C` exists both ways.
 pub trait FromColorBoth<C>: FromColor<C> + private::FromBound<C, Other: FromColor<Self>, Other = C> {}
-
-// Blanket Implentation if From is defined for both color spaces.
-impl<C1: FromColor<C2>, C2: FromColor<C1>> FromColorBoth<C2> for C1 {}
-
-// After seearching for awhile on how get rid of redundant where clauses
-// I found the following:
-// https://github.com/rust-lang/rust/issues/44491#issuecomment-2496196742
-// This allow me to avoid to drag a where clause around everywhere, but still
-// in my color space trait specify Xyz<Wp>: From<Self> instead of just Into
-mod private {
-    pub trait FromBound<C> {
-        type Other;
-    }
-    impl<C1, C2> FromBound<C2> for C1 {
-        type Other = C2;
-    }
-}
 
 /// Transformation Matrices to go between and from CIE XYZ
 ///
@@ -74,12 +42,13 @@ mod private {
 ///
 /// If you implement this trait [`FromColor`] will be implemented
 /// both ways between [`Xyz`] and Self.
-// TODO
-// Maybe add my number type trick back to some these traits
-// since I can't do associated const equality in stable.
-// Mainly the length thing.
-// Ideally pub trait XyzMatrices: ColorData<CHANNELS = 3>
 pub trait XyzMatrices: ColorData {
+    // TODO
+    // Maybe add my number type trick back to some these traits
+    // since I can't do associated const equality in stable.
+    // Mainly the length thing.
+    // Ideally pub trait XyzMatrices: ColorData<CHANNELS = 3>
+
     // Looks like people generally represent these as a transformation matrix.
     // http://www.brucelindbloom.com/index.html?Eqn_RGB_to_XYZ.html
     /// 3x3 Matrix to convert into XYZ
@@ -87,6 +56,27 @@ pub trait XyzMatrices: ColorData {
     /// 3x3 Matrix to convert from XYZ
     const FROM_XYZ: [f32; 9];
 }
+
+// Impls for color conversion
+// ============================================================================
+
+// Blanket implentation for Self.
+impl<C> FromColor<C> for C {
+    #[inline]
+    fn from_color(color: C) -> Self {
+        return color;
+    }
+}
+
+// Blanket impl of IntoColor for any implementation of FromColor
+impl<C1, C2: FromColor<C1>> IntoColor<C2> for C1 {
+    fn into_color(self) -> C2 {
+        return C2::from_color(self);
+    }
+}
+
+// Blanket Implentation if From is defined for both color spaces.
+impl<C1: FromColor<C2>, C2: FromColor<C1>> FromColorBoth<C2> for C1 {}
 
 impl<C: ColorArray + XyzMatrices<Channels = N3>> FromColor<Xyz<C::WhitePoint>> for C {
     fn from_color(color: Xyz<C::WhitePoint>) -> Self {
@@ -231,5 +221,22 @@ impl<C: ColorData + ColorTransmute, const N: usize> AsColorMut<C> for [f32; N] {
         // to treat a slice or array of the same length
         // as channels as an instance of that color.
         return Some(unsafe { &mut *ptr });
+    }
+}
+
+// Sealed/Private conversion traits
+// ============================================================================
+
+// After seearching for awhile on how get rid of redundant where clauses
+// I found the following:
+// https://github.com/rust-lang/rust/issues/44491#issuecomment-2496196742
+// This allow me to avoid to drag a where clause around everywhere, but still
+// in my color space trait specify Xyz<Wp>: From<Self> instead of just Into
+mod private {
+    pub trait FromBound<C> {
+        type Other;
+    }
+    impl<C1, C2> FromBound<C2> for C1 {
+        type Other = C2;
     }
 }

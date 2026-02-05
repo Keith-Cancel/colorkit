@@ -16,7 +16,8 @@ use colorkit::scalar::NormF32;
 use colorkit::scalar::Rounding;
 use colorkit::wp::WhitePoint;
 
-mod array;
+mod slice;
+pub use slice::ColorSlice;
 
 /// Information about a Color Space
 pub trait ColorData: Default {

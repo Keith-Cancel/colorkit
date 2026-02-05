@@ -1,9 +1,4 @@
 //! Traits for uniformly working with color spaces, see [`ColorSpace`] for the primary API.
-use core::borrow::Borrow;
-use core::borrow::BorrowMut;
-use core::ops::Index;
-use core::ops::IndexMut;
-
 use colorkit::colors::Xyz;
 use colorkit::convert::FromColorBoth;
 use colorkit::convert::IntoColor;
@@ -36,63 +31,6 @@ pub trait ColorData: Default {
     const CHANNEL_MIN: &'static [BoundF32];
     // what else to add?
     // primaries?
-}
-
-/// Trait to let Color Spaces be handled mostly like an array/slice.
-pub trait ColorArray:
-    Copy
-    + AsRef<[f32]>
-    + AsMut<[f32]>
-    + Borrow<[f32]>
-    + BorrowMut<[f32]>
-    + Index<usize, Output = f32>
-    + IndexMut<usize, Output = f32>
-{
-    /// Construct the Color calling `f(i)` for each index (same semantics as [`core::array::from_fn`]).
-    fn from_fn<F: FnMut(usize) -> f32>(f: F) -> Self;
-    /// Construct the color from a slice.
-    ///
-    /// # Panics
-    /// May panic the slice's length is less than the [`ColorData::Channels`]
-    fn from_slice(slice: &[f32]) -> Self {
-        return Self::from_fn(|i| slice[i]);
-    }
-    /// View color as a slice reference.
-    fn as_slice(&self) -> &[f32];
-    /// View color as a mutable slice.
-    fn as_mut_slice(&mut self) -> &mut [f32];
-    /// Try to get a reference as an array.
-    ///
-    /// If `N` is greater than [`ColorData::Channels`] returns [`None`]`
-    fn try_as_array<const N: usize>(&self) -> Option<&[f32; N]> {
-        let slc = self.as_slice();
-        if N > slc.len() {
-            return None;
-        }
-        let (slc, _) = slc.split_at(N);
-        return slc.try_into().ok();
-    }
-    /// Try to get a reference as an mutable array.
-    ///
-    /// If `N` is greater than [`ColorData::Channels`] returns [`None`]`
-    fn try_as_mut_array<const N: usize>(&mut self) -> Option<&mut [f32; N]> {
-        let slc = self.as_mut_slice();
-        if N > slc.len() {
-            return None;
-        }
-        let (slc, _) = slc.split_at_mut(N);
-        return slc.try_into().ok();
-    }
-
-    /// Get channel value reference or `None`.
-    fn get_ref(&self, index: usize) -> Option<&f32> {
-        return self.as_slice().get(index);
-    }
-
-    /// Get a mutable channel value reference or `None`.
-    fn get_mut(&mut self, index: usize) -> Option<&mut f32> {
-        return self.as_mut_slice().get_mut(index);
-    }
 }
 
 /// The type of Alpha the color space is using.
@@ -227,7 +165,7 @@ pub trait ColorNew: ColorData + Sized {
 
 /// The main ColorSpace Trait
 pub trait ColorSpace:
-    ColorArray + ColorData + ColorLayout + ColorMaybeAlpha + FromColorBoth<Xyz<Self::WhitePoint>>
+    ColorNew + ColorSlice + ColorLayout + ColorMaybeAlpha + FromColorBoth<Xyz<Self::WhitePoint>>
 {
     /// Number Channels
     #[inline]

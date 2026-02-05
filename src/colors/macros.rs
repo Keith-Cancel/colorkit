@@ -83,16 +83,18 @@ macro_rules! impl_color_array {
 }
 pub(crate) use impl_color_array;
 
-macro_rules! impl_as_ref_mut {
+/// Implenment AsRef<$typ> for $slf and AsMut<$typ> for $slf
+macro_rules! impl_self_as_typ {
     ($typ:ty, $slf:ident < $( $var:ident $(: $bound:ident $(+$bound_n:ident)* )? ),* >) => {
-        #[inline]
         impl<$($var $(: $bound $(+$bound_n)*)?),*> AsRef<$typ> for $slf<$($var),*> {
+            #[inline]
             fn as_ref(&self) -> &$typ {
                 return &self.0;
             }
         }
-        #[inline]
+
         impl<$($var $(: $bound $(+$bound_n)*)?),*> AsMut<$typ> for $slf<$($var),*> {
+            #[inline]
             fn as_mut(&mut self) -> &mut $typ {
                 return &mut self.0;
             }
@@ -102,4 +104,4 @@ macro_rules! impl_as_ref_mut {
         impl_as_ref_mut!($typ, $slf<>);
     };
 }
-pub(crate) use impl_as_ref_mut;
+pub(crate) use impl_self_as_typ;

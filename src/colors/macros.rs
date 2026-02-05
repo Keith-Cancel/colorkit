@@ -101,7 +101,7 @@ macro_rules! impl_self_as_typ {
         }
     };
     ($typ:ty, $slf:ident) => {
-        impl_as_ref_mut!($typ, $slf<>);
+        impl_self_as_typ!($typ, $slf<>);
     };
 }
 pub(crate) use impl_self_as_typ;

@@ -7,7 +7,7 @@ use super::ColorData;
 pub trait ColorBounds: ColorData {
     /// Clamp all channels to min and max bounds.
     fn clamp(self) -> Self;
-    /// Clamp a single channel at index
+    /// Clamp a single channel at `index`
     fn clamp_channel(self, index: usize) -> Self;
     /// Check if the color’s channels are all within the range bounds.
     fn is_clamped(&self) -> bool;
@@ -26,7 +26,7 @@ pub trait ColorBounds: ColorData {
     /// # Panics
     /// May panic if `index` is out of bounds.
     fn get_norm(&self, index: usize) -> NormF32;
-    /// Get (min, max) bounds to compute a [`NormF32`] for the given index.
+    /// Get `(min, max)` bounds to compute a [`NormF32`] for the given `index`.
     ///
     /// * This function should be consistent with [`ColorBounds::get_norm`]
     ///   using the returned `(min, max)` should produce the same [``NormF32``]

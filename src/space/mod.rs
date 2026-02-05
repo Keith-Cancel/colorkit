@@ -11,8 +11,9 @@ use colorkit::scalar::NormF32;
 use colorkit::scalar::Rounding;
 use colorkit::wp::WhitePoint;
 
-//mod bounds;
+mod bounds;
 mod slice;
+
 pub use slice::ColorSlice;
 
 /// Information about a Color Space
@@ -156,7 +157,7 @@ pub trait ColorNew: ColorData + Sized {
     }
     /// Creates a color by repeatedly copying the value to each channel.
     ///
-    /// This similar to [`core::array::repeat`] except since [`f32`] is
+    /// This is similar to [`core::array::repeat`] except since [`f32`] is
     /// copiable so no need to clone.
     fn repeat(value: f32) -> Self {
         return Self::from_fn(|_| value);

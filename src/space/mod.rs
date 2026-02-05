@@ -32,6 +32,12 @@ pub trait ColorData: Default {
     const CHANNEL_MIN: &'static [BoundF32];
     // what else to add?
     // primaries?
+
+    /// Number of Channels
+    #[inline]
+    fn channels(&self) -> usize {
+        return Self::Channels::value();
+    }
 }
 
 /// The type of Alpha the color space is using.
@@ -168,11 +174,6 @@ pub trait ColorNew: ColorData + Sized {
 pub trait ColorSpace:
     ColorNew + ColorSlice + ColorBounds + ColorLayout + ColorMaybeAlpha + FromColorBoth<Xyz<Self::WhitePoint>>
 {
-    /// Number Channels
-    #[inline]
-    fn channels(&self) -> usize {
-        return Self::Channels::value();
-    }
     /// Create an instance of this color from a CIE XYZ color.
     fn from_xyz(color: Xyz<Self::WhitePoint>) -> Self {
         return color.into_color();

@@ -195,8 +195,8 @@ impl<S: ColorSpace + ColorTransmute> ColorBounds for AlphaPre<S> {
     }
     fn is_channel_clamped(&self, index: usize) -> bool {
         let mut value = self.as_slice()[index];
-        if index != S::Channels::N {
-            value *= self.1;
+        if self.1 != 0.0 && index != S::Channels::N {
+            value /= self.1;
         }
         if let BoundF32::Include(max) = S::CHANNEL_MAX[index]
             && value > max
@@ -225,8 +225,12 @@ impl<S: ColorSpace + ColorTransmute> ColorBounds for AlphaPre<S> {
     }
     fn get_norm_bounded(&self, index: usize, min: f32, max: f32) -> NormF32 {
         let mut value = self.as_slice()[index];
+        // Don't divide by zero.
+        if self.1 == 0.0 {
+            return NormF32::with_bounds(0.0, min, max);
+        }
         if index != S::Channels::N {
-            value *= self.1;
+            value /= self.1;
         }
         return NormF32::with_bounds(value, min, max);
     }
@@ -501,5 +505,16 @@ mod test {
         assert_eq!(c[3], 0.5);
 
         assert_eq!(r.as_color().red(), 0.125);
+    }
+
+    #[test]
+    fn get_norm() {
+        let a0 = Alpha::new(Srgb::new_u8(64, 128, 192), 0.75);
+        let a1 = a0.into_premul_alpha();
+
+        assert_eq!(a0.get_norm(3), a1.get_norm(3));
+        assert_eq!(a0.get_norm(0), a1.get_norm(0));
+        assert_eq!(a0.get_norm(1), a1.get_norm(1));
+        assert_eq!(a0.get_norm(2), a1.get_norm(2));
     }
 }

@@ -42,6 +42,34 @@ macro_rules! impl_color_array {
 }
 pub(crate) use impl_color_array;
 
+/// Implement ColorNew for $slf plus from_array and into_array on $slf directly.
+macro_rules! impl_color_new {
+    ($arr:ty, $slf:ident < $( $var:ident $(: $bound:ident $(+$bound_n:ident)* )? ),* >) => {
+        impl<$($var $(: $bound $(+$bound_n)*)?),*> colorkit::space::ColorNew for $slf<$($var),*> {
+            #[inline]
+            fn from_fn<F: FnMut(usize) -> f32>(f: F) -> Self {
+                let a: $arr = core::array::from_fn(f);
+                return unsafe { core::mem::transmute(a) };
+            }
+        }
+
+        impl<$($var $(: $bound $(+$bound_n)*)?),*>  $slf<$($var),*> {
+            /// Create a new instance of the color from an array
+            pub const fn from_array(values: $arr) -> Self {
+                return unsafe { core::mem::transmute(values) };
+            }
+            /// Convert an instance of the color to an array.
+            pub const fn into_array(self) -> $arr {
+                return self.0;
+            }
+        }
+    };
+    ($arr:ty, $slf:ident) => {
+        impl_color_new!($arr, $slf<>);
+    };
+}
+pub(crate) use impl_color_new;
+
 /// Implement AsRef<$typ> for $slf and AsMut<$typ> for $slf
 macro_rules! impl_self_as_typ {
     ($typ:ty, $slf:ident < $( $var:ident $(: $bound:ident $(+$bound_n:ident)* )? ),* >) => {

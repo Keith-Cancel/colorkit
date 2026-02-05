@@ -11,7 +11,7 @@ use colorkit::scalar::Rounding;
 use colorkit::space::*;
 use colorkit::wp::WhitePoint;
 
-use super::macros::impl_color_array;
+use super::macros::*;
 use crate::scalar::NormF32;
 
 /// Represention of an CIE XYZ color using [`f32`] values.
@@ -63,6 +63,10 @@ impl<W: WhitePoint> Xyz<W> {
         return Xyz::<Wp>(self.0, PhantomData);
     }
 }
+
+impl_self_as_typ!([f32],    Xyz<Wp: WhitePoint>);
+impl_self_as_typ!([f32; 3], Xyz<Wp: WhitePoint>);
+impl_typ_as_self!(Xyz<Wp: WhitePoint>, [f32; 3]);
 
 impl_color_array! {
     name: Xyz,

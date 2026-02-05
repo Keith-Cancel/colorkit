@@ -1,19 +1,5 @@
 macro_rules! impl_color_array {
     (name: $name:ident, channels: $len:expr, extra_args: { $($args:ident),* }, generics: { $($generics:tt)* }, gen_use: { $($gen_use:tt)*} ) => {
-        impl $($generics)* AsRef<[f32]> for $name $($gen_use)* {
-            #[inline]
-            fn as_ref(&self) -> &[f32] {
-                return &self.0;
-            }
-        }
-
-        impl $($generics)* AsMut<[f32]> for $name $($gen_use)* {
-            #[inline]
-            fn as_mut(&mut self) -> &mut [f32] {
-                return &mut self.0;
-            }
-        }
-
         impl $($generics)* core::borrow::Borrow<[f32]> for $name $($gen_use)* {
             #[inline]
             fn borrow(&self) -> &[f32] {

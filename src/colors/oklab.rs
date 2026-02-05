@@ -14,7 +14,7 @@ use colorkit::wp::D65;
 use super::LinSrgb;
 use super::Srgb;
 use super::Xyz;
-use super::macros::impl_color_array;
+use super::macros::*;
 
 /// Represention of an OkLab color using [`f32`] values.
 ///
@@ -154,6 +154,10 @@ impl OkLab {
         ];
     }
 }
+
+impl_self_as_typ!([f32], OkLab);
+impl_self_as_typ!([f32; 3], OkLab);
+impl_typ_as_self!(OkLab, [f32; 3]);
 
 impl_color_array! {
     name: OkLab,

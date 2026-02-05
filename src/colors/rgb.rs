@@ -15,7 +15,7 @@ use colorkit::space::*;
 use colorkit::wp::D65;
 
 use super::Xyz;
-use super::macros::impl_color_array;
+use super::macros::*;
 
 macro_rules! base_funcs {
     ($name:ident, $len:expr) => {
@@ -174,6 +174,11 @@ macro_rules! base_funcs {
 pub struct Srgb([f32; 3]);
 
 base_funcs!(Srgb, 3);
+
+impl_self_as_typ!([f32], Srgb);
+impl_self_as_typ!([f32; 3], Srgb);
+impl_typ_as_self!(Srgb, [f32; 3]);
+
 impl_color_array! {
     name: Srgb,
     channels: 3,
@@ -211,6 +216,11 @@ impl FromColor<Srgb> for Xyz<D65> {
 pub struct LinSrgb([f32; 3]);
 
 base_funcs!(LinSrgb, 3);
+
+impl_self_as_typ!([f32], LinSrgb);
+impl_self_as_typ!([f32; 3], LinSrgb);
+impl_typ_as_self!(LinSrgb, [f32; 3]);
+
 impl_color_array! {
     name: LinSrgb,
     channels: 3,

@@ -29,11 +29,11 @@ pub trait ColorBounds: ColorData {
     /// Get `(min, max)` bounds to compute a [`NormF32`] for the given `index`.
     ///
     /// * This function should be consistent with [`ColorBounds::get_norm`]
-    ///   using the returned `(min, max)` should produce the same [``NormF32``]
+    ///   using the returned `(min, max)` should produce the same [`NormF32`]
     ///
-    /// * As noted in [`ColorBounds::get_norm`] not every color space is bounded
-    ///   on every channel so (min, max) may be reasonable or best effort values
-    ///   for the color space.
+    /// * As noted in [`ColorBounds::get_norm`] not every color space is
+    ///   bounded on every channel so `(min, max)` may be a reasonable or
+    ///   best effort values for the color space.
     fn get_norm_bounds(&self, index: usize) -> (f32, f32);
     /// Return channel at `index` normalized to the range `[0.0, 1.0]`.
     ///

@@ -105,3 +105,26 @@ macro_rules! impl_self_as_typ {
     };
 }
 pub(crate) use impl_self_as_typ;
+
+/// Implenment AsRef<$slf> for $typ and AsMut<$slf> for $typ
+macro_rules! impl_typ_as_self {
+    ($slf:ident < $( $var:ident $(: $bound:ident $(+$bound_n:ident)* )? ),* >, $typ:ty) => {
+        impl<$($var $(: $bound $(+$bound_n)*)?),*> AsRef<$slf<$($var),*>> for $typ  {
+            #[inline]
+            fn as_ref(&self) -> &$slf<$($var),*> {
+                return unsafe { core::mem::transmute(self) };
+            }
+        }
+
+        impl<$($var $(: $bound $(+$bound_n)*)?),*> AsMut<$slf<$($var),*>> for $typ  {
+            #[inline]
+            fn as_mut(&mut self) -> &mut $slf<$($var),*> {
+                return unsafe { core::mem::transmute(self) };
+            }
+        }
+    };
+    ($slf:ident, $typ:ty) => {
+        impl_typ_as_self!($slf<>, $typ);
+    };
+}
+pub(crate) use impl_typ_as_self;

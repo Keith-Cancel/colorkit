@@ -82,3 +82,23 @@ macro_rules! impl_color_array {
     };
 }
 pub(crate) use impl_color_array;
+
+macro_rules! impl_as_ref_mut {
+    ($typ:ty, $slf:ident < $( $var:ident $(: $bound:ident $(+$bound_n:ident)* )? ),* >) => {
+        impl<$($var $(: $bound $(+$bound_n)*)?),*> AsRef<$typ> for $slf<$($var),*> {
+            fn as_ref(&self) -> &$typ {
+                return &self.0;
+            }
+        }
+
+        impl<$($var $(: $bound $(+$bound_n)*)?),*> AsMut<$typ> for $slf<$($var),*> {
+            fn as_mut(&mut self) -> &mut $typ {
+                return &mut self.0;
+            }
+        }
+    };
+    ($typ:ty, $slf:ident) => {
+        impl_as_ref_mut!($typ, $slf<>);
+    };
+}
+pub(crate) use impl_as_ref_mut;

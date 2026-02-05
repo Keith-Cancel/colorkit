@@ -10,15 +10,16 @@ use colorkit::scalar::Rounding;
 use colorkit::space::*;
 
 use super::Xyz;
-use super::macros::impl_self_index;
+use super::macros::*;
 
 /// Wraps a color space with Alpha channel for transparency.
 #[repr(C)]
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Alpha<S: ColorSpace + ColorTransmute>(S, f32);
 
-impl_self_index!(Alpha<S: ColorSpace + ColorTransmute>);
 base_funcs!(Alpha);
+impl_self_index!(Alpha<S: ColorSpace + ColorTransmute>);
+impl_self_as_typ!(S, Alpha<S: ColorSpace + ColorTransmute>);
 
 impl<S: ColorSpace + ColorTransmute> Alpha<S> {
     const KIND: AlphaKind = AlphaKind::Normal;
@@ -69,18 +70,6 @@ impl<S: ColorSpace + ColorTransmute> FromColor<Alpha<S>> for Xyz<S::WhitePoint> 
 impl<S: ColorSpace + ColorTransmute> FromColor<Alpha<S>> for AlphaPre<S> {
     fn from_color(color: Alpha<S>) -> Self {
         return color.into_premul_alpha();
-    }
-}
-
-impl<S: ColorSpace + ColorTransmute> AsRef<S> for Alpha<S> {
-    fn as_ref(&self) -> &S {
-        return &self.0;
-    }
-}
-
-impl<S: ColorSpace + ColorTransmute> AsMut<S> for Alpha<S> {
-    fn as_mut(&mut self) -> &mut S {
-        return &mut self.0;
     }
 }
 

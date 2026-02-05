@@ -69,7 +69,7 @@ impl_from_tup3!(Xyz<Wp: WhitePoint>);
 impl_typ_as_self!(Xyz<Wp: WhitePoint>, [f32; 3]);
 impl_self_as_typ!([f32],    Xyz<Wp: WhitePoint>);
 impl_self_as_typ!([f32; 3], Xyz<Wp: WhitePoint>);
-impl_self_from_typ!([f32; 3], Xyz<Wp: WhitePoint>);
+impl_from_inner!([f32; 3], Xyz<Wp: WhitePoint>);
 
 impl_color_array! {
     name: Xyz,

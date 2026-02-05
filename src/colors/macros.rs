@@ -88,28 +88,28 @@ macro_rules! impl_typ_as_self {
 }
 pub(crate) use impl_typ_as_self;
 
-/// Implement From<$typ> for $slf and From<$slf> for $typ
-macro_rules! impl_self_from_typ {
-    ($typ:ty, $slf:ident < $( $var:ident $(: $bound:ident $(+$bound_n:ident)* )? ),* >) => {
-        impl<$($var $(: $bound $(+$bound_n)*)?),*> From<$typ> for $slf<$($var),*> {
+/// Implement From<$inner> for $slf and From<$slf> for $inner
+macro_rules! impl_from_inner {
+    ($inner:ty, $slf:ident < $( $var:ident $(: $bound:ident $(+$bound_n:ident)* )? ),* >) => {
+        impl<$($var $(: $bound $(+$bound_n)*)?),*> From<$inner> for $slf<$($var),*> {
             #[inline]
-            fn from(value: $typ) -> Self {
+            fn from(value: $inner) -> Self {
                 return unsafe { core::mem::transmute(value) };
             }
         }
 
-        impl<$($var $(: $bound $(+$bound_n)*)?),*> From<$slf<$($var),*>> for $typ {
+        impl<$($var $(: $bound $(+$bound_n)*)?),*> From<$slf<$($var),*>> for $inner {
             #[inline]
             fn from(value: $slf<$($var),*>) -> Self {
                 return value.0;
             }
         }
     };
-    ($typ:ty, $slf:ident) => {
-        impl_self_from_typ!($typ, $slf<>);
+    ($inner:ty, $slf:ident) => {
+        impl_from_inner!($inner, $slf<>);
     };
 }
-pub(crate) use impl_self_from_typ;
+pub(crate) use impl_from_inner;
 
 /// Implement From<(f32, f32, f32)> for $slf and From<$slf> for (f32, f32, f32)
 ///

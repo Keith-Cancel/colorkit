@@ -1,7 +1,6 @@
 use core::ops::Index;
 use core::ops::IndexMut;
 
-use colorkit::convert::ColorTransmute;
 use colorkit::num_type::Number;
 use colorkit::space::ColorData;
 

@@ -11,6 +11,8 @@ pub trait ColorBounds: ColorData {
     fn clamp_channel(self, index: usize) -> Self;
     /// Check if the color’s channels are all within the range bounds.
     fn is_clamped(&self) -> bool;
+    /// Check if the channel at `index` is within the range bounds.
+    fn is_channel_clamped(&self, index: usize) -> bool;
     /// Return channel at `index` normalized to the range `[0.0, 1.0]`.
     ///
     /// The normalization bounds are color-space specific - see the particular

@@ -10,12 +10,14 @@ use colorkit::scalar::Rounding;
 use colorkit::space::*;
 
 use super::Xyz;
+use super::macros::impl_self_index;
 
 /// Wraps a color space with Alpha channel for transparency.
 #[repr(C)]
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Alpha<S: ColorSpace + ColorTransmute>(S, f32);
 
+impl_self_index!(Alpha<S: ColorSpace + ColorTransmute>);
 base_funcs!(Alpha);
 
 impl<S: ColorSpace + ColorTransmute> Alpha<S> {
@@ -87,6 +89,7 @@ impl<S: ColorSpace + ColorTransmute> AsMut<S> for Alpha<S> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct AlphaPre<S: ColorSpace + ColorTransmute>(S, f32);
 
+impl_self_index!(AlphaPre<S: ColorSpace + ColorTransmute>);
 base_funcs!(AlphaPre);
 
 impl<S: ColorSpace + ColorTransmute> AlphaPre<S> {
@@ -228,21 +231,6 @@ macro_rules! base_funcs {
         impl<S: ColorSpace + ColorTransmute> Default for $name<S> {
             fn default() -> Self {
                 return Self(S::DEFAULT, 1.0);
-            }
-        }
-
-        impl<S: ColorSpace + ColorTransmute> core::ops::Index<usize> for $name<S> {
-            type Output = f32;
-            #[inline]
-            fn index(&self, index: usize) -> &f32 {
-                return &self.as_slice()[index];
-            }
-        }
-
-        impl<S: ColorSpace + ColorTransmute> core::ops::IndexMut<usize> for $name<S> {
-            #[inline]
-            fn index_mut(&mut self, index: usize) -> &mut f32 {
-                return &mut self.as_mut_slice()[index];
             }
         }
 

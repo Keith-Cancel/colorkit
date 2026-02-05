@@ -14,21 +14,6 @@ macro_rules! impl_color_array {
             }
         }
 
-        impl $($generics)* core::ops::Index<usize> for $name $($gen_use)* {
-            type Output = f32;
-            #[inline]
-            fn index(&self, index: usize) -> &f32 {
-                return &self.0[index];
-            }
-        }
-
-        impl $($generics)* core::ops::IndexMut<usize> for $name $($gen_use)* {
-            #[inline]
-            fn index_mut(&mut self, index: usize) -> &mut f32 {
-                return &mut self.0[index];
-            }
-        }
-
         impl $($generics)* colorkit::space::ColorArray for $name $($gen_use)* {
             fn from_fn<F: FnMut(usize) -> f32>(f: F) -> Self {
                 return Self(core::array::from_fn(f), $($args),*);
@@ -114,3 +99,27 @@ macro_rules! impl_typ_as_self {
     };
 }
 pub(crate) use impl_typ_as_self;
+
+/// Implenment Index<usize> for $self and IndexMut<usize> for $slf
+macro_rules! impl_self_index {
+    ($slf:ident < $( $var:ident $(: $bound:ident $(+$bound_n:ident)* )? ),* >) => {
+        impl<$($var $(: $bound $(+$bound_n)*)?),*> core::ops::Index<usize> for $slf<$($var),*> {
+            type Output = f32;
+            #[inline]
+            fn index(&self, index: usize) -> &f32 {
+                return &<Self as AsRef<[f32]>>::as_ref(self)[index];
+            }
+        }
+
+        impl<$($var $(: $bound $(+$bound_n)*)?),*> core::ops::IndexMut<usize> for $slf<$($var),*> {
+            #[inline]
+            fn index_mut(&mut self, index: usize) -> &mut f32 {
+                return &mut <Self as AsMut<[f32]>>::as_mut(self)[index];
+            }
+        }
+    };
+    ($slf:ident) => {
+        impl_self_index!($slf<>);
+    };
+}
+pub(crate) use impl_self_index;

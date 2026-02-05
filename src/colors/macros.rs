@@ -28,18 +28,6 @@ macro_rules! impl_color_array {
             }
         }
 
-        impl $($generics)* core::convert::From<[f32; $len]> for $name $($gen_use)* {
-            fn from(values: [f32; $len]) -> Self {
-                return Self(values, $($args),*);
-            }
-        }
-
-        impl $($generics)* core::convert::From<$name $($gen_use)*> for [f32; $len] {
-            fn from(values: $name $($gen_use)*) -> Self {
-                return values.0;
-            }
-        }
-
         impl $($generics)* $name $($gen_use)* {
             /// Create a new instance of the color from an array
             pub const fn from_array(values: [f32; $len]) -> Self {
@@ -99,6 +87,29 @@ macro_rules! impl_typ_as_self {
     };
 }
 pub(crate) use impl_typ_as_self;
+
+/// Implenment From<$typ> for $slf and From<$slf> for $typ
+macro_rules! impl_self_from_typ {
+    ($typ:ty, $slf:ident < $( $var:ident $(: $bound:ident $(+$bound_n:ident)* )? ),* >) => {
+        impl<$($var $(: $bound $(+$bound_n)*)?),*> From<$typ> for $slf<$($var),*> {
+            #[inline]
+            fn from(value: $typ) -> Self {
+                return unsafe { core::mem::transmute(value) };
+            }
+        }
+
+        impl<$($var $(: $bound $(+$bound_n)*)?),*> From<$slf<$($var),*>> for $typ {
+            #[inline]
+            fn from(value: $slf<$($var),*>) -> Self {
+                return value.0;
+            }
+        }
+    };
+    ($typ:ty, $slf:ident) => {
+        impl_self_from_typ!($typ, $slf<>);
+    };
+}
+pub(crate) use impl_self_from_typ;
 
 /// Implenment Index<usize> for $self and IndexMut<usize> for $slf
 macro_rules! impl_self_index {

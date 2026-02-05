@@ -28,7 +28,7 @@ impl<S: ColorSpace + ColorTransmute> Alpha<S> {
         return Self(color, alpha);
     }
     /// Remove the alpha channel.
-    pub const fn strip_alpha(self) -> S {
+    pub fn strip_alpha(self) -> S {
         return self.0;
     }
     /// Set the colors alpha channel value.
@@ -112,15 +112,16 @@ impl<S: ColorSpace + ColorTransmute> AlphaPre<S> {
     }
     /// Convert to normal alpha with no premultiplication.
     pub fn into_alpha(self) -> Alpha<S> {
-        let mut s = self;
+        let mut color = self.0;
+        let alpha = self.1;
         // All channels will be zero, avoid division.
-        if s.1 == 0.0 {
-            return Alpha::new(self.0, self.1);
+        if alpha == 0.0 {
+            return Alpha::new(color, alpha);
         }
-        for v in s.0.as_mut_slice() {
-            *v = *v / s.1;
+        for v in color.as_mut_slice() {
+            *v = *v / alpha;
         }
-        return Alpha::new(s.0, s.1);
+        return Alpha::new(color, alpha);
     }
     /// Convert color space data while leaving alpha channel.
     pub fn into_color_alpha<S1: ColorSpace + ColorTransmute + FromColor<S>>(self) -> AlphaPre<S1> {
@@ -232,19 +233,11 @@ macro_rules! base_funcs {
             const CHANNEL_MIN: &'static [BoundF32] = { Self::MIN.split_at(Self::Channels::N).0 };
         }
 
-        impl<S: ColorSpace + ColorTransmute> ColorArray for $name<S> {
+        impl<S: ColorSpace + ColorTransmute> ColorNew for $name<S> {
             fn from_fn<F: FnMut(usize) -> f32>(f: F) -> Self {
                 let mut f = f;
                 let c = S::from_fn(|i| f(i));
                 return Self(c, f(S::Channels::N));
-            }
-            #[inline]
-            fn as_slice(&self) -> &[f32] {
-                return self.as_slice();
-            }
-            #[inline]
-            fn as_mut_slice(&mut self) -> &mut [f32] {
-                return self.as_mut_slice();
             }
         }
 

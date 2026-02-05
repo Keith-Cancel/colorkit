@@ -176,20 +176,13 @@ pub struct Srgb([f32; 3]);
 
 base_funcs!(Srgb, 3);
 
+impl_color_new!([f32; 3], Srgb);
 impl_self_index!(Srgb);
 impl_from_tup3!(Srgb);
 impl_typ_as_self!(Srgb, [f32; 3]);
 impl_self_as_typ!([f32], Srgb);
 impl_self_as_typ!([f32; 3], Srgb);
 impl_from_inner!([f32; 3], Srgb);
-
-impl_color_array! {
-    name: Srgb,
-    channels: 3,
-    extra_args: {},
-    generics: {},
-    gen_use: {}
-}
 
 impl Srgb {
     /// Convert Srgb into Linear Srgb
@@ -221,20 +214,13 @@ pub struct LinSrgb([f32; 3]);
 
 base_funcs!(LinSrgb, 3);
 
+impl_color_new!([f32; 3], LinSrgb);
 impl_self_index!(LinSrgb);
 impl_from_tup3!(LinSrgb);
 impl_typ_as_self!(LinSrgb, [f32; 3]);
 impl_self_as_typ!([f32], LinSrgb);
 impl_self_as_typ!([f32; 3], LinSrgb);
 impl_from_inner!([f32; 3], LinSrgb);
-
-impl_color_array! {
-    name: LinSrgb,
-    channels: 3,
-    extra_args: {},
-    generics: {},
-    gen_use: {}
-}
 
 impl LinSrgb {
     /// Convert Linear Srgb into Srgb

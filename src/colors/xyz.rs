@@ -64,20 +64,13 @@ impl<W: WhitePoint> Xyz<W> {
     }
 }
 
+impl_color_new!([f32; 3], Xyz<Wp: WhitePoint>);
 impl_self_index!(Xyz<Wp: WhitePoint>);
 impl_from_tup3!(Xyz<Wp: WhitePoint>);
 impl_typ_as_self!(Xyz<Wp: WhitePoint>, [f32; 3]);
-impl_self_as_typ!([f32],    Xyz<Wp: WhitePoint>);
+impl_self_as_typ!([f32], Xyz<Wp: WhitePoint>);
 impl_self_as_typ!([f32; 3], Xyz<Wp: WhitePoint>);
 impl_from_inner!([f32; 3], Xyz<Wp: WhitePoint>);
-
-impl_color_array! {
-    name: Xyz,
-    channels: 3,
-    extra_args: { PhantomData },
-    generics: { <W: WhitePoint> },
-    gen_use: { <W> }
-}
 
 impl<W: WhitePoint> Default for Xyz<W> {
     #[inline]

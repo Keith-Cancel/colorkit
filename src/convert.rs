@@ -3,8 +3,7 @@ use colorkit::colors::Xyz;
 use colorkit::math::matrix_3x3_vec3_mul;
 use colorkit::num_type::N3;
 use colorkit::num_type::Number;
-use colorkit::space::ColorArray;
-use colorkit::space::ColorData;
+use colorkit::space::*;
 
 // Traits for converting between different color spaces.
 // ============================================================================
@@ -78,7 +77,7 @@ impl<C1, C2: FromColor<C1>> IntoColor<C2> for C1 {
 // Blanket Implentation if From is defined for both color spaces.
 impl<C1: FromColor<C2>, C2: FromColor<C1>> FromColorBoth<C2> for C1 {}
 
-impl<C: ColorArray + XyzMatrices<Channels = N3>> FromColor<Xyz<C::WhitePoint>> for C {
+impl<C: ColorNew + XyzMatrices<Channels = N3>> FromColor<Xyz<C::WhitePoint>> for C {
     fn from_color(color: Xyz<C::WhitePoint>) -> Self {
         debug_assert!(C::Channels::N == 3);
         let c = matrix_3x3_vec3_mul(&Self::FROM_XYZ, color.as_slice());
@@ -86,7 +85,7 @@ impl<C: ColorArray + XyzMatrices<Channels = N3>> FromColor<Xyz<C::WhitePoint>> f
     }
 }
 
-impl<C: ColorArray + XyzMatrices<Channels = N3>> FromColor<C> for Xyz<C::WhitePoint> {
+impl<C: ColorNew + ColorSlice + XyzMatrices<Channels = N3>> FromColor<C> for Xyz<C::WhitePoint> {
     fn from_color(color: C) -> Self {
         debug_assert!(C::Channels::N == 3);
         return Xyz::from_array(matrix_3x3_vec3_mul(&C::INTO_XYZ, color.as_slice()));

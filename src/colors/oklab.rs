@@ -155,20 +155,13 @@ impl OkLab {
     }
 }
 
+impl_color_new!([f32; 3], OkLab);
 impl_self_index!(OkLab);
 impl_from_tup3!(OkLab);
 impl_typ_as_self!(OkLab, [f32; 3]);
 impl_self_as_typ!([f32], OkLab);
 impl_self_as_typ!([f32; 3], OkLab);
 impl_from_inner!([f32; 3], OkLab);
-
-impl_color_array! {
-    name: OkLab,
-    channels: 3,
-    extra_args: {},
-    generics: {},
-    gen_use: {}
-}
 
 impl ColorMaybeAlpha for OkLab {
     type NoAlpha = Self;

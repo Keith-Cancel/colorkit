@@ -1,47 +1,3 @@
-macro_rules! impl_color_array {
-    (name: $name:ident, channels: $len:expr, extra_args: { $($args:ident),* }, generics: { $($generics:tt)* }, gen_use: { $($gen_use:tt)*} ) => {
-        impl $($generics)* core::borrow::Borrow<[f32]> for $name $($gen_use)* {
-            #[inline]
-            fn borrow(&self) -> &[f32] {
-                return &self.0;
-            }
-        }
-
-        impl $($generics)* core::borrow::BorrowMut<[f32]> for $name $($gen_use)* {
-            #[inline]
-            fn borrow_mut(&mut self) -> &mut [f32] {
-                return &mut self.0;
-            }
-        }
-
-        impl $($generics)* colorkit::space::ColorArray for $name $($gen_use)* {
-            fn from_fn<F: FnMut(usize) -> f32>(f: F) -> Self {
-                return Self(core::array::from_fn(f), $($args),*);
-            }
-            #[inline]
-            fn as_slice(&self) -> &[f32] {
-                return &self.0;
-            }
-            #[inline]
-            fn as_mut_slice(&mut self) -> &mut [f32] {
-                return &mut self.0;
-            }
-        }
-
-        impl $($generics)* $name $($gen_use)* {
-            /// Create a new instance of the color from an array
-            pub const fn from_array(values: [f32; $len]) -> Self {
-                return Self(values, $($args),*);
-            }
-            /// Convert an instance of the color to an array.
-            pub const fn into_array(self) -> [f32; $len] {
-                return self.0;
-            }
-        }
-    };
-}
-pub(crate) use impl_color_array;
-
 /// Implement ColorNew for $slf plus from_array and into_array on $slf directly.
 macro_rules! impl_color_new {
     ($arr:ty, $slf:ident < $( $var:ident $(: $bound:ident $(+$bound_n:ident)* )? ),* >) => {
@@ -55,10 +11,12 @@ macro_rules! impl_color_new {
 
         impl<$($var $(: $bound $(+$bound_n)*)?),*>  $slf<$($var),*> {
             /// Create a new instance of the color from an array
+            #[inline]
             pub const fn from_array(values: $arr) -> Self {
                 return unsafe { core::mem::transmute(values) };
             }
             /// Convert an instance of the color to an array.
+            #[inline]
             pub const fn into_array(self) -> $arr {
                 return self.0;
             }

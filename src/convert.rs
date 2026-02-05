@@ -36,7 +36,7 @@ pub trait FromColorBoth<C>: FromColor<C> + private::FromBound<C, Other: FromColo
 /// Transformation Matrices to go between and from CIE XYZ
 ///
 /// This trait expects that [`ColorData::Channels`] is equal
-/// to *3*, and slices/arrays gotten via [`ColorArray`] are also
+/// to *3*, and slices/arrays gotten via [`ColorSlice`] are also
 /// length 3.
 ///
 /// If you implement this trait [`FromColor`] will be implemented

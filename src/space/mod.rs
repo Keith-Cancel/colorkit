@@ -14,6 +14,7 @@ use colorkit::wp::WhitePoint;
 mod bounds;
 mod slice;
 
+pub use bounds::ColorBounds;
 pub use slice::ColorSlice;
 
 /// Information about a Color Space

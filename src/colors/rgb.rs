@@ -163,6 +163,7 @@ macro_rules! base_funcs {
             }
         }
 
+        impl ColorSlice for $name {}
         unsafe impl ColorTransmute for $name {}
         impl RgbLike for $name {}
     };

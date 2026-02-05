@@ -187,4 +187,5 @@ impl<W: WhitePoint> ColorSpace for Xyz<W> {
     }
 }
 
+impl<W: WhitePoint> ColorSlice for Xyz<W> {}
 unsafe impl<W: WhitePoint> ColorTransmute for Xyz<W> {}

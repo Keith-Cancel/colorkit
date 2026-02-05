@@ -78,8 +78,8 @@ impl<S: ColorSpace + ColorTransmute> FromColor<Alpha<S>> for AlphaPre<S> {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct AlphaPre<S: ColorSpace + ColorTransmute>(S, f32);
 
-impl_self_index!(AlphaPre<S: ColorSpace + ColorTransmute>);
 base_funcs!(AlphaPre);
+impl_self_index!(AlphaPre<S: ColorSpace + ColorTransmute>);
 
 impl<S: ColorSpace + ColorTransmute> AlphaPre<S> {
     const KIND: AlphaKind = AlphaKind::PreMul;
@@ -308,6 +308,8 @@ macro_rules! base_funcs {
             }
         }
 
+        impl<S: ColorSpace + ColorTransmute> ColorSlice for $name<S> {}
+
         impl<S: ColorSpace + ColorTransmute> ColorSpace for $name<S> {
             fn get_norm(&self, index: usize) -> NormF32 {
                 if index == S::Channels::N {
@@ -317,6 +319,7 @@ macro_rules! base_funcs {
             }
         }
 
+        // Private constants
         impl<S: ColorSpace + ColorTransmute> $name<S> {
             const MAX: &'static [BoundF32] = &const {
                 // Just make this larger than likely needed can't use

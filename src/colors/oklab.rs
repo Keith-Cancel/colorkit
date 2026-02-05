@@ -201,7 +201,7 @@ impl ColorSpace for OkLab {
         return NormF32::new(v);
     }
 }
-
+impl ColorSlice for OkLab {}
 unsafe impl ColorTransmute for OkLab {}
 
 impl Default for OkLab {

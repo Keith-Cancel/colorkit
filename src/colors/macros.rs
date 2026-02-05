@@ -111,6 +111,32 @@ macro_rules! impl_self_from_typ {
 }
 pub(crate) use impl_self_from_typ;
 
+/// Implement From<(f32, f32, f32)> for $slf and From<$slf> for (f32, f32, f32)
+///
+/// Tuple use repr(rust) so I just can't transmute.
+macro_rules! impl_from_tup3 {
+    ($slf:ident < $( $var:ident $(: $bound:ident $(+$bound_n:ident)* )? ),* >) => {
+        impl<$($var $(: $bound $(+$bound_n)*)?),*> From<(f32, f32, f32)> for $slf<$($var),*> {
+            #[inline]
+            fn from(value: (f32, f32, f32)) -> Self {
+                let a: [f32; 3] = value.into();
+                return a.into();
+            }
+        }
+
+        impl<$($var $(: $bound $(+$bound_n)*)?),*> From<$slf<$($var),*>> for (f32, f32, f32) {
+            #[inline]
+            fn from(v: $slf<$($var),*>) -> Self {
+                return (v.0[0], v.0[1], v.0[2]);
+            }
+        }
+    };
+    ($slf:ident) => {
+        impl_from_tup3!($slf<>);
+    };
+}
+pub(crate) use impl_from_tup3;
+
 /// Implement Index<usize> for $self and IndexMut<usize> for $slf
 macro_rules! impl_self_index {
     ($slf:ident < $( $var:ident $(: $bound:ident $(+$bound_n:ident)* )? ),* >) => {

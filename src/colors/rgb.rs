@@ -177,6 +177,7 @@ pub struct Srgb([f32; 3]);
 base_funcs!(Srgb, 3);
 
 impl_self_index!(Srgb);
+impl_from_tup3!(Srgb);
 impl_typ_as_self!(Srgb, [f32; 3]);
 impl_self_as_typ!([f32], Srgb);
 impl_self_as_typ!([f32; 3], Srgb);
@@ -221,6 +222,7 @@ pub struct LinSrgb([f32; 3]);
 base_funcs!(LinSrgb, 3);
 
 impl_self_index!(LinSrgb);
+impl_from_tup3!(LinSrgb);
 impl_typ_as_self!(LinSrgb, [f32; 3]);
 impl_self_as_typ!([f32], LinSrgb);
 impl_self_as_typ!([f32; 3], LinSrgb);

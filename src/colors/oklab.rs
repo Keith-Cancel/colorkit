@@ -156,6 +156,7 @@ impl OkLab {
 }
 
 impl_self_index!(OkLab);
+impl_from_tup3!(OkLab);
 impl_typ_as_self!(OkLab, [f32; 3]);
 impl_self_as_typ!([f32], OkLab);
 impl_self_as_typ!([f32; 3], OkLab);

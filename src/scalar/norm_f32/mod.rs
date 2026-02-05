@@ -37,6 +37,20 @@ impl NormF32 {
         return Ok(Self(value));
     }
 
+    /// Create a new [`NormF32`] using the provide bounds to normalize.
+    ///
+    /// # Panics
+    /// * If `min >= max` or either bound is not finite (this would produce a
+    ///   division by zero or an invalid normalization range).
+    /// * If `index` is out of bounds for the color (same behavior as indexing).
+    pub const fn with_bounds(value: f32, min: f32, max: f32) -> NormF32 {
+        let range = max - min;
+        if (min >= max) || !range.is_finite() {
+            panic!("Invalid normalization range: require finite min < max");
+        }
+        return NormF32::new((value - min) / range);
+    }
+
     /// unsafe unchecked constructor — caller guarantees invariant
     ///
     /// (pattern similar to [`core::num::NonZero`] types).

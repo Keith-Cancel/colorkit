@@ -42,7 +42,7 @@ macro_rules! impl_color_array {
 }
 pub(crate) use impl_color_array;
 
-/// Implenment AsRef<$typ> for $slf and AsMut<$typ> for $slf
+/// Implement AsRef<$typ> for $slf and AsMut<$typ> for $slf
 macro_rules! impl_self_as_typ {
     ($typ:ty, $slf:ident < $( $var:ident $(: $bound:ident $(+$bound_n:ident)* )? ),* >) => {
         impl<$($var $(: $bound $(+$bound_n)*)?),*> AsRef<$typ> for $slf<$($var),*> {
@@ -65,7 +65,7 @@ macro_rules! impl_self_as_typ {
 }
 pub(crate) use impl_self_as_typ;
 
-/// Implenment AsRef<$slf> for $typ and AsMut<$slf> for $typ
+/// Implement AsRef<$slf> for $typ and AsMut<$slf> for $typ
 macro_rules! impl_typ_as_self {
     ($slf:ident < $( $var:ident $(: $bound:ident $(+$bound_n:ident)* )? ),* >, $typ:ty) => {
         impl<$($var $(: $bound $(+$bound_n)*)?),*> AsRef<$slf<$($var),*>> for $typ  {
@@ -88,7 +88,7 @@ macro_rules! impl_typ_as_self {
 }
 pub(crate) use impl_typ_as_self;
 
-/// Implenment From<$typ> for $slf and From<$slf> for $typ
+/// Implement From<$typ> for $slf and From<$slf> for $typ
 macro_rules! impl_self_from_typ {
     ($typ:ty, $slf:ident < $( $var:ident $(: $bound:ident $(+$bound_n:ident)* )? ),* >) => {
         impl<$($var $(: $bound $(+$bound_n)*)?),*> From<$typ> for $slf<$($var),*> {
@@ -111,7 +111,7 @@ macro_rules! impl_self_from_typ {
 }
 pub(crate) use impl_self_from_typ;
 
-/// Implenment Index<usize> for $self and IndexMut<usize> for $slf
+/// Implement Index<usize> for $self and IndexMut<usize> for $slf
 macro_rules! impl_self_index {
     ($slf:ident < $( $var:ident $(: $bound:ident $(+$bound_n:ident)* )? ),* >) => {
         impl<$($var $(: $bound $(+$bound_n)*)?),*> core::ops::Index<usize> for $slf<$($var),*> {

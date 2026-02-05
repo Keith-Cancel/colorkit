@@ -16,6 +16,7 @@ use colorkit::scalar::NormF32;
 use colorkit::scalar::Rounding;
 use colorkit::wp::WhitePoint;
 
+//mod bounds;
 mod slice;
 pub use slice::ColorSlice;
 
@@ -199,6 +200,29 @@ pub trait ColorLayout: Sized {
     /// Channel count of the the [`Layout::Channels`] should
     /// equal the color space channels.
     fn into_layout_dither_map<L: Layout, D: Dither, M: LayoutMap>(self, round: Rounding, dither: &mut D) -> L;
+}
+
+/// Trait for creating a color.
+pub trait ColorNew: ColorData + Sized {
+    /// Construct the Color calling `f(i)` for each index
+    /// (same semantics as [`core::array::from_fn`]).
+    fn from_fn<F: FnMut(usize) -> f32>(fun: F) -> Self;
+    /// Construct the color from an array.
+    #[cfg(feature = "type_const")]
+    fn from_array(array: [f32; <Self::Channels as Number>::N]) -> Self {
+        return Self::from_fn(|i| array[i]);
+    }
+    #[cfg(not(feature = "type_const"))]
+    fn from_array(array: <Self::Channels as Number>::Arr<f32>) -> Self {
+        return Self::from_fn(|i| array[i]);
+    }
+    /// Creates a color by repeatedly copying the value to each channel.
+    ///
+    /// This similar to [`core::array::repeat`] except since [`f32`] is
+    /// copiable so no need to clone.
+    fn repeat(value: f32) -> Self {
+        return Self::from_fn(|_| value);
+    }
 }
 
 /// The main ColorSpace Trait

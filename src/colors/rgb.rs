@@ -69,10 +69,11 @@ macro_rules! base_funcs {
 
             /// Clamp channel values between 0.0 and 1.0
             pub const fn clamp(self) -> Self {
+                let [r, g, b] = self.0;
                 return Self([
-                    f32::clamp(self.0[0], 0.0, 1.0),
-                    f32::clamp(self.0[1], 0.0, 1.0),
-                    f32::clamp(self.0[2], 0.0, 1.0),
+                    r.clamp(0.0, 1.0),
+                    g.clamp(0.0, 1.0),
+                    b.clamp(0.0, 1.0),
                 ]);
             }
         }
@@ -157,15 +158,46 @@ macro_rules! base_funcs {
             }
         }
 
-        impl ColorSpace for $name {
+        impl ColorBounds for $name {
+            fn clamp(self) -> Self {
+                return Self::clamp(self);
+            }
+            fn clamp_channel(self, index: usize) -> Self {
+                let mut a = self.0;
+                a[index] = a[index].clamp(0.0, 1.0);
+                return Self::from_array(a);
+            }
+            fn is_clamped(&self) -> bool {
+                for v in self.0 {
+                    if v < 0.0 || v > 1.0 {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            #[inline]
+            fn is_channel_clamped(&self, index: usize) -> bool {
+                let c = self.0[index];
+                return c >= 0.0 && c <= 1.0;
+            }
+            #[inline]
             fn get_norm(&self, index: usize) -> NormF32 {
                 return NormF32::new(self.0[index]);
             }
+            #[inline]
+            fn get_norm_bounds(&self, _: usize) -> (f32, f32) {
+                return (0.0, 1.0);
+            }
+            #[inline]
+            fn get_norm_bounded(&self, index: usize, min: f32, max: f32) -> NormF32 {
+                return NormF32::with_bounds(self.0[index], min, max);
+            }
         }
 
+        impl ColorSpace for $name {}
         impl ColorSlice for $name {}
-        unsafe impl ColorTransmute for $name {}
         impl RgbLike for $name {}
+        unsafe impl ColorTransmute for $name {}
     };
 }
 

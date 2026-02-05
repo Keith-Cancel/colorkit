@@ -55,6 +55,49 @@ impl<S: ColorSpace + ColorTransmute> Alpha<S> {
     }
 }
 
+impl<S: ColorSpace + ColorTransmute> ColorBounds for Alpha<S> {
+    fn clamp(self) -> Self {
+        let alpha = self.1.clamp(0.0, 1.0);
+        let color = self.0.clamp();
+        return Self::new(color, alpha);
+    }
+    fn clamp_channel(self, index: usize) -> Self {
+        if index == S::Channels::N {
+            return Self::new(self.0, self.1.clamp(0.0, 1.0));
+        }
+        return Self::new(self.0.clamp_channel(index), self.1);
+    }
+    fn is_clamped(&self) -> bool {
+        if self.1 < 0.0 || self.1 >= 1.0 {
+            return false;
+        }
+        return self.0.is_clamped();
+    }
+    fn is_channel_clamped(&self, index: usize) -> bool {
+        if index == S::Channels::N {
+            let a = self.1;
+            return a >= 0.0 && a <= 1.0;
+        }
+        return self.0.is_channel_clamped(index);
+    }
+    fn get_norm(&self, index: usize) -> NormF32 {
+        if index == S::Channels::N {
+            return NormF32::new(self.1);
+        }
+        return self.0.get_norm(index);
+    }
+    fn get_norm_bounds(&self, index: usize) -> (f32, f32) {
+        if index == S::Channels::N {
+            return (0.0, 1.0);
+        }
+        return self.0.get_norm_bounds(index);
+    }
+    fn get_norm_bounded(&self, index: usize, min: f32, max: f32) -> NormF32 {
+        let value = self.as_slice()[index];
+        return NormF32::with_bounds(value, min, max);
+    }
+}
+
 impl<S: ColorSpace + ColorTransmute> FromColor<Xyz<S::WhitePoint>> for Alpha<S> {
     fn from_color(color: Xyz<S::WhitePoint>) -> Self {
         return Self(color.into_color(), 1.0);
@@ -127,6 +170,65 @@ impl<S: ColorSpace + ColorTransmute> AlphaPre<S> {
     pub fn into_color_alpha<S1: ColorSpace + ColorTransmute + FromColor<S>>(self) -> AlphaPre<S1> {
         let a = self.into_alpha().into_color_alpha::<S1>();
         return a.into_premul_alpha();
+    }
+}
+
+impl<S: ColorSpace + ColorTransmute> ColorBounds for AlphaPre<S> {
+    fn clamp(self) -> Self {
+        let color = self.into_alpha().clamp();
+        return color.into_premul_alpha();
+    }
+    fn clamp_channel(self, index: usize) -> Self {
+        let color = self.into_alpha().clamp_channel(index);
+        return color.into_premul_alpha();
+    }
+    fn is_clamped(&self) -> bool {
+        if self.1 < 0.0 || self.1 >= 1.0 {
+            return false;
+        }
+        for i in 0..S::Channels::N {
+            if !self.is_channel_clamped(i) {
+                return false;
+            }
+        }
+        return true;
+    }
+    fn is_channel_clamped(&self, index: usize) -> bool {
+        let mut value = self.as_slice()[index];
+        if index != S::Channels::N {
+            value *= self.1;
+        }
+        if let BoundF32::Include(max) = S::CHANNEL_MAX[index]
+            && value > max
+        {
+            return false;
+        }
+        if let BoundF32::Include(min) = S::CHANNEL_MIN[index]
+            && value < min
+        {
+            return false;
+        }
+        return true;
+    }
+    fn get_norm(&self, index: usize) -> NormF32 {
+        if index == S::Channels::N {
+            return NormF32::new(self.1);
+        }
+        let b = self.get_norm_bounds(index);
+        return self.get_norm_bounded(index, b.0, b.1);
+    }
+    fn get_norm_bounds(&self, index: usize) -> (f32, f32) {
+        if index == S::Channels::N {
+            return (0.0, 1.0);
+        }
+        return self.0.get_norm_bounds(index);
+    }
+    fn get_norm_bounded(&self, index: usize, min: f32, max: f32) -> NormF32 {
+        let mut value = self.as_slice()[index];
+        if index != S::Channels::N {
+            value *= self.1;
+        }
+        return NormF32::with_bounds(value, min, max);
     }
 }
 
@@ -302,15 +404,7 @@ macro_rules! base_funcs {
         }
 
         impl<S: ColorSpace + ColorTransmute> ColorSlice for $name<S> {}
-
-        impl<S: ColorSpace + ColorTransmute> ColorSpace for $name<S> {
-            fn get_norm(&self, index: usize) -> NormF32 {
-                if index == S::Channels::N {
-                    return NormF32::new(self.1);
-                }
-                return self.0.get_norm(index);
-            }
-        }
+        impl<S: ColorSpace + ColorTransmute> ColorSpace for $name<S> {}
 
         // Private constants
         impl<S: ColorSpace + ColorTransmute> $name<S> {

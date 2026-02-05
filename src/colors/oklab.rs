@@ -26,6 +26,7 @@ use super::macros::*;
 pub struct OkLab([f32; 3]);
 
 impl OkLab {
+    const BOUNDS: [(f32, f32); 3] = [(0.0, 1.0), (-0.5, 0.5), (-0.5, 0.5)];
     /// Matrix used as part the conversion From XYZ
     ///
     /// <https://bottosson.github.io/posts/oklab/>
@@ -185,17 +186,54 @@ impl ColorMaybeAlpha for OkLab {
     }
 }
 
-impl ColorSpace for OkLab {
+impl ColorBounds for OkLab {
+    fn clamp(self) -> Self {
+        let mut a = self.0;
+        for i in 0..3 {
+            let b = Self::BOUNDS[i];
+            a[i] = a[i].clamp(b.0, b.1);
+        }
+        return Self::from_array(a);
+    }
+    fn clamp_channel(self, index: usize) -> Self {
+        let mut a = self.0;
+        let b = Self::BOUNDS[index];
+        a[index] = a[index].clamp(b.0, b.1);
+        return Self::from_array(a);
+    }
+    fn is_clamped(&self) -> bool {
+        for i in 0..3 {
+            let b = Self::BOUNDS[i];
+            let v = self.0[i];
+            if v < b.0 || v > b.1 {
+                return false;
+            }
+        }
+        return true;
+    }
+    #[inline]
+    fn is_channel_clamped(&self, index: usize) -> bool {
+        let c = self.0[index];
+        let b = Self::BOUNDS[index];
+        return c >= b.0 && c <= b.1;
+    }
     /// Return the channel at `index` normalized into `[0.0, 1.0]`.
     ///
     /// Oklab `a` and `b` channels are theoretically unbounded, but for
     /// normalization a practical range of `[-0.5, 0.5]` is assumed.
     fn get_norm(&self, index: usize) -> NormF32 {
-        let v = self.0[index];
-        let v = if index > 0 { v + 0.5 } else { v };
+        let v = self.0[index] - Self::BOUNDS[index].0;
         return NormF32::new(v);
     }
+    fn get_norm_bounds(&self, index: usize) -> (f32, f32) {
+        return Self::BOUNDS[index];
+    }
+    fn get_norm_bounded(&self, index: usize, min: f32, max: f32) -> NormF32 {
+        return NormF32::with_bounds(self.0[index], min, max);
+    }
 }
+
+impl ColorSpace for OkLab {}
 impl ColorSlice for OkLab {}
 unsafe impl ColorTransmute for OkLab {}
 

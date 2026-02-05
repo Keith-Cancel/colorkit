@@ -166,7 +166,29 @@ impl<W: WhitePoint> ColorMaybeAlpha for Xyz<W> {
     }
 }
 
-impl<W: WhitePoint> ColorSpace for Xyz<W> {
+impl<W: WhitePoint> ColorBounds for Xyz<W> {
+    fn clamp(self) -> Self {
+        let [x, y, z] = self.0;
+        // XYZ only has a lower a bound of zero.
+        return Self::from_array([x.max(0.0), y.max(0.0), z.max(0.0)]);
+    }
+    fn clamp_channel(self, index: usize) -> Self {
+        let mut a = self.0;
+        a[index] = a[index].max(0.0);
+        return Self::from_array(a);
+    }
+    fn is_clamped(&self) -> bool {
+        for v in self.0 {
+            if v < 0.0 {
+                return false;
+            }
+        }
+        return true;
+    }
+    #[inline]
+    fn is_channel_clamped(&self, index: usize) -> bool {
+        return self.0[index] >= 0.0;
+    }
     /// Return the channel at `index` normalized into `[0.0, 1.0]`.
     ///
     /// CIE XYZ channels are unbounded, so the `XYZ` values are
@@ -175,12 +197,23 @@ impl<W: WhitePoint> ColorSpace for Xyz<W> {
     ///
     /// The value is computed by dividing the tristimulus channel by
     /// the reference white component (`X / W::X`, `Y / W::Y`, `Z / W::Z`).
+    #[inline]
     fn get_norm(&self, index: usize) -> NormF32 {
         let wp = [W::X, W::Y, W::Z];
         let v = self.0[index] / wp[index];
         return NormF32::new(v);
     }
+    #[inline]
+    fn get_norm_bounds(&self, index: usize) -> (f32, f32) {
+        let wp = [W::X, W::Y, W::Z];
+        return (0.0, wp[index]);
+    }
+    #[inline]
+    fn get_norm_bounded(&self, index: usize, min: f32, max: f32) -> NormF32 {
+        return NormF32::with_bounds(self.0[index], min, max);
+    }
 }
 
+impl<W: WhitePoint> ColorSpace for Xyz<W> {}
 impl<W: WhitePoint> ColorSlice for Xyz<W> {}
 unsafe impl<W: WhitePoint> ColorTransmute for Xyz<W> {}

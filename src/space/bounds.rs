@@ -3,7 +3,7 @@ use colorkit::scalar::NormF32;
 
 use super::ColorData;
 
-/// Bounds and clamping operations on a Color.
+/// Bound and clamping operations on a Color.
 pub trait ColorBounds: ColorData {
     /// Clamp all channels to min and max bounds.
     fn clamp(self) -> Self;
@@ -20,8 +20,8 @@ pub trait ColorBounds: ColorData {
     /// bounds, use [`ColorBounds::get_norm_bounds`].
     ///
     /// Further, not all color spaces are bounded on every channel. So
-    /// implementations may pick practical bounds and return
-    /// a best effort normalization based on those.
+    /// implementations may pick practical bounds and return a best
+    /// effort normalization based on those.
     ///
     /// # Panics
     /// May panic if `index` is out of bounds.

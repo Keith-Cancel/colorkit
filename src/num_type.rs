@@ -8,6 +8,28 @@ mod private {
 }
 use private::NumberSealed;
 
+#[cfg(feature = "type_const")]
+macro_rules! type_const {
+    ($name:ident : $ty:ty { $val:expr }) => {
+        type const $name: $ty = const { $val };
+    };
+    ($name:ident : $ty:ty) => {
+        type const $name: $ty;
+    };
+}
+
+#[cfg(not(feature = "type_const"))]
+macro_rules! type_const {
+    ($name:ident : $ty:ty { $val:expr }) => {
+        /// Value of the number
+        const $name: $ty = { $val };
+    };
+    ($name:ident : $ty:ty) => {
+        /// Value of the number
+        const $name: $ty;
+    };
+}
+
 /// This allows me to work with numbers, as types albeit up to a limited N
 ///
 /// Till min_generic_const_args is stabilized or at least less crashy.
@@ -15,12 +37,7 @@ use private::NumberSealed;
 /// It being a type lets me get around associated const equality since
 /// I can perform associated type equality instead.
 pub trait Number: NumberSealed + Copy {
-    /// Value of the number
-    #[cfg(feature = "type_const")]
-    #[type_const]
-    const N: usize;
-    #[cfg(not(feature = "type_const"))]
-    const N: usize;
+    type_const!(N: usize);
     /// Number increased by 1
     type Inc: Number<Dec = Self>;
     /// Number decreased by 1
@@ -60,15 +77,7 @@ macro_rules! impl_num {
 
         impl NumberSealed for $name {}
         impl Number for $name {
-            // use cfg instead of cfg_atrr
-            // currently ICEs
-            // https://github.com/rust-lang/rust/issues/151273
-            #[cfg(feature = "type_const")]
-            #[type_const]
-            const N: usize = $n;
-            #[cfg(not(feature = "type_const"))]
-            const N: usize = $n;
-
+            type_const!(N : usize { $n } );
             type Arr<T> = [T; $n];
 
             type Inc = $inc;

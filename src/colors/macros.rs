@@ -1,11 +1,11 @@
 /// Implement ColorNew for $slf plus from_array and into_array on $slf directly.
 macro_rules! impl_color_new {
-    ($arr:ty, $slf:ident < $( $var:ident $(: $bound:ident $(+$bound_n:ident)* )? ),* >) => {
+    ($arr:ty, $slf:ident < $( $var:ident $(: $bound:ident $(+$bound_n:ident)* )? ),* > $(,$ext:expr)?) => {
         impl<$($var $(: $bound $(+$bound_n)*)?),*> colorkit::space::ColorNew for $slf<$($var),*> {
             #[inline]
             fn from_fn<F: FnMut(usize) -> f32>(f: F) -> Self {
                 let a: $arr = core::array::from_fn(f);
-                return unsafe { core::mem::transmute(a) };
+                return Self(a $(, $ext)?);
             }
         }
 
@@ -13,7 +13,7 @@ macro_rules! impl_color_new {
             /// Create a new instance of the color from an array
             #[inline]
             pub const fn from_array(values: $arr) -> Self {
-                return unsafe { core::mem::transmute(values) };
+                return Self(values $(, $ext)?);
             }
             /// Convert an instance of the color to an array.
             #[inline]
@@ -22,8 +22,8 @@ macro_rules! impl_color_new {
             }
         }
     };
-    ($arr:ty, $slf:ident) => {
-        impl_color_new!($arr, $slf<>);
+    ($arr:ty, $slf:ident $(,$ext:expr)?) => {
+        impl_color_new!($arr, $slf<> $(,$ext)?);
     };
 }
 pub(crate) use impl_color_new;
@@ -57,14 +57,16 @@ macro_rules! impl_typ_as_self {
         impl<$($var $(: $bound $(+$bound_n)*)?),*> AsRef<$slf<$($var),*>> for $typ  {
             #[inline]
             fn as_ref(&self) -> &$slf<$($var),*> {
-                return unsafe { core::mem::transmute(self) };
+                let ptr = self as *const _ as *const $slf<$($var),*>;
+                return unsafe { &*ptr };
             }
         }
 
         impl<$($var $(: $bound $(+$bound_n)*)?),*> AsMut<$slf<$($var),*>> for $typ  {
             #[inline]
             fn as_mut(&mut self) -> &mut $slf<$($var),*> {
-                return unsafe { core::mem::transmute(self) };
+                let ptr = self as *mut _ as *mut $slf<$($var),*>;
+                return unsafe { &mut *ptr };
             }
         }
     };
@@ -76,11 +78,11 @@ pub(crate) use impl_typ_as_self;
 
 /// Implement From<$inner> for $slf and From<$slf> for $inner
 macro_rules! impl_from_inner {
-    ($inner:ty, $slf:ident < $( $var:ident $(: $bound:ident $(+$bound_n:ident)* )? ),* >) => {
+    ($inner:ty, $slf:ident < $( $var:ident $(: $bound:ident $(+$bound_n:ident)* )? ),* > $(,$ext:expr)?) => {
         impl<$($var $(: $bound $(+$bound_n)*)?),*> From<$inner> for $slf<$($var),*> {
             #[inline]
             fn from(value: $inner) -> Self {
-                return unsafe { core::mem::transmute(value) };
+                return Self(value $(, $ext)?);
             }
         }
 
@@ -91,8 +93,8 @@ macro_rules! impl_from_inner {
             }
         }
     };
-    ($inner:ty, $slf:ident) => {
-        impl_from_inner!($inner, $slf<>);
+    ($inner:ty, $slf:ident $(,$ext:expr)?) => {
+        impl_from_inner!($inner, $slf<> $(, $ext)?);
     };
 }
 pub(crate) use impl_from_inner;

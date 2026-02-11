@@ -111,8 +111,34 @@ impl<L: LayoutScalar<Channels = M::Channels>, M: LayoutMap> LayoutScalar for Map
 
 #[cfg(test)]
 mod test {
+    use colorkit::layout::maps::*;
+
     use super::*;
+
+    #[test]
     fn check_get() {
-        let p = <Planar3<u8>>::from_array([0, 1, 2]);
+        let p = <Planar3<u8>>::from_array([10, 11, 12]);
+        // Should reverse order.
+        let mut m = MappedLayout::<Map3<2, 1, 0>, _>::new(p);
+        assert_eq!(m.get(0), 12);
+        assert_eq!(m.get(1), 11);
+        assert_eq!(m.get(2), 10);
+
+        m.set(0, 22);
+        m.set(1, 21);
+        m.set(2, 20);
+        assert_eq!(m.as_storage(), &[20, 21, 22]);
+
+        let m = MappedLayout::<Map3<2, 0, 1>, _>::new(m.0);
+        assert_eq!(m.get(0), 22);
+        assert_eq!(m.get(1), 20);
+        assert_eq!(m.get(2), 21);
+
+        let m = <MappedLayout<Map3<2, 0, 1>, Planar3<u8>>>::from_fn(|i| (i + 30) as u8);
+        assert_eq!(m.get(0), 30);
+        assert_eq!(m.get(1), 31);
+        assert_eq!(m.get(2), 32);
+
+        assert_eq!(m.as_storage(), &[31, 32, 30]);
     }
 }

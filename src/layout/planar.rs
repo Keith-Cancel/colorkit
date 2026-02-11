@@ -76,6 +76,40 @@ impl<S: Scalar, const N: usize> From<Planar<S, N>> for [S; N] {
     }
 }
 
+impl<S: Scalar, const N: usize> AsRef<[S; N]> for Planar<S, N> {
+    #[inline]
+    fn as_ref(&self) -> &[S; N] {
+        return &self.0;
+    }
+}
+
+impl<S: Scalar, const N: usize> AsMut<[S; N]> for Planar<S, N> {
+    #[inline]
+    fn as_mut(&mut self) -> &mut [S; N] {
+        return &mut self.0;
+    }
+}
+
+impl<S: Scalar, const N: usize> AsRef<Planar<S, N>> for [S; N] {
+    #[inline]
+    fn as_ref(&self) -> &Planar<S, N> {
+        let ptr = self as *const _ as *const Planar<S, N>;
+        // Safety:
+        // Planar<S, N> is transparent wrapper around [S; N].
+        return unsafe { &*ptr };
+    }
+}
+
+impl<S: Scalar, const N: usize> AsMut<Planar<S, N>> for [S; N] {
+    #[inline]
+    fn as_mut(&mut self) -> &mut Planar<S, N> {
+        let ptr = self as *mut _ as *mut Planar<S, N>;
+        // Safety:
+        // Planar<S, N> is transparent wrapper around [S; N].
+        return unsafe { &mut *ptr };
+    }
+}
+
 impl<S: Scalar, const N: usize> Index<usize> for Planar<S, N> {
     type Output = S;
     #[inline]

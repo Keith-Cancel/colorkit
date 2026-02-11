@@ -51,7 +51,8 @@ impl NormF32 {
         return NormF32::new((value - min) / range);
     }
 
-    /// unsafe unchecked constructor — caller guarantees invariant
+    /// Unchecked constructor - caller guarantees invariant
+    /// that float is between `[0.0, 1.0]`.
     ///
     /// (pattern similar to [`core::num::NonZero`] types).
     #[inline]

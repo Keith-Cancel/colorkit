@@ -68,7 +68,7 @@ impl Packed565 {
 
 impl LayoutStorage for Packed565 {
     type Storage = u16;
-    
+
     #[inline]
     fn into_storage(self) -> u16 {
         return self.0;
@@ -165,6 +165,37 @@ impl From<Packed565> for u16 {
         return value.0;
     }
 }
+
+impl AsRef<u16> for Packed565 {
+    fn as_ref(&self) -> &u16 {
+        return &self.0;
+    }
+}
+
+impl AsMut<u16> for Packed565 {
+    fn as_mut(&mut self) -> &mut u16 {
+        return &mut self.0;
+    }
+}
+
+impl AsRef<Packed565> for u16 {
+    fn as_ref(&self) -> &Packed565 {
+        let ptr = self as *const _ as *const Packed565;
+        // Safety:
+        // Packed565 is transparent wrapper around u16.
+        return unsafe { &*ptr };
+    }
+}
+
+impl AsMut<Packed565> for u16 {
+    fn as_mut(&mut self) -> &mut Packed565 {
+        let ptr = self as *mut _ as *mut Packed565;
+        // Safety:
+        // Packed565 is transparent wrapper around u16.
+        return unsafe { &mut *ptr };
+    }
+}
+
 /*
 impl FromLayout<Packed565> for Packed565 {
     #[inline]

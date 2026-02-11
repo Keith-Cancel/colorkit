@@ -2,18 +2,16 @@
 use colorkit::colors::Xyz;
 use colorkit::convert::FromColorBoth;
 use colorkit::convert::IntoColor;
-use colorkit::layout::Layout;
-use colorkit::layout::LayoutMap;
 use colorkit::math::BoundF32;
 use colorkit::num_type::Number;
-use colorkit::scalar::Dither;
-use colorkit::scalar::Rounding;
 use colorkit::wp::WhitePoint;
 
 mod bounds;
+mod layout;
 mod slice;
 
 pub use bounds::ColorBounds;
+pub use layout::ColorLayout;
 pub use slice::ColorSlice;
 
 /// Information about a Color Space
@@ -108,44 +106,6 @@ where
         return None;
     }
 }*/
-
-/// Allows a [`ColorSpace`] converted to and from various [`Layout`].
-pub trait ColorLayout: Sized {
-    /// Construct a color from a [`Layout].
-    ///
-    /// Channel count of the the [`Layout::Channels`] should be greater
-    /// than or equal to the color space channels.
-    fn from_layout<L: Layout>(layout: L) -> Self;
-    /// Construct a color from a [`Layout`], and a [`LayoutMap`]
-    ///
-    /// This function is similar to [`ColorLayout::from_layout`],
-    /// other than the map should be used to index the layout.
-    /// For example the layout is ARGB, RGBA ect...
-    ///
-    /// Channel count of the the [`Layout::Channels`] should be greater
-    /// than or equal to the color space channels.
-    fn from_layout_map<L: Layout, M: LayoutMap<Channels = L::Channels>>(layout: L) -> Self;
-    /// Construct a [`Layout`] from a given color.
-    ///
-    /// Channel count of the the [`Layout::Channels`] should
-    /// equal the color space channels.
-    fn into_layout<L: Layout>(self, round: Rounding) -> L;
-    /// Construct a [`Layout`] from a given color and [`LayoutMap`].
-    ///
-    /// Channel count of the the [`Layout::Channels`] should
-    /// equal the color space channels.
-    fn into_layout_map<L: Layout, M: LayoutMap>(self, round: Rounding) -> L;
-    /// Construct a [`Layout`] from a given color and [`Dither`]
-    ///
-    /// Channel count of the the [`Layout::Channels`] should
-    /// equal the color space channels.
-    fn into_layout_dither<L: Layout, D: Dither>(self, round: Rounding, dither: &mut D) -> L;
-    /// Construct a [`Layout`] from a given color, [`Dither`] and [`LayoutMap`]
-    ///
-    /// Channel count of the the [`Layout::Channels`] should
-    /// equal the color space channels.
-    fn into_layout_dither_map<L: Layout, D: Dither, M: LayoutMap>(self, round: Rounding, dither: &mut D) -> L;
-}
 
 /// Trait for creating a color.
 pub trait ColorNew: ColorData + Sized {

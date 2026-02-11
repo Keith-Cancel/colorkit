@@ -2,7 +2,6 @@ use colorkit::convert::ColorTransmute;
 use colorkit::convert::FromColor;
 use colorkit::convert::XyzMatrices;
 use colorkit::layout::Layout;
-use colorkit::layout::LayoutMap;
 use colorkit::math::BoundF32;
 use colorkit::math::cbrtf;
 use colorkit::math::quirtf;
@@ -103,36 +102,14 @@ macro_rules! base_funcs {
                 return Self([r, g, b]);
             }
 
-            fn from_layout_map<L: Layout, M: LayoutMap<Channels = L::Channels>>(layout: L) -> Self {
-                debug_assert!(<L::Channels as Number>::N >= 3);
-                let r = layout.get_norm(M::map(0)).get();
-                let g = layout.get_norm(M::map(1)).get();
-                let b = layout.get_norm(M::map(2)).get();
-                return Self([r, g, b]);
-            }
-
             fn into_layout<L: Layout>(self, round: Rounding) -> L {
                 debug_assert!(<L::Channels as Number>::N == 3);
                 return L::from_fn_norm(|i| NormF32::new(self.0[i]), round);
             }
 
-            fn into_layout_map<L: Layout, M: LayoutMap>(self, round: Rounding) -> L {
-                debug_assert!(<L::Channels as Number>::N == 3);
-                return L::from_fn_norm(|i| NormF32::new(self.0[M::unmap(i)]), round);
-            }
-
             fn into_layout_dither<L: Layout, D: crate::scalar::Dither>(self, round: Rounding, dither: &mut D) -> L {
                 debug_assert!(<L::Channels as Number>::N == 3);
                 return L::from_fn_norm_dither(|i| NormF32::new(self.0[i]), round, dither);
-            }
-
-            fn into_layout_dither_map<L: Layout, D: crate::scalar::Dither, M: LayoutMap>(
-                self,
-                round: Rounding,
-                dither: &mut D,
-            ) -> L {
-                debug_assert!(<L::Channels as Number>::N == 3);
-                return L::from_fn_norm_dither(|i| NormF32::new(self.0[M::unmap(i)]), round, dither);
             }
         }
 

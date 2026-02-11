@@ -1,6 +1,5 @@
 use colorkit::convert::*;
 use colorkit::layout::Layout;
-use colorkit::layout::LayoutMap;
 use colorkit::math::BoundF32;
 use colorkit::math::cbrtf;
 use colorkit::math::matrix_3x3_vec3_mul;
@@ -288,40 +287,16 @@ impl ColorLayout for OkLab {
         return Self([l, a, b]);
     }
 
-    fn from_layout_map<L: Layout, M: LayoutMap<Channels = L::Channels>>(layout: L) -> Self {
-        debug_assert!(<L::Channels as Number>::N >= 3);
-        let l = layout.get_norm(M::map(0)).get();
-        let a = layout.get_norm(M::map(1)).get();
-        let b = layout.get_norm(M::map(2)).get();
-        return Self([l, a, b]);
-    }
-
     fn into_layout<L: Layout>(self, round: Rounding) -> L {
         debug_assert!(<L::Channels as Number>::N == 3);
         let a = self.into_norm();
         return L::from_fn_norm(|i| a[i], round);
     }
 
-    fn into_layout_map<L: Layout, M: LayoutMap>(self, round: Rounding) -> L {
-        debug_assert!(<L::Channels as Number>::N == 3);
-        let a = self.into_norm();
-        return L::from_fn_norm(|i| a[M::unmap(i)], round);
-    }
-
     fn into_layout_dither<L: Layout, D: crate::scalar::Dither>(self, round: Rounding, dither: &mut D) -> L {
         debug_assert!(<L::Channels as Number>::N == 3);
         let a = self.into_norm();
         return L::from_fn_norm_dither(|i| a[i], round, dither);
-    }
-
-    fn into_layout_dither_map<L: Layout, D: crate::scalar::Dither, M: LayoutMap>(
-        self,
-        round: Rounding,
-        dither: &mut D,
-    ) -> L {
-        debug_assert!(<L::Channels as Number>::N == 3);
-        let a = self.into_norm();
-        return L::from_fn_norm_dither(|i| a[M::unmap(i)], round, dither);
     }
 }
 

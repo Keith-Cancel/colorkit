@@ -2,7 +2,6 @@ use core::marker::PhantomData;
 
 use colorkit::convert::ColorTransmute;
 use colorkit::layout::Layout;
-use colorkit::layout::LayoutMap;
 use colorkit::math::BoundF32;
 use colorkit::num_type::N3;
 use colorkit::num_type::Number;
@@ -105,14 +104,6 @@ impl<W: WhitePoint> ColorLayout for Xyz<W> {
         return Self([x, y, z], PhantomData);
     }
 
-    fn from_layout_map<L: Layout, M: LayoutMap<Channels = L::Channels>>(layout: L) -> Self {
-        debug_assert!(<L::Channels as Number>::N >= 3);
-        let x = layout.get_norm(M::map(0)) * W::X;
-        let y = layout.get_norm(M::map(1)) * W::Y;
-        let z = layout.get_norm(M::map(2)) * W::Z;
-        return Self([x, y, z], PhantomData);
-    }
-
     /// Create a [`Layout`] from a CIE XYZ color.
     ///
     /// XYZ channels are unbounded, so to quantize the
@@ -123,11 +114,6 @@ impl<W: WhitePoint> ColorLayout for Xyz<W> {
         return L::from_fn_norm(|i| self.get_norm(i), round);
     }
 
-    fn into_layout_map<L: Layout, M: LayoutMap>(self, round: Rounding) -> L {
-        debug_assert!(<L::Channels as Number>::N == 3);
-        return L::from_fn_norm(|i| self.get_norm(M::unmap(i)), round);
-    }
-
     /// Create a [`Layout`] from a CIE XYZ color and [`Dither`]
     ///
     /// XYZ channels are unbounded, so to quantize the
@@ -136,11 +122,6 @@ impl<W: WhitePoint> ColorLayout for Xyz<W> {
     fn into_layout_dither<L: Layout, D: Dither>(self, round: Rounding, dither: &mut D) -> L {
         debug_assert!(<L::Channels as Number>::N == 3);
         return L::from_fn_norm_dither(|i| self.get_norm(i), round, dither);
-    }
-
-    fn into_layout_dither_map<L: Layout, D: Dither, M: LayoutMap>(self, round: Rounding, dither: &mut D) -> L {
-        debug_assert!(<L::Channels as Number>::N == 3);
-        return L::from_fn_norm_dither(|i| self.get_norm(M::unmap(i)), round, dither);
     }
 }
 

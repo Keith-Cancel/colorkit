@@ -2,7 +2,6 @@ use colorkit::convert::ColorTransmute;
 use colorkit::convert::FromColor;
 use colorkit::convert::IntoColor;
 use colorkit::layout::Layout;
-use colorkit::layout::LayoutMap;
 use colorkit::math::BoundF32;
 use colorkit::num_type::Number;
 use colorkit::scalar::NormF32;
@@ -354,34 +353,14 @@ macro_rules! base_funcs {
                 return Self(S::from_layout(layout), a);
             }
 
-            fn from_layout_map<L: Layout, M: LayoutMap<Channels = L::Channels>>(layout: L) -> Self {
-                debug_assert!(<L::Channels as Number>::N >= <Self as ColorData>::Channels::N);
-                let a = layout.get_norm(M::map(S::Channels::N)).get();
-                return Self(S::from_layout_map::<L, M>(layout), a);
-            }
-
             fn into_layout<L: Layout>(self, round: Rounding) -> L {
                 debug_assert!(<L::Channels as Number>::N == <Self as ColorData>::Channels::N);
                 return L::from_fn_norm(|i| self.get_norm(i), round);
             }
 
-            fn into_layout_map<L: Layout, M: LayoutMap>(self, round: Rounding) -> L {
-                debug_assert!(<L::Channels as Number>::N == <Self as ColorData>::Channels::N);
-                return L::from_fn_norm(|i| self.get_norm(M::unmap(i)), round);
-            }
-
             fn into_layout_dither<L: Layout, D: crate::scalar::Dither>(self, round: Rounding, dither: &mut D) -> L {
                 debug_assert!(<L::Channels as Number>::N == <Self as ColorData>::Channels::N);
                 return L::from_fn_norm_dither(|i| self.get_norm(i), round, dither);
-            }
-
-            fn into_layout_dither_map<L: Layout, D: crate::scalar::Dither, M: LayoutMap>(
-                self,
-                round: Rounding,
-                dither: &mut D,
-            ) -> L {
-                debug_assert!(<L::Channels as Number>::N == <Self as ColorData>::Channels::N);
-                return L::from_fn_norm_dither(|i| self.get_norm(M::unmap(i)), round, dither);
             }
         }
 

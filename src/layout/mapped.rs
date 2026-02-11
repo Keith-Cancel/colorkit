@@ -134,11 +134,16 @@ mod test {
         assert_eq!(m.get(1), 20);
         assert_eq!(m.get(2), 21);
 
-        let m = <MappedLayout<Map3<2, 0, 1>, Planar3<u8>>>::from_fn(|i| (i + 30) as u8);
+        let m = <MappedLayout<Map3<2, 0, 1>, Planar3<u8>>>::from_fn(|i| ((i + 1) * 30) as u8);
         assert_eq!(m.get(0), 30);
-        assert_eq!(m.get(1), 31);
-        assert_eq!(m.get(2), 32);
+        assert_eq!(m.get(1), 60);
+        assert_eq!(m.get(2), 90);
 
-        assert_eq!(m.as_storage(), &[31, 32, 30]);
+        assert_eq!(m.as_storage(), &[60, 90, 30]);
+
+        let p: Planar3<NormF32> = m.requantize(Rounding::Nearest);
+        assert_eq!(p.get(0), 30.0 / 255.0);
+        assert_eq!(p.get(1), 60.0 / 255.0);
+        assert_eq!(p.get(2), 90.0 / 255.0);
     }
 }

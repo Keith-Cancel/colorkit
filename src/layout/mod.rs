@@ -35,13 +35,12 @@ pub mod maps {
     pub use super::map::Map10;
 }
 
-/// Bridge between a layout and its underlying storage.
-///
-/// `Storage` must be convertible to and from the layout.
-pub trait LayoutStorage: Sized + Into<Self::Storage> {
+/// Conversion from a layout and its underlying storage.
+pub trait LayoutStorage: Sized {
     /// Underlying storage type for this layout.
-    type Storage: Into<Self>;
-
+    type Storage;
+    /// Convert a layout to it's underlying storage.
+    fn into_storage(self) -> Self::Storage;
     /// View of the underlying storage.
     fn as_storage(&self) -> &Self::Storage;
     /// Mutable view of the underlying storage.

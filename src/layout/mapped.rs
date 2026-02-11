@@ -5,9 +5,9 @@ use super::*;
 /// This struct remaps the index access of the wrapped layout.
 #[repr(transparent)]
 #[derive(Debug, Copy, Clone)]
-pub struct MappedLayout<L: Layout<Channels = M::Channels>, M: LayoutMap>(pub L, PhantomData<M>);
+pub struct MappedLayout<M: LayoutMap, L: Layout<Channels = M::Channels>>(pub L, PhantomData<M>);
 
-impl<L: Layout<Channels = M::Channels>, M: LayoutMap> MappedLayout<L, M> {
+impl<M: LayoutMap, L: Layout<Channels = M::Channels>> MappedLayout<M, L> {
     /// Create a new Mapped layout around an existing layout.
     pub const fn new(layout: L) -> Self {
         return Self(layout, PhantomData);
@@ -26,31 +26,31 @@ impl<L: Layout<Channels = M::Channels>, M: LayoutMap> MappedLayout<L, M> {
     }
 }
 
-impl<L: Layout<Channels = M::Channels>, M: LayoutMap> Default for MappedLayout<L, M> {
+impl<M: LayoutMap, L: Layout<Channels = M::Channels>> Default for MappedLayout<M, L> {
     fn default() -> Self {
         return Self::new(L::DEFAULT);
     }
 }
 
-impl<L: Layout<Channels = M::Channels>, M: LayoutMap> AsRef<L> for MappedLayout<L, M> {
+impl<M: LayoutMap, L: Layout<Channels = M::Channels>> AsRef<L> for MappedLayout<M, L> {
     fn as_ref(&self) -> &L {
         return &self.0;
     }
 }
 
-impl<L: Layout<Channels = M::Channels>, M: LayoutMap> AsMut<L> for MappedLayout<L, M> {
+impl<M: LayoutMap, L: Layout<Channels = M::Channels>> AsMut<L> for MappedLayout<M, L> {
     fn as_mut(&mut self) -> &mut L {
         return &mut self.0;
     }
 }
 
-impl<L: Layout<Channels = M::Channels>, M: LayoutMap> From<L> for MappedLayout<L, M> {
+impl<M: LayoutMap, L: Layout<Channels = M::Channels>> From<L> for MappedLayout<M, L> {
     fn from(value: L) -> Self {
         return Self(value, PhantomData);
     }
 }
 
-impl<L: Layout<Channels = M::Channels>, M: LayoutMap> LayoutStorage for MappedLayout<L, M> {
+impl<M: LayoutMap, L: Layout<Channels = M::Channels>> LayoutStorage for MappedLayout<M, L> {
     type Storage = L::Storage;
 
     fn into_storage(self) -> Self::Storage {
@@ -66,7 +66,7 @@ impl<L: Layout<Channels = M::Channels>, M: LayoutMap> LayoutStorage for MappedLa
     }
 }
 
-impl<L: Layout<Channels = M::Channels>, M: LayoutMap> Layout for MappedLayout<L, M> {
+impl<M: LayoutMap, L: Layout<Channels = M::Channels>> Layout for MappedLayout<M, L> {
     const DEFAULT: Self = Self(L::DEFAULT, PhantomData);
     type Channels = L::Channels;
     type ChannelType = L::ChannelType;
@@ -107,4 +107,12 @@ impl<L: Layout<Channels = M::Channels>, M: LayoutMap> Layout for MappedLayout<L,
     }
 }
 
-impl<L: LayoutScalar<Channels = M::Channels>, M: LayoutMap> LayoutScalar for MappedLayout<L, M> {}
+impl<L: LayoutScalar<Channels = M::Channels>, M: LayoutMap> LayoutScalar for MappedLayout<M, L> {}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    fn check_get() {
+        let p = <Planar3<u8>>::from_array([0, 1, 2]);
+    }
+}

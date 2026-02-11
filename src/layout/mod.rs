@@ -4,6 +4,7 @@
 //!
 //! - [`FromLayout`] / [`IntoLayout`] Converts between the [Scalar] types of layouts.
 mod map;
+mod mapped;
 mod packed_565;
 mod planar;
 
@@ -16,6 +17,7 @@ use colorkit::scalar::Scalar;
 
 #[rustfmt::skip]
 pub use map::LayoutMap;
+pub use mapped::MappedLayout;
 pub use packed_565::Packed565;
 pub use planar::Planar;
 pub use planar::Planar3;

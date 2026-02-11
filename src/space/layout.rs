@@ -15,10 +15,10 @@ pub trait ColorLayout: ColorData {
     ///
     /// Channel count of the the [`Layout::Channels`] should
     /// equal the color space channels.
-    fn into_layout<L: Layout>(self, round: Rounding) -> L;
+    fn into_layout<L: Layout<Channels = Self::Channels>>(self, round: Rounding) -> L;
     /// Construct a [`Layout`] from a given color and [`Dither`]
     ///
     /// Channel count of the the [`Layout::Channels`] should
     /// equal the color space channels.
-    fn into_layout_dither<L: Layout, D: Dither>(self, round: Rounding, dither: &mut D) -> L;
+    fn into_layout_dither<L: Layout<Channels = Self::Channels>, D: Dither>(self, round: Rounding, dither: &mut D) -> L;
 }

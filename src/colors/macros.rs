@@ -52,6 +52,11 @@ macro_rules! impl_self_as_typ {
 pub(crate) use impl_self_as_typ;
 
 /// Implement AsRef<$slf> for $typ and AsMut<$slf> for $typ
+/// Safety: this casts the reference type which currently
+/// there is not safe stable construct for this even with
+/// repr(transparent), so only provide the inner type of
+/// of the struct or a type that can be safely transmuted/
+/// cast.
 macro_rules! impl_typ_as_self {
     ($slf:ident < $( $var:ident $(: $bound:ident $(+$bound_n:ident)* )? ),* >, $typ:ty) => {
         impl<$($var $(: $bound $(+$bound_n)*)?),*> AsRef<$slf<$($var),*>> for $typ  {

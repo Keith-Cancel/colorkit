@@ -45,7 +45,7 @@ pub trait LayoutStorage: Sized + Into<Self::Storage> {
     /// View of the underlying storage.
     fn as_storage(&self) -> &Self::Storage;
     /// Mutable view of the underlying storage.
-    fn as_storage_mut(&mut self) -> &mut Self::Storage;
+    fn as_mut_storage(&mut self) -> &mut Self::Storage;
 }
 
 /// A storage layout for a fixed number of channels.

@@ -100,7 +100,7 @@ impl<S: Scalar, const N: usize> LayoutStorage for Planar<S, N> {
     }
 
     #[inline]
-    fn as_storage_mut(&mut self) -> &mut Self::Storage {
+    fn as_mut_storage(&mut self) -> &mut Self::Storage {
         return &mut self.0;
     }
 }

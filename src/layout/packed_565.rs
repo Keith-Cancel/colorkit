@@ -73,7 +73,7 @@ impl LayoutStorage for Packed565 {
         return &self.0;
     }
     #[inline]
-    fn as_storage_mut(&mut self) -> &mut Self::Storage {
+    fn as_mut_storage(&mut self) -> &mut Self::Storage {
         return &mut self.0;
     }
 }

@@ -68,10 +68,17 @@ impl Packed565 {
 
 impl LayoutStorage for Packed565 {
     type Storage = u16;
+    
+    #[inline]
+    fn into_storage(self) -> u16 {
+        return self.0;
+    }
+
     #[inline]
     fn as_storage(&self) -> &Self::Storage {
         return &self.0;
     }
+
     #[inline]
     fn as_mut_storage(&mut self) -> &mut Self::Storage {
         return &mut self.0;

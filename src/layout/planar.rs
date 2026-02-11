@@ -94,6 +94,12 @@ impl<S: Scalar, const N: usize> IndexMut<usize> for Planar<S, N> {
 /// Expose the inner array as the layout's `Storage`.
 impl<S: Scalar, const N: usize> LayoutStorage for Planar<S, N> {
     type Storage = [S; N];
+
+    #[inline]
+    fn into_storage(self) -> [S; N] {
+        return self.0;
+    }
+
     #[inline]
     fn as_storage(&self) -> &Self::Storage {
         return &self.0;

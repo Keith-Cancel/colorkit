@@ -6,11 +6,15 @@ use colorkit::math::BoundF32;
 use colorkit::num_type::Number;
 use colorkit::wp::WhitePoint;
 
+mod alpha;
 mod bounds;
 mod layout;
 mod slice;
 mod wrapper;
 
+pub use alpha::AlphaKind;
+pub use alpha::AlphaMaybe;
+pub use alpha::AlphaNone;
 pub use bounds::ColorBounds;
 pub use layout::ColorLayout;
 pub use slice::ColorSlice;
@@ -41,75 +45,6 @@ pub trait ColorData: Default {
     }
 }
 
-/// The type of Alpha the color space is using.
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum AlphaKind {
-    None = 1,
-    Normal,
-    PreMul,
-}
-
-/// Market trait stating the color does not have an alpha channel.
-///
-/// If implemented a default blanket implention of [`ColorMaybeAlpha`]
-/// is provided.
-//pub trait ColorNoAlpha {}
-
-pub trait ColorMaybeAlpha {
-    /// The kinda of Alpha Channel the color space has
-    const ALPHA_KIND: AlphaKind;
-    /// If the color has an alpha channel the index of the channel.
-    const ALPHA_INDEX: Option<usize>;
-    /// The color's type with no alpha channel.
-    ///
-    /// This should is generally just equal to `Self`.
-    /// except in the case of wrapper types like
-    /// [`Alpha`](colorkit::colors::Alpha)
-    /// and [`AlphaPre`](colorkit::colors::AlphaPre)
-    // Need Colorspace bound so after stripping we keep color space operations
-    type NoAlpha: ColorSpace;
-    /// Remove the alpha channel if present.
-    ///
-    /// Otherwise this should just return `Self`
-    fn strip_alpha(self) -> Self::NoAlpha;
-    /// Try to use the alpha channel if present, otherwise default to `1.0`
-    /// for fully opaque.
-    fn opacity(&self) -> f32;
-    /// Try returning a reference to the alpha channel, if present.
-    ///
-    /// Returns [`None`] if this color has no alpha channel.
-    fn try_alpha_ref(&self) -> Option<&f32>;
-    /// Try to returning a mutable reference to the alpha channel, if present.
-    ///
-    /// Returns [`None`] if this color has no alpha channel.
-    fn try_alpha_mut(&mut self) -> Option<&mut f32>;
-}
-/*
-impl<T: ColorNoAlpha> ColorMaybeAlpha for T
-where
-    T: ColorMaybeAlpha<NoAlpha = T>, // equality constraint
-{
-    type NoAlpha = Self;
-    const ALPHA_KIND: AlphaKind = AlphaKind::None;
-    const ALPHA_INDEX: Option<usize> = None;
-    #[inline]
-    fn opacity(&self) -> f32 {
-        return 1.0;
-    }
-    #[inline]
-    fn strip_alpha(self) -> Self::NoAlpha {
-        return self;
-    }
-    #[inline]
-    fn try_alpha_mut(&mut self) -> Option<&mut f32> {
-        return None;
-    }
-    #[inline]
-    fn try_alpha_ref(&self) -> Option<&f32> {
-        return None;
-    }
-}*/
-
 /// Trait for creating a color.
 pub trait ColorNew: ColorData + Sized {
     /// Construct the Color calling `f(i)` for each index
@@ -135,7 +70,7 @@ pub trait ColorNew: ColorData + Sized {
 
 /// The main ColorSpace Trait
 pub trait ColorSpace:
-    ColorNew + ColorSlice + ColorBounds + ColorLayout + ColorMaybeAlpha + FromColorBoth<Xyz<Self::WhitePoint>>
+    AlphaMaybe + ColorNew + ColorSlice + ColorBounds + ColorLayout + FromColorBoth<Xyz<Self::WhitePoint>>
 {
     /// Create an instance of this color from a CIE XYZ color.
     fn from_xyz(color: Xyz<Self::WhitePoint>) -> Self {

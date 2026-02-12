@@ -10,7 +10,12 @@ pub trait AlphaNone {}
 
 /// Access to an optional alpha channel information in a color.
 ///
-/// Types that implement this trait may or may not contain an alpha channel.
+/// Colors that implement this trait may or may not contain an alpha channel.
+///
+/// For colors without an alpha channel, the methods should behave as:
+/// - `strip_alpha()` is a no‑op (returns `self`)
+/// - `opacity()` should return `1.0`
+/// - `try_alpha_ref()` and `try_alpha_mut()` should return `None`
 pub trait AlphaMaybe: ColorData {
     /// The color's wrapper type to get the color without an Alpha
     /// channel if present.

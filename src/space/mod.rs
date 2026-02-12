@@ -9,10 +9,13 @@ use colorkit::wp::WhitePoint;
 mod bounds;
 mod layout;
 mod slice;
+mod wrapper;
 
 pub use bounds::ColorBounds;
 pub use layout::ColorLayout;
 pub use slice::ColorSlice;
+pub use wrapper::ColorWrap;
+pub use wrapper::WrapIdentity;
 
 /// Information about a Color Space
 pub trait ColorData: Default {

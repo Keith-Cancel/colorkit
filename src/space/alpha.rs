@@ -8,8 +8,9 @@ use super::WrapIdentity;
 /// is provided.
 pub trait ColorNoAlpha {}
 
-/// This trait allows one to get information about an Alpha
-/// channel if present for the color space.
+/// Access to an optional alpha channel information in a color.
+///
+/// Types that implement this trait may or may not contain an alpha channel.
 pub trait ColorMaybeAlpha: ColorData {
     /// The color's wrapper type to get the color without an Alpha
     /// channel if present.

@@ -1,4 +1,5 @@
 use super::ColorData;
+use super::ColorSpace;
 use super::ColorWrap;
 use super::WrapIdentity;
 
@@ -13,16 +14,20 @@ pub trait AlphaNone {}
 /// Colors that implement this trait may or may not contain an alpha channel.
 ///
 /// For colors without an alpha channel, the methods should behave as:
-/// - `strip_alpha()` is a no‑op (returns `self`)
-/// - `opacity()` should return `1.0`
-/// - `try_alpha_ref()` and `try_alpha_mut()` should return `None`
+/// - [`strip_alpha()`](AlphaMaybe::strip_alpha) is a no‑op (e.g returns `Self`)
+/// - [`opacity()`](AlphaMaybe::opacity) should return `1.0`
+/// - [`try_alpha_ref()`](AlphaMaybe::try_alpha_ref) and
+///   [`try_alpha_mut()`](AlphaMaybe::try_alpha_mut) should return `None`
+///
+/// If a color implements [`AlphaNone`] an implemntation of this trait
+/// will be provided these properties already.
 pub trait AlphaMaybe: ColorData {
     /// The color's wrapper type to get the color without an Alpha
     /// channel if present.
     ///
     /// This is generally just [`WrapIdentity`] except in the case when
     /// self is a wrapper type like [`Alpha`](colorkit::colors::Alpha)
-    /// [`AlphaPre`](colorkit::colors::AlphaPre)
+    /// and [`AlphaPre`](colorkit::colors::AlphaPre)
     type StripAlpha: ColorWrap<Self>;
     /// Remove the alpha channel if present.
     ///
@@ -41,4 +46,18 @@ pub trait AlphaMaybe: ColorData {
     ///
     /// Returns [`None`] if this color has no alpha channel.
     fn try_alpha_mut(&mut self) -> Option<&mut f32>;
+}
+
+impl<S: ColorSpace + AlphaNone> AlphaMaybe for S {
+    type StripAlpha = WrapIdentity;
+    #[inline]
+    fn opacity(&self) -> f32 {
+        return 1.0;
+    }
+    fn try_alpha_mut(&mut self) -> Option<&mut f32> {
+        return None;
+    }
+    fn try_alpha_ref(&self) -> Option<&f32> {
+        return None;
+    }
 }

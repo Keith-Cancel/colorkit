@@ -13,7 +13,7 @@ pub enum AlphaKind {
 
 /// Market trait stating the color does not have an alpha channel.
 ///
-/// If implemented a default blanket implention of [`ColorMaybeAlpha`]
+/// If implemented a default blanket implention of [`AlphaMaybe`]
 /// is provided.
 pub trait AlphaNone {}
 

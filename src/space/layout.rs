@@ -4,7 +4,7 @@ use colorkit::scalar::Rounding;
 
 use super::ColorData;
 
-/// Allows a [`ColorSpace`] converted to and from various [`Layout`].
+/// Allows a [`ColorSpace`](colorkit::space::ColorSpace) converted to and from various [`Layout`].
 pub trait ColorLayout: ColorData {
     /// Construct a color from a [`Layout].
     ///
@@ -20,5 +20,9 @@ pub trait ColorLayout: ColorData {
     ///
     /// Channel count of the the [`Layout::Channels`] should
     /// equal the color space channels.
-    fn into_layout_dither<L: Layout<Channels = Self::Channels>, D: Dither>(self, round: Rounding, dither: &mut D) -> L;
+    fn into_layout_dither<L: Layout<Channels = Self::Channels>, D: Dither>(
+        self,
+        round: Rounding,
+        dither: &mut D,
+    ) -> L;
 }

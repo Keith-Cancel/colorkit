@@ -6,12 +6,12 @@ use super::WrapIdentity;
 ///
 /// If implemented a default blanket implention of [`ColorMaybeAlpha`]
 /// is provided.
-pub trait ColorNoAlpha {}
+pub trait AlphaNone {}
 
 /// Access to an optional alpha channel information in a color.
 ///
 /// Types that implement this trait may or may not contain an alpha channel.
-pub trait ColorMaybeAlpha: ColorData {
+pub trait AlphaMaybe: ColorData {
     /// The color's wrapper type to get the color without an Alpha
     /// channel if present.
     ///

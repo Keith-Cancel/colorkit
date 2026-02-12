@@ -125,28 +125,6 @@ impl<W: WhitePoint> ColorLayout for Xyz<W> {
     }
 }
 
-impl<W: WhitePoint> ColorMaybeAlpha for Xyz<W> {
-    type NoAlpha = Self;
-    const ALPHA_KIND: AlphaKind = AlphaKind::None;
-    const ALPHA_INDEX: Option<usize> = None;
-    #[inline]
-    fn opacity(&self) -> f32 {
-        return 1.0;
-    }
-    #[inline]
-    fn strip_alpha(self) -> Self::NoAlpha {
-        return self;
-    }
-    #[inline]
-    fn try_alpha_mut(&mut self) -> Option<&mut f32> {
-        return None;
-    }
-    #[inline]
-    fn try_alpha_ref(&self) -> Option<&f32> {
-        return None;
-    }
-}
-
 impl<W: WhitePoint> ColorBounds for Xyz<W> {
     fn clamp(self) -> Self {
         let [x, y, z] = self.0;
@@ -195,6 +173,7 @@ impl<W: WhitePoint> ColorBounds for Xyz<W> {
     }
 }
 
+impl<W: WhitePoint> AlphaNone for Xyz<W> {}
 impl<W: WhitePoint> ColorSpace for Xyz<W> {}
 impl<W: WhitePoint> ColorSlice for Xyz<W> {}
 unsafe impl<W: WhitePoint> ColorTransmute for Xyz<W> {}

@@ -107,31 +107,13 @@ macro_rules! base_funcs {
                 return L::from_fn_norm(|i| NormF32::new(self.0[i]), round);
             }
 
-            fn into_layout_dither<L: Layout, D: crate::scalar::Dither>(self, round: Rounding, dither: &mut D) -> L {
+            fn into_layout_dither<L: Layout, D: crate::scalar::Dither>(
+                self,
+                round: Rounding,
+                dither: &mut D,
+            ) -> L {
                 debug_assert!(<L::Channels as Number>::N == 3);
                 return L::from_fn_norm_dither(|i| NormF32::new(self.0[i]), round, dither);
-            }
-        }
-
-        impl ColorMaybeAlpha for $name {
-            type NoAlpha = Self;
-            const ALPHA_KIND: AlphaKind = AlphaKind::None;
-            const ALPHA_INDEX: Option<usize> = None;
-            #[inline]
-            fn opacity(&self) -> f32 {
-                return 1.0;
-            }
-            #[inline]
-            fn strip_alpha(self) -> Self::NoAlpha {
-                return self;
-            }
-            #[inline]
-            fn try_alpha_mut(&mut self) -> Option<&mut f32> {
-                return None;
-            }
-            #[inline]
-            fn try_alpha_ref(&self) -> Option<&f32> {
-                return None;
             }
         }
 
@@ -171,6 +153,7 @@ macro_rules! base_funcs {
             }
         }
 
+        impl AlphaNone for $name {}
         impl ColorSpace for $name {}
         impl ColorSlice for $name {}
         impl RgbLike for $name {}

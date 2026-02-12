@@ -163,28 +163,6 @@ impl_self_as_typ!([f32], OkLab);
 impl_self_as_typ!([f32; 3], OkLab);
 impl_from_inner!([f32; 3], OkLab);
 
-impl ColorMaybeAlpha for OkLab {
-    type NoAlpha = Self;
-    const ALPHA_KIND: AlphaKind = AlphaKind::None;
-    const ALPHA_INDEX: Option<usize> = None;
-    #[inline]
-    fn opacity(&self) -> f32 {
-        return 1.0;
-    }
-    #[inline]
-    fn strip_alpha(self) -> Self::NoAlpha {
-        return self;
-    }
-    #[inline]
-    fn try_alpha_mut(&mut self) -> Option<&mut f32> {
-        return None;
-    }
-    #[inline]
-    fn try_alpha_ref(&self) -> Option<&f32> {
-        return None;
-    }
-}
-
 impl ColorBounds for OkLab {
     fn clamp(self) -> Self {
         let mut a = self.0;
@@ -232,6 +210,7 @@ impl ColorBounds for OkLab {
     }
 }
 
+impl AlphaNone for OkLab {}
 impl ColorSpace for OkLab {}
 impl ColorSlice for OkLab {}
 unsafe impl ColorTransmute for OkLab {}
@@ -293,7 +272,11 @@ impl ColorLayout for OkLab {
         return L::from_fn_norm(|i| a[i], round);
     }
 
-    fn into_layout_dither<L: Layout, D: crate::scalar::Dither>(self, round: Rounding, dither: &mut D) -> L {
+    fn into_layout_dither<L: Layout, D: crate::scalar::Dither>(
+        self,
+        round: Rounding,
+        dither: &mut D,
+    ) -> L {
         debug_assert!(<L::Channels as Number>::N == 3);
         let a = self.into_norm();
         return L::from_fn_norm_dither(|i| a[i], round, dither);

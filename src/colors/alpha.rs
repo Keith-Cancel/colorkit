@@ -1,6 +1,4 @@
-use colorkit::convert::ColorTransmute;
-use colorkit::convert::FromColor;
-use colorkit::convert::IntoColor;
+use colorkit::convert::*;
 use colorkit::layout::Layout;
 use colorkit::math::BoundF32;
 use colorkit::num_type::Number;
@@ -254,6 +252,38 @@ impl<S: ColorSpace + ColorTransmute> FromColor<AlphaPre<S>> for Alpha<S> {
     }
 }
 
+#[repr(transparent)]
+#[derive(Clone, Copy, Debug, PartialEq, PartialOrd)]
+pub struct AlphaWrap(f32);
+
+impl From<f32> for AlphaWrap {
+    #[inline]
+    fn from(value: f32) -> Self {
+        return Self(value);
+    }
+}
+
+impl From<NormF32> for AlphaWrap {
+    #[inline]
+    fn from(value: NormF32) -> Self {
+        return Self(value.get());
+    }
+}
+
+impl From<AlphaWrap> for f32 {
+    #[inline]
+    fn from(value: AlphaWrap) -> Self {
+        return value.0;
+    }
+}
+
+impl From<AlphaWrap> for NormF32 {
+    #[inline]
+    fn from(value: AlphaWrap) -> Self {
+        return NormF32::new(value.0);
+    }
+}
+
 macro_rules! base_funcs {
     ($name:ident) => {
         impl<S: ColorSpace + ColorTransmute> $name<S> {
@@ -358,28 +388,46 @@ macro_rules! base_funcs {
                 return L::from_fn_norm(|i| self.get_norm(i), round);
             }
 
-            fn into_layout_dither<L: Layout, D: crate::scalar::Dither>(self, round: Rounding, dither: &mut D) -> L {
+            fn into_layout_dither<L: Layout, D: crate::scalar::Dither>(
+                self,
+                round: Rounding,
+                dither: &mut D,
+            ) -> L {
                 debug_assert!(<L::Channels as Number>::N == <Self as ColorData>::Channels::N);
                 return L::from_fn_norm_dither(|i| self.get_norm(i), round, dither);
             }
         }
 
-        impl<S: ColorSpace + ColorTransmute> ColorMaybeAlpha for $name<S> {
-            type NoAlpha = S;
+        impl<S: ColorSpace + ColorTransmute> ColorWrap<$name<S>> for AlphaWrap {
+            type Inner = S;
+            fn into_inner(wrapper: $name<S>) -> S {
+                return wrapper.0;
+            }
+            fn from_inner(self, inner: S) -> $name<S> {
+                return $name::<S>::new(inner, self.0);
+            }
+        }
+
+        impl<S: ColorSpace + ColorTransmute> AlphaMaybe for $name<S> {
+            type AlphaWrap = AlphaWrap;
             const ALPHA_KIND: AlphaKind = Self::KIND;
             const ALPHA_INDEX: Option<usize> = Some(S::Channels::N);
+
             #[inline]
             fn opacity(&self) -> f32 {
                 return self.1;
             }
+
             #[inline]
-            fn strip_alpha(self) -> Self::NoAlpha {
+            fn strip_alpha(self) -> S {
                 return self.0;
             }
+
             #[inline]
             fn try_alpha_mut(&mut self) -> Option<&mut f32> {
                 return Some(&mut self.1);
             }
+            
             #[inline]
             fn try_alpha_ref(&self) -> Option<&f32> {
                 return Some(&self.1);

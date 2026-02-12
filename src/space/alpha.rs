@@ -33,13 +33,13 @@ pub trait AlphaMaybe: ColorData {
     ///
     /// Colors like [`Alpha`](colorkit::colors::Alpha) and
     /// [`AlphaPre`](colorkit::colors::AlphaPre) will have a differnt
-    /// marker type providing methods to wrap and unwrap. 
-    type StripAlpha: ColorWrap<Self>;
+    /// marker type providing methods to wrap and unwrap.
+    type AlphaWrap: ColorWrap<Self>;
     /// Remove the alpha channel if present.
     ///
     /// Otherwise this should just return `Self`
-    fn strip_alpha(self) -> <Self::StripAlpha as ColorWrap<Self>>::Inner {
-        return <Self::StripAlpha as ColorWrap<Self>>::into_inner(self);
+    fn strip_alpha(self) -> <Self::AlphaWrap as ColorWrap<Self>>::Inner {
+        return <Self::AlphaWrap as ColorWrap<Self>>::into_inner(self);
     }
     /// Try to use the alpha channel if present, otherwise default to `1.0`
     /// for fully opaque.
@@ -55,7 +55,7 @@ pub trait AlphaMaybe: ColorData {
 }
 
 impl<S: ColorSpace + AlphaNone> AlphaMaybe for S {
-    type StripAlpha = WrapIdentity;
+    type AlphaWrap = WrapIdentity;
     #[inline]
     fn opacity(&self) -> f32 {
         return 1.0;

@@ -3,6 +3,14 @@ use super::ColorSpace;
 use super::ColorWrap;
 use super::WrapIdentity;
 
+/// The type of Alpha the color space is using.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum AlphaKind {
+    None = 1,
+    Normal,
+    PreMul,
+}
+
 /// Market trait stating the color does not have an alpha channel.
 ///
 /// If implemented a default blanket implention of [`ColorMaybeAlpha`]
@@ -22,6 +30,10 @@ pub trait AlphaNone {}
 /// If a color implements [`AlphaNone`] an implemntation of this trait
 /// will be provided these properties already.
 pub trait AlphaMaybe: ColorData {
+    /// The kinda of Alpha Channel the color space has
+    const ALPHA_KIND: AlphaKind;
+    /// If the color has an alpha channel the index of the channel.
+    const ALPHA_INDEX: Option<usize>;
     /// The color's wrapper type to get the color without an Alpha
     /// channel if present.
     ///
@@ -56,6 +68,8 @@ pub trait AlphaMaybe: ColorData {
 
 impl<S: ColorSpace + AlphaNone> AlphaMaybe for S {
     type AlphaWrap = WrapIdentity;
+    const ALPHA_INDEX: Option<usize> = None;
+    const ALPHA_KIND: AlphaKind = AlphaKind::None;
     #[inline]
     fn opacity(&self) -> f32 {
         return 1.0;

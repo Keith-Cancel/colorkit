@@ -2,7 +2,7 @@ unstable_features = true
 newline_style  = "Unix"
 imports_layout = "Vertical"
 
-max_width = 120
+max_width = 105
 array_width = 40
 group_imports = "StdExternalCrate"
 hex_literal_case = "Lower"

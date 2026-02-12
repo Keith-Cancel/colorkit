@@ -26,8 +26,14 @@ pub trait AlphaMaybe: ColorData {
     /// channel if present.
     ///
     /// This is generally just [`WrapIdentity`] except in the case when
-    /// self is a wrapper type like [`Alpha`](colorkit::colors::Alpha)
-    /// and [`AlphaPre`](colorkit::colors::AlphaPre)
+    ///
+    /// For colors that do not have an alpha channel, this should be
+    /// [`WrapIdentity`]. The conversion then becomes a no-op, and
+    /// `Inner` is simply `Self`.
+    ///
+    /// Colors like [`Alpha`](colorkit::colors::Alpha) and
+    /// [`AlphaPre`](colorkit::colors::AlphaPre) will have a differnt
+    /// marker type providing methods to wrap and unwrap. 
     type StripAlpha: ColorWrap<Self>;
     /// Remove the alpha channel if present.
     ///

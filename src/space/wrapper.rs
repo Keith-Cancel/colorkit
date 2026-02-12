@@ -3,7 +3,7 @@ use super::ColorSpace;
 pub trait ColorWrap<W> {
     type Inner: ColorSpace;
     fn into_inner(wrapper: W) -> Self::Inner;
-    fn from_inner(inner: Self::Inner) -> W;
+    fn from_inner(self, inner: Self::Inner) -> W;
 }
 
 /// Marker type making [`ColorWrap`] a no-op
@@ -14,7 +14,7 @@ impl<S: ColorSpace> ColorWrap<S> for WrapIdentity {
     fn into_inner(wrapper: S) -> Self::Inner {
         return wrapper;
     }
-    fn from_inner(inner: Self::Inner) -> S {
+    fn from_inner(self, inner: Self::Inner) -> S {
         return inner;
     }
 }

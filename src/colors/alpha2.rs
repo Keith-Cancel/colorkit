@@ -62,6 +62,16 @@ macro_rules! alpha_methods {
             pub const fn alpha(&self) -> f32 {
                 return self.as_slice()[S::Channels::N];
             }
+            /// Maximum Alpha Channel value
+            #[inline(always)]
+            pub const fn alpha_max() -> f32 {
+                return 1.0;
+            }
+            /// Minimum Alpha Channel value
+            #[inline(always)]
+            pub const fn alpha_min() -> f32 {
+                return 0.0;
+            }
             /// View the alpha color as a slice reference.
             #[inline]
             pub const fn as_slice(&self) -> &[f32] {

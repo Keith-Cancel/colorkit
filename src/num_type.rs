@@ -66,7 +66,7 @@ impl<T: Copy + Debug + PartialEq, const N: usize> NumArray<T> for [T; N] {
 ///
 /// Would have prefered something like from_fn, but can't call closures or
 /// function pointers in stable either.
-pub(crate) const unsafe fn num_arr_repeat<T: Copy + Debug + PartialEq, A: NumArray<T>>(value: T) -> A {
+pub(crate) const unsafe fn narr_repeat<T: Copy + Debug + PartialEq, A: NumArray<T>>(value: T) -> A {
     let mut arr: MaybeUninit<A> = MaybeUninit::uninit();
     let ptr = &mut arr as *mut _ as *mut T;
     let mut i = 0;
@@ -83,8 +83,8 @@ pub(crate) const unsafe fn num_arr_repeat<T: Copy + Debug + PartialEq, A: NumArr
 
 /// Get [`NumArray`] as a slice, but as a constant fn.
 ///
-/// Safety: Same as [`num_arr_repeat`], plus the index must be in bounds.
-pub(crate) const unsafe fn num_arr_as_slice<T: Copy + Debug + PartialEq, A: NumArray<T>>(
+/// Safety: Same as [`narr_repeat`], plus the index must be in bounds.
+pub(crate) const unsafe fn narr_as_slice<T: Copy + Debug + PartialEq, A: NumArray<T>>(
     array: &A,
 ) -> &[T] {
     let ptr = array as *const _ as *const T;
@@ -96,8 +96,8 @@ pub(crate) const unsafe fn num_arr_as_slice<T: Copy + Debug + PartialEq, A: NumA
 
 /// Get [`NumArray`] as a mutable slice, but as a constant fn.
 ///
-/// Safety: Same as [`num_arr_repeat`], plus the index must be in bounds.
-pub(crate) const unsafe fn num_arr_as_mut_slice<T: Copy + Debug + PartialEq, A: NumArray<T>>(
+/// Safety: Same as [`narr_repeat`], plus the index must be in bounds.
+pub(crate) const unsafe fn narr_as_mut_slice<T: Copy + Debug + PartialEq, A: NumArray<T>>(
     array: &mut A,
 ) -> &mut [T] {
     let ptr = array as *mut _ as *mut T;

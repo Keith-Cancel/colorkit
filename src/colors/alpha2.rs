@@ -50,6 +50,20 @@ impl<S: ColorSpace> AlphaPre<S> {
             }
         }));
     }
+    /// Set the alpha channel, and update all other channels.
+    pub const fn update_alpha(&mut self, alpha: f32) {
+        // All channels will be zero, avoid division.
+        let old = self.alpha();
+        if old == 0.0 {
+            return self.set_alpha(alpha);
+        }
+        let slc = self.as_mut_slice();
+        let mut i = 0;
+        while i < slc.len() {
+            slc[i] = (slc[i] / old) * alpha;
+            i += 1;
+        }
+    }
 }
 
 alpha_methods!(AlphaPre);

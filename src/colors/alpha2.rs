@@ -69,6 +69,22 @@ impl<S: ColorSpace> AlphaPre<S> {
         }));
     }
 
+    /// Convert to normal alpha with no premultiplication.
+    pub const fn into_alpha(mut self) -> Alpha<S> {
+        let alpha = self.alpha();
+        // All channels will be zero, avoid division.
+        if alpha == 0.0 {
+            return <Alpha<S>>::new_zeroed();
+        }
+        let slc = self.as_mut_slice();
+        let mut i = 0;
+        while i < Self::INDEX {
+            slc[i] /= alpha;
+            i += 1;
+        }
+        return Alpha(self.0);
+    }
+
     /// Remove the alpha channel.
     pub fn strip_alpha(self) -> S {
         let alpha = self.alpha();
@@ -140,10 +156,7 @@ macro_rules! alpha_methods {
 
             /// Create the alpha color with all channels equal to `0.0`.
             pub const fn new_zeroed() -> Self {
-                // Safety:
-                // Arr and ArrInc can only be a an array, either because
-                // they are Number::Arr or a type const array.
-                return Self(unsafe { narr_repeat(0.0) });
+                return Self(repeat::<S, _>(0.0));
             }
         }
     };
@@ -238,6 +251,16 @@ const fn extend<S: ColorSpace, T: Copy + Debug + PartialEq>(array: Arr<S, T>, va
         }
         return ret;
     }
+}
+
+const fn repeat<S: ColorSpace, T: Copy + Debug + PartialEq>(value: T) -> ArrInc<S, T> {
+    #[cfg(feature = "type_const")]
+    return [value; <<S::Channels as Number>::Inc as Number>::N];
+    // Safety:
+    // Arr and ArrInc can only be a an array, either because
+    // they are Number::Arr or a type const array.
+    #[cfg(not(feature = "type_const"))]
+    return unsafe { narr_repeat(value) };
 }
 
 /// Implements [`ColorWrap`] for [`Alpha`] and [`AlphaPre`]

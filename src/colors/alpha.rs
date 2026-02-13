@@ -1,7 +1,7 @@
 use colorkit::convert::*;
 use colorkit::layout::Layout;
 use colorkit::math::BoundF32;
-use colorkit::num_type::Number;
+use colorkit::num_type::*;
 use colorkit::scalar::NormF32;
 use colorkit::scalar::Rounding;
 use colorkit::space::*;
@@ -356,8 +356,8 @@ macro_rules! base_funcs {
             type WhitePoint = S::WhitePoint;
             type Channels = <S::Channels as Number>::Inc;
             const LINEAR: bool = S::LINEAR;
-            const CHANNEL_MAX: &'static [BoundF32] = { Self::MAX.split_at(Self::Channels::N).0 };
-            const CHANNEL_MIN: &'static [BoundF32] = { Self::MIN.split_at(Self::Channels::N).0 };
+            const CHANNEL_MAX: <Self::Channels as Number>::Arr<BoundF32> = Self::MAX;
+            const CHANNEL_MIN: <Self::Channels as Number>::Arr<BoundF32> = Self::MIN;
         }
 
         impl<S: ColorSpace + ColorTransmute> ColorNew for $name<S> {
@@ -431,27 +431,39 @@ macro_rules! base_funcs {
 
         // Private constants
         impl<S: ColorSpace + ColorTransmute> $name<S> {
-            const MAX: &'static [BoundF32] = &const {
-                // Just make this larger than likely needed can't use
-                // S or Self in the len of an array =(
-                let mut max = [BoundF32::Unbounded; 16];
+            const MAX: <<S::Channels as Number>::Inc as Number>::Arr<BoundF32> = const {
+                // Safety:
+                // The NumArray is from a number so it can only be an array.
+                let max_src = S::CHANNEL_MAX;
+                let mut max_dst: <<S::Channels as Number>::Inc as Number>::Arr<BoundF32> =
+                    unsafe { narr_repeat(BoundF32::Include(1.0)) };
+
+                let src = unsafe { narr_as_slice(&max_src) };
+                let dst = unsafe { narr_as_mut_slice(&mut max_dst) };
+
                 let mut i = 0;
-                while i < S::CHANNEL_MAX.len() {
-                    max[i] = S::CHANNEL_MAX[i];
+                while i < src.len() {
+                    dst[i] = src[i];
                     i += 1;
                 }
-                max[i] = BoundF32::Include(1.0);
-                max
+                max_dst
             };
-            const MIN: &'static [BoundF32] = &const {
-                let mut arr = [BoundF32::Unbounded; 16];
+            const MIN: <<S::Channels as Number>::Inc as Number>::Arr<BoundF32> = const {
+                // Safety:
+                // The NumArray is from a number so it can only be an array.
+                let min_src = S::CHANNEL_MIN;
+                let mut min_dst: <<S::Channels as Number>::Inc as Number>::Arr<BoundF32> =
+                    unsafe { narr_repeat(BoundF32::Include(0.0)) };
+
+                let src = unsafe { narr_as_slice(&min_src) };
+                let dst = unsafe { narr_as_mut_slice(&mut min_dst) };
+
                 let mut i = 0;
-                while i < S::CHANNEL_MIN.len() {
-                    arr[i] = S::CHANNEL_MIN[i];
+                while i < src.len() {
+                    dst[i] = src[i];
                     i += 1;
                 }
-                arr[i] = BoundF32::Include(0.0);
-                arr
+                min_dst
             };
         }
     };

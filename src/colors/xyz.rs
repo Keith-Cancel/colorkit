@@ -82,8 +82,8 @@ impl<W: WhitePoint> ColorData for Xyz<W> {
     type WhitePoint = W;
     type Channels = N3;
     const LINEAR: bool = true;
-    const CHANNEL_MAX: &'static [BoundF32] = &[BoundF32::Unbounded; 3];
-    const CHANNEL_MIN: &'static [BoundF32] = &[BoundF32::Include(0.0); 3];
+    const CHANNEL_MAX: [BoundF32; 3] = [BoundF32::Unbounded; 3];
+    const CHANNEL_MIN: [BoundF32; 3] = [BoundF32::Include(0.0); 3];
 }
 
 impl<W: WhitePoint> ColorLayout for Xyz<W> {

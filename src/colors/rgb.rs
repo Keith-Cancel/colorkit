@@ -88,8 +88,8 @@ macro_rules! base_funcs {
             type WhitePoint = D65;
             type Channels = N3;
             const LINEAR: bool = true;
-            const CHANNEL_MAX: &'static [BoundF32] = &[BoundF32::Include(1.0); 3];
-            const CHANNEL_MIN: &'static [BoundF32] = &[BoundF32::Include(0.0); 3];
+            const CHANNEL_MAX: [BoundF32; 3] = [BoundF32::Include(1.0); 3];
+            const CHANNEL_MIN: [BoundF32; 3] = [BoundF32::Include(0.0); 3];
         }
 
         impl ColorLayout for $name {

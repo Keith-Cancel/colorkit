@@ -229,12 +229,12 @@ impl ColorData for OkLab {
     // Oklab a, and b channels in theory are unbounded
     // but at least from understanding the practical
     // range is only -0.5 to 0.5.
-    const CHANNEL_MAX: &'static [BoundF32] = &[
+    const CHANNEL_MAX: [BoundF32; 3] = [
         BoundF32::Include(1.0),
         BoundF32::Include(0.5),
         BoundF32::Include(0.5),
     ];
-    const CHANNEL_MIN: &'static [BoundF32] = &[
+    const CHANNEL_MIN: [BoundF32; 3] = [
         BoundF32::Include(0.0),
         BoundF32::Include(-0.5),
         BoundF32::Include(-0.5),

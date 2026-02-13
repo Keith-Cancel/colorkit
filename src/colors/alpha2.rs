@@ -32,7 +32,7 @@ impl<S: ColorSpace> Alpha<S> {
     }
     /// Remove the alpha channel.
     pub fn strip_alpha(self) -> S {
-        return S::from_fn(|i| self.0[i]);
+        return S::from_fn(|i| self[i]);
     }
 }
 
@@ -64,7 +64,7 @@ impl<S: ColorSpace> AlphaPre<S> {
         if alpha == 0.0 {
             return S::from_fn(|_| 0.0);
         }
-        return S::from_fn(|i| self.0[i] / alpha);
+        return S::from_fn(|i| self[i] / alpha);
     }
 
     /// Set the alpha channel, and update all other channels.

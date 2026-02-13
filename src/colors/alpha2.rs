@@ -58,8 +58,23 @@ macro_rules! alpha_methods {
     ($name:ident) => {
         impl<S: ColorSpace> $name<S> {
             /// Get the colors alpha channel value.
+            #[inline]
             pub fn alpha(&self) -> f32 {
                 return self.0[S::Channels::N];
+            }
+            /// View the alpha color as a slice reference.
+            #[inline]
+            pub const fn as_slice(&self) -> &[f32] {
+                // Safety:
+                // The inner type is an Number::Arr or a type const array.
+                return unsafe { narr_as_slice(&self.0) };
+            }
+            /// View the alpha color as a mutable slice
+            #[inline]
+            pub const fn as_mut_slice(&mut self) -> &mut [f32] {
+                // Safety:
+                // The inner type is an Number::Arr or a type const array.
+                return unsafe { narr_as_mut_slice(&mut self.0) };
             }
         }
     };

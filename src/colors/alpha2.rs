@@ -23,6 +23,7 @@ type ArrInc<S, T> = <<<S as ColorData>::Channels as Number>::Inc as Number>::Arr
 pub struct Alpha<S: ColorSpace>(ArrInc<S, f32>);
 
 impl<S: ColorSpace> Alpha<S> {
+    const KIND: AlphaKind = AlphaKind::Normal;
     /// Create a new Alpha color with a color and alpha channel value.
     pub fn new(color: S, alpha: f32) -> Self {
         return Self(ArrInc::<S, f32>::from_fn(|i| {
@@ -45,6 +46,7 @@ impl_self_index!(Alpha<S: ColorSpace>);
 pub struct AlphaPre<S: ColorSpace>(ArrInc<S, f32>);
 
 impl<S: ColorSpace> AlphaPre<S> {
+    const KIND: AlphaKind = AlphaKind::PreMul;
     /// Create a new premultiplied Alpha color with a color and alpha channel value.
     pub fn new(color: S, alpha: f32) -> Self {
         return Self(ArrInc::<S, f32>::from_fn(|i| {
@@ -89,11 +91,11 @@ macro_rules! alpha_methods {
     ($name:ident) => {
         impl<S: ColorSpace> $name<S> {
             /// The index of the alpha channel.
-            pub const ALPHA_INDEX: usize = S::Channels::N;
+            pub const INDEX: usize = S::Channels::N;
             /// Get the colors alpha channel value.
             #[inline]
             pub const fn alpha(&self) -> f32 {
-                return self.as_slice()[Self::ALPHA_INDEX];
+                return self.as_slice()[Self::INDEX];
             }
             /// Maximum Alpha Channel value
             #[inline(always)]
@@ -122,7 +124,7 @@ macro_rules! alpha_methods {
             /// Set the colors alpha channel, leaving all other channels uneffected.
             #[inline]
             pub const fn set_alpha(&mut self, alpha: f32) {
-                self.as_mut_slice()[Self::ALPHA_INDEX] = alpha;
+                self.as_mut_slice()[Self::INDEX] = alpha;
             }
 
             /// Create the alpha color with all channels equal to `0.0`.
@@ -155,6 +157,27 @@ macro_rules! alpha_traits {
         impl<S: ColorSpace> Default for $name<S> {
             fn default() -> Self {
                 return Self::new(S::default(), 1.0);
+            }
+        }
+
+        impl<S: ColorSpace> AlphaMaybe for $name<S> {
+            type AlphaWrap = AlphaWrap;
+            const ALPHA_KIND: AlphaKind = Self::KIND;
+            const ALPHA_INDEX: Option<usize> = Some(Self::INDEX);
+            fn strip_alpha(self) -> S {
+                return self.strip_alpha();
+            }
+            #[inline]
+            fn opacity(&self) -> f32 {
+                return self.alpha();
+            }
+            #[inline]
+            fn try_alpha_ref(&self) -> Option<&f32> {
+                return Some(&self.0[Self::INDEX]);
+            }
+            #[inline]
+            fn try_alpha_mut(&mut self) -> Option<&mut f32> {
+                return Some(&mut self.0[Self::INDEX]);
             }
         }
 

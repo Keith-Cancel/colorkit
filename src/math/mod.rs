@@ -171,7 +171,7 @@ pub enum BoundF32 {
 
 impl BoundF32 {
     #[inline]
-    const fn in_bounds(min: BoundF32, max: BoundF32, value: f32) -> bool {
+    pub const fn in_bounds(min: BoundF32, max: BoundF32, value: f32) -> bool {
         !matches!(max, BoundF32::Include(m) if value > m)
             && !matches!(min, BoundF32::Include(m) if value < m)
     }

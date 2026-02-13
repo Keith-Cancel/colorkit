@@ -1,4 +1,5 @@
 //! Marker types that act as a number, mainly used for [`Layout`](colorkit::layout::Layout).
+use core::array::from_fn;
 use core::fmt::Debug;
 use core::ops::Index;
 use core::ops::IndexMut;
@@ -30,6 +31,24 @@ macro_rules! type_const {
     };
 }
 
+pub trait NumArray<T>:
+    AsRef<[T]>
+    + AsMut<[T]>
+    + Copy
+    + Debug
+    + Index<usize, Output = T>
+    + IndexMut<usize, Output = T>
+    + PartialEq
+{
+    fn from_fn<F: FnMut(usize) -> T>(f: F) -> Self;
+}
+
+impl<T: Copy + Debug + PartialEq, const N: usize> NumArray<T> for [T; N] {
+    fn from_fn<F: FnMut(usize) -> T>(f: F) -> Self {
+        return from_fn(f);
+    }
+}
+
 /// This allows me to work with numbers, as types albeit up to a limited N
 ///
 /// Till min_generic_const_args is stabilized or at least less crashy.
@@ -43,14 +62,7 @@ pub trait Number: NumberSealed + Copy {
     /// Number decreased by 1
     type Dec: Number<Inc = Self>;
     /// Array the same length as the number.
-    type Arr<T: Copy + Debug + PartialEq>: AsRef<[T]>
-        + AsMut<[T]>
-        + Copy
-        + Debug
-        + Index<usize, Output = T>
-        + IndexMut<usize, Output = T>
-        + PartialEq;
-
+    type Arr<T: Copy + Debug + PartialEq>: NumArray<T>;
     fn value() -> usize {
         return Self::N;
     }

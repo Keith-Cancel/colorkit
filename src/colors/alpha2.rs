@@ -59,8 +59,8 @@ macro_rules! alpha_methods {
         impl<S: ColorSpace> $name<S> {
             /// Get the colors alpha channel value.
             #[inline]
-            pub fn alpha(&self) -> f32 {
-                return self.0[S::Channels::N];
+            pub const fn alpha(&self) -> f32 {
+                return self.as_slice()[S::Channels::N];
             }
             /// View the alpha color as a slice reference.
             #[inline]

@@ -9,6 +9,11 @@ use colorkit::space::*;
 use super::Xyz;
 use super::macros::*;
 
+#[cfg(feature = "type_const")]
+type ArrInc<S, T> = [T; <<<S as ColorData>::Channels as Number>::Inc as Number>::N];
+#[cfg(not(feature = "type_const"))]
+type ArrInc<S, T> = <<<S as ColorData>::Channels as Number>::Inc as Number>::Arr<T>;
+
 /// Wraps a color space with Alpha channel for transparency.
 #[repr(C)]
 #[derive(Copy, Clone, Debug, PartialEq)]
@@ -356,8 +361,8 @@ macro_rules! base_funcs {
             type WhitePoint = S::WhitePoint;
             type Channels = <S::Channels as Number>::Inc;
             const LINEAR: bool = S::LINEAR;
-            const CHANNEL_MAX: <Self::Channels as Number>::Arr<BoundF32> = Self::MAX;
-            const CHANNEL_MIN: <Self::Channels as Number>::Arr<BoundF32> = Self::MIN;
+            const CHANNEL_MAX: ArrInc<S, BoundF32> = Self::MAX;
+            const CHANNEL_MIN: ArrInc<S, BoundF32> = Self::MIN;
         }
 
         impl<S: ColorSpace + ColorTransmute> ColorNew for $name<S> {
@@ -431,12 +436,11 @@ macro_rules! base_funcs {
 
         // Private constants
         impl<S: ColorSpace + ColorTransmute> $name<S> {
-            const MAX: <<S::Channels as Number>::Inc as Number>::Arr<BoundF32> = const {
+            const MAX: ArrInc<S, BoundF32> = const {
                 // Safety:
                 // The NumArray is from a number so it can only be an array.
                 let max_src = S::CHANNEL_MAX;
-                let mut max_dst: <<S::Channels as Number>::Inc as Number>::Arr<BoundF32> =
-                    unsafe { narr_repeat(BoundF32::Include(1.0)) };
+                let mut max_dst: ArrInc<S, BoundF32> = unsafe { narr_repeat(BoundF32::Include(1.0)) };
 
                 let src = unsafe { narr_as_slice(&max_src) };
                 let dst = unsafe { narr_as_mut_slice(&mut max_dst) };
@@ -448,12 +452,11 @@ macro_rules! base_funcs {
                 }
                 max_dst
             };
-            const MIN: <<S::Channels as Number>::Inc as Number>::Arr<BoundF32> = const {
+            const MIN: ArrInc<S, BoundF32> = const {
                 // Safety:
                 // The NumArray is from a number so it can only be an array.
                 let min_src = S::CHANNEL_MIN;
-                let mut min_dst: <<S::Channels as Number>::Inc as Number>::Arr<BoundF32> =
-                    unsafe { narr_repeat(BoundF32::Include(0.0)) };
+                let mut min_dst: ArrInc<S, BoundF32> = unsafe { narr_repeat(BoundF32::Include(0.0)) };
 
                 let src = unsafe { narr_as_slice(&min_src) };
                 let dst = unsafe { narr_as_mut_slice(&mut min_dst) };

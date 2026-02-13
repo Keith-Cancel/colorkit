@@ -80,6 +80,25 @@ pub(crate) const unsafe fn num_array_repeat<T: Copy + Debug + PartialEq, A: NumA
     return unsafe { arr.assume_init() };
 }
 
+/// Set the value of a [`NumArray`] at the given index, but as a constant.
+///
+/// Safety: Same as [`num_array_repeat`]
+pub(crate) const unsafe fn num_array_set<T: Copy + Debug + PartialEq, A: NumArray<T>>(
+    array: &mut A,
+    index: usize,
+    value: T,
+) {
+    if index >= A::LEN {
+        panic!("index is out of bounds");
+    }
+
+    let ptr = array as *mut _ as *mut T;
+    // Safety:
+    // The caller has made sure that this called only on a NumArray
+    // that is actaully an array.
+    unsafe { ptr.add(index).write(value) };
+}
+
 /// This allows me to work with numbers, as types albeit up to a limited N
 ///
 /// Till min_generic_const_args is stabilized or at least less crashy.

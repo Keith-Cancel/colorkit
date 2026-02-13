@@ -173,11 +173,11 @@ macro_rules! alpha_traits {
             }
             #[inline]
             fn try_alpha_ref(&self) -> Option<&f32> {
-                return Some(&self.0[Self::INDEX]);
+                return Some(&self[Self::INDEX]);
             }
             #[inline]
             fn try_alpha_mut(&mut self) -> Option<&mut f32> {
-                return Some(&mut self.0[Self::INDEX]);
+                return Some(&mut self[Self::INDEX]);
             }
         }
 

@@ -225,7 +225,6 @@ impl Default for OkLab {
 impl ColorData for OkLab {
     type WhitePoint = D65;
     type Channels = N3;
-    const DEFAULT: Self = Self([0.0, 0.0, 0.0]);
     const LINEAR: bool = true;
     // Oklab a, and b channels in theory are unbounded
     // but at least from understanding the practical

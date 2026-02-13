@@ -87,7 +87,6 @@ macro_rules! base_funcs {
         impl ColorData for $name {
             type WhitePoint = D65;
             type Channels = N3;
-            const DEFAULT: Self = Self([0.0, 0.0, 0.0]);
             const LINEAR: bool = true;
             const CHANNEL_MAX: &'static [BoundF32] = &[BoundF32::Include(1.0); 3];
             const CHANNEL_MIN: &'static [BoundF32] = &[BoundF32::Include(0.0); 3];

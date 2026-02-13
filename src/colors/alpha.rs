@@ -348,14 +348,13 @@ macro_rules! base_funcs {
 
         impl<S: ColorSpace + ColorTransmute> Default for $name<S> {
             fn default() -> Self {
-                return Self(S::DEFAULT, 1.0);
+                return Self(S::default(), 1.0);
             }
         }
 
         impl<S: ColorSpace + ColorTransmute> ColorData for $name<S> {
             type WhitePoint = S::WhitePoint;
             type Channels = <S::Channels as Number>::Inc;
-            const DEFAULT: Self = Self(S::DEFAULT, 1.0);
             const LINEAR: bool = S::LINEAR;
             const CHANNEL_MAX: &'static [BoundF32] = { Self::MAX.split_at(Self::Channels::N).0 };
             const CHANNEL_MIN: &'static [BoundF32] = { Self::MIN.split_at(Self::Channels::N).0 };

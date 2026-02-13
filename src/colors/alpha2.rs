@@ -61,7 +61,7 @@ macro_rules! alpha_methods {
             const MIN_MAX: ([BoundF32; 16], [BoundF32; 16]) = {
                 use BoundF32::*;
                 // Just make this larger than likely needed can't use
-                // S or Self in the len of an array =(
+                // S or Self in the len of an array in stable =(
                 let mut out = ([Unbounded; 16], [Unbounded; 16]);
                 let mut i = 0;
                 while i < S::CHANNEL_MAX.len() {

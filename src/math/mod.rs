@@ -169,6 +169,14 @@ pub enum BoundF32 {
     Unbounded,
 }
 
+impl BoundF32 {
+    #[inline]
+    const fn in_bounds(min: BoundF32, max: BoundF32, value: f32) -> bool {
+        !matches!(max, BoundF32::Include(m) if value > m)
+            && !matches!(min, BoundF32::Include(m) if value < m)
+    }
+}
+
 // TODO, maybe some inline asm or SSE intrinsics.
 pub(crate) const fn matrix_3x3_vec3_mul(mat: &[f32; 9], vec: &[f32]) -> [f32; 3] {
     assert!(vec.len() == 3);

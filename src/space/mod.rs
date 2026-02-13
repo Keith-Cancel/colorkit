@@ -25,8 +25,6 @@ pub use wrapper::WrapIdentity;
 pub trait ColorData: Default {
     /// Number of channels or also should be the length of the array.
     type Channels: Number;
-    /// Default color, should be black.
-    const DEFAULT: Self;
     /// Color Spaces White Point
     type WhitePoint: WhitePoint;
     /// Are the Channels Linear

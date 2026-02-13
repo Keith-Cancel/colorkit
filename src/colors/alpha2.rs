@@ -58,27 +58,19 @@ impl_self_index!(AlphaPre<S: ColorSpace>);
 macro_rules! alpha_methods {
     ($name:ident) => {
         impl<S: ColorSpace> $name<S> {
-            const MAX: &'static [BoundF32] = &const {
+            const MIN_MAX: ([BoundF32; 16], [BoundF32; 16]) = {
+                use BoundF32::*;
                 // Just make this larger than likely needed can't use
                 // S or Self in the len of an array =(
-                let mut out = [BoundF32::Unbounded; 16];
+                let mut out = ([Unbounded; 16], [Unbounded; 16]);
                 let mut i = 0;
                 while i < S::CHANNEL_MAX.len() {
-                    out[i] = S::CHANNEL_MAX[i];
+                    out.0[i] = S::CHANNEL_MIN[i];
+                    out.1[i] = S::CHANNEL_MAX[i];
                     i += 1;
                 }
-                out[i] = BoundF32::Include(1.0);
-                out
-            };
-
-            const MIN: &'static [BoundF32] = &const {
-                let mut out = [BoundF32::Unbounded; 16];
-                let mut i = 0;
-                while i < S::CHANNEL_MIN.len() {
-                    out[i] = S::CHANNEL_MIN[i];
-                    i += 1;
-                }
-                out[i] = BoundF32::Include(0.0);
+                out.0[i] = Include(0.0);
+                out.1[i] = Include(1.0);
                 out
             };
         }
@@ -111,8 +103,8 @@ macro_rules! alpha_traits {
             type Channels = <S::Channels as Number>::Inc;
             type WhitePoint = S::WhitePoint;
             const LINEAR: bool = S::LINEAR;
-            const CHANNEL_MAX: &'static [BoundF32] = { Self::MAX.split_at(Self::Channels::N).0 };
-            const CHANNEL_MIN: &'static [BoundF32] = { Self::MIN.split_at(Self::Channels::N).0 };
+            const CHANNEL_MAX: &'static [BoundF32] = { Self::MIN_MAX.1.split_at(Self::Channels::N).0 };
+            const CHANNEL_MIN: &'static [BoundF32] = { Self::MIN_MAX.0.split_at(Self::Channels::N).0 };
             const DEFAULT: Self = todo!();
         }
 

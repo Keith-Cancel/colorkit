@@ -124,6 +124,14 @@ macro_rules! alpha_methods {
             pub const fn set_alpha(&mut self, alpha: f32) {
                 self.as_mut_slice()[Self::ALPHA_INDEX] = alpha;
             }
+
+            /// Create the alpha color with all channels equal to `0.0`.
+            pub const fn new_zeroed() -> Self {
+                // Safety:
+                // Arr and ArrInc can only be a an array, either because
+                // they are Number::Arr or a type const array.
+                return Self(unsafe { narr_repeat(0.0) });
+            }
         }
     };
 }
@@ -198,6 +206,9 @@ const fn extend<S: ColorSpace, T: Copy + Debug + PartialEq>(array: Arr<S, T>, va
     }
 }
 
+/// Implements [`ColorWrap`] for [`Alpha`] and [`AlphaPre`]
+///
+/// The inner [`f32`] is used as the alpha channel for [`ColorWrap::from_inner`].
 #[repr(transparent)]
 #[derive(Clone, Copy, Debug, Default, PartialEq, PartialOrd)]
 pub struct AlphaWrap(pub f32);

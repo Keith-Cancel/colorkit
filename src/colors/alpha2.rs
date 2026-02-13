@@ -59,10 +59,12 @@ impl_self_index!(AlphaPre<S: ColorSpace>);
 macro_rules! alpha_methods {
     ($name:ident) => {
         impl<S: ColorSpace> $name<S> {
+            /// The index of the alpha channel.
+            pub const ALPHA_INDEX: usize = S::Channels::N;
             /// Get the colors alpha channel value.
             #[inline]
             pub const fn alpha(&self) -> f32 {
-                return self.as_slice()[S::Channels::N];
+                return self.as_slice()[Self::ALPHA_INDEX];
             }
             /// Maximum Alpha Channel value
             #[inline(always)]

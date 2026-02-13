@@ -29,6 +29,10 @@ impl<S: ColorSpace> Alpha<S> {
             if i >= S::Channels::N { alpha } else { color[i] }
         }));
     }
+    /// Remove the alpha channel.
+    pub fn strip_alpha(self) -> S {
+        return S::from_fn(|i| self.0[i]);
+    }
 }
 
 alpha_methods!(Alpha);
@@ -51,6 +55,16 @@ impl<S: ColorSpace> AlphaPre<S> {
             }
         }));
     }
+
+    /// Remove the alpha channel.
+    pub fn strip_alpha(self) -> S {
+        let alpha = self.alpha();
+        if alpha == 0.0 {
+            return S::from_fn(|_| 0.0);
+        }
+        return S::from_fn(|i| self.0[i] / alpha);
+    }
+
     /// Set the alpha channel, and update all other channels.
     pub const fn update_alpha(&mut self, alpha: f32) {
         // All channels will be zero, avoid division.
@@ -149,6 +163,16 @@ macro_rules! alpha_traits {
         impl<S: ColorSpace> ColorNew for $name<S> {
             fn from_fn<F: FnMut(usize) -> f32>(fun: F) -> Self {
                 return Self(ArrInc::<S, f32>::from_fn(fun));
+            }
+        }
+
+        impl<S: ColorSpace> ColorWrap<$name<S>> for AlphaWrap {
+            type Inner = S;
+            fn into_inner(wrapper: $name<S>) -> S {
+                return wrapper.strip_alpha();
+            }
+            fn from_inner(self, inner: S) -> $name<S> {
+                return $name::<S>::new(inner, self.0);
             }
         }
 

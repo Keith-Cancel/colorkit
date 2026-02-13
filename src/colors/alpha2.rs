@@ -1,3 +1,5 @@
+use core::fmt::Debug;
+
 use colorkit::math::BoundF32;
 use colorkit::num_type::*;
 use colorkit::space::*;
@@ -5,23 +7,23 @@ use colorkit::space::*;
 use super::macros::*;
 
 #[cfg(feature = "type_const")]
-type Arr<S> = [f32; <<S as ColorData>::Channels as Number>::N];
+type Arr<S, T> = [T; <<S as ColorData>::Channels as Number>::N];
 #[cfg(not(feature = "type_const"))]
-type Arr<S> = <<S as ColorData>::Channels as Number>::Arr<f32>;
+type Arr<S, T> = <<S as ColorData>::Channels as Number>::Arr<T>;
 
 #[cfg(feature = "type_const")]
-type ArrInc<S> = [f32; <<<S as ColorData>::Channels as Number>::Inc as Number>::N];
+type ArrInc<S, T> = [T; <<<S as ColorData>::Channels as Number>::Inc as Number>::N];
 #[cfg(not(feature = "type_const"))]
-type ArrInc<S> = <<<S as ColorData>::Channels as Number>::Inc as Number>::Arr<f32>;
+type ArrInc<S, T> = <<<S as ColorData>::Channels as Number>::Inc as Number>::Arr<T>;
 
 /// Wraps a color space with Alpha channel for transparency.
 #[repr(transparent)]
 #[derive(Copy, Clone, Debug, PartialEq)]
-pub struct Alpha<S: ColorSpace>(ArrInc<S>);
+pub struct Alpha<S: ColorSpace>(ArrInc<S, f32>);
 
 impl<S: ColorSpace> Alpha<S> {
     pub fn new(color: S, alpha: f32) -> Self {
-        return Self(ArrInc::<S>::from_fn(|i| {
+        return Self(ArrInc::<S, f32>::from_fn(|i| {
             if i >= S::Channels::N { alpha } else { color[i] }
         }));
     }
@@ -34,11 +36,11 @@ impl_self_index!(Alpha<S: ColorSpace>);
 /// A color with it's alpha premultiplied on all other channels.
 #[repr(transparent)]
 #[derive(Copy, Clone, Debug, PartialEq)]
-pub struct AlphaPre<S: ColorSpace>(ArrInc<S>);
+pub struct AlphaPre<S: ColorSpace>(ArrInc<S, f32>);
 
 impl<S: ColorSpace> AlphaPre<S> {
     pub fn new(color: S, alpha: f32) -> Self {
-        return Self(ArrInc::<S>::from_fn(|i| {
+        return Self(ArrInc::<S, f32>::from_fn(|i| {
             if i >= S::Channels::N {
                 alpha
             } else {
@@ -59,22 +61,6 @@ macro_rules! alpha_methods {
             pub fn alpha(&self) -> f32 {
                 return self.0[S::Channels::N];
             }
-
-            const MIN_MAX: ([BoundF32; 16], [BoundF32; 16]) = {
-                use BoundF32::*;
-                // Just make this larger than likely needed can't use
-                // S or Self in the len of an array in stable =(
-                let mut out = ([Unbounded; 16], [Unbounded; 16]);
-                let mut i = 0;
-                while i < S::CHANNEL_MAX.len() {
-                    out.0[i] = S::CHANNEL_MIN[i];
-                    out.1[i] = S::CHANNEL_MAX[i];
-                    i += 1;
-                }
-                out.0[i] = Include(0.0);
-                out.1[i] = Include(1.0);
-                out
-            };
         }
     };
 }
@@ -105,13 +91,15 @@ macro_rules! alpha_traits {
             type Channels = <S::Channels as Number>::Inc;
             type WhitePoint = S::WhitePoint;
             const LINEAR: bool = S::LINEAR;
-            const CHANNEL_MAX: &'static [BoundF32] = { Self::MIN_MAX.1.split_at(Self::Channels::N).0 };
-            const CHANNEL_MIN: &'static [BoundF32] = { Self::MIN_MAX.0.split_at(Self::Channels::N).0 };
+            const CHANNEL_MAX: ArrInc<S, BoundF32> =
+                extend::<S, _>(S::CHANNEL_MAX, BoundF32::Include(1.0));
+            const CHANNEL_MIN: ArrInc<S, BoundF32> =
+                extend::<S, _>(S::CHANNEL_MIN, BoundF32::Include(0.0));
         }
 
         impl<S: ColorSpace> ColorNew for $name<S> {
             fn from_fn<F: FnMut(usize) -> f32>(fun: F) -> Self {
-                return Self(ArrInc::<S>::from_fn(fun));
+                return Self(ArrInc::<S, f32>::from_fn(fun));
             }
         }
 
@@ -119,3 +107,20 @@ macro_rules! alpha_traits {
     };
 }
 pub(crate) use alpha_traits;
+
+const fn extend<S: ColorSpace, T: Copy + Debug + PartialEq>(array: Arr<S, T>, value: T) -> ArrInc<S, T> {
+    // Safety:
+    // Arr and ArrInc can only be a an array, either because
+    // they are Number::Arr or a type const array.
+    unsafe {
+        let mut ret: ArrInc<S, T> = narr_repeat(value);
+        let dst = narr_as_mut_slice(&mut ret);
+        let src = narr_as_slice(&array);
+        let mut i = 0;
+        while i < src.len() {
+            dst[i] = src[i];
+            i += 1;
+        }
+        return ret;
+    }
+}

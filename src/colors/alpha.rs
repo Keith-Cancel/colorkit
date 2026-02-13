@@ -195,14 +195,7 @@ impl<S: ColorSpace + ColorTransmute> ColorBounds for AlphaPre<S> {
         if self.1 != 0.0 && index != S::Channels::N {
             value /= self.1;
         }
-        if let BoundF32::Include(max) = S::CHANNEL_MAX[index]
-            && value > max
-        {
-            return false;
-        }
-        if let BoundF32::Include(min) = S::CHANNEL_MIN[index]
-            && value < min
-        {
+        if !BoundF32::in_bounds(S::CHANNEL_MIN[index], S::CHANNEL_MAX[index], value) {
             return false;
         }
         return true;
@@ -427,7 +420,7 @@ macro_rules! base_funcs {
             fn try_alpha_mut(&mut self) -> Option<&mut f32> {
                 return Some(&mut self.1);
             }
-            
+
             #[inline]
             fn try_alpha_ref(&self) -> Option<&f32> {
                 return Some(&self.1);

@@ -55,6 +55,11 @@ impl_self_index!(AlphaPre<S: ColorSpace>);
 macro_rules! alpha_methods {
     ($name:ident) => {
         impl<S: ColorSpace> $name<S> {
+            /// Get the colors alpha channel value.
+            pub fn alpha(&self) -> f32 {
+                return self.0[S::Channels::N];
+            }
+
             const MIN_MAX: ([BoundF32; 16], [BoundF32; 16]) = {
                 use BoundF32::*;
                 // Just make this larger than likely needed can't use

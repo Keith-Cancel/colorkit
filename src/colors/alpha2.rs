@@ -2,6 +2,7 @@ use core::fmt::Debug;
 
 use colorkit::math::BoundF32;
 use colorkit::num_type::*;
+use colorkit::scalar::NormF32;
 use colorkit::space::*;
 
 use super::macros::*;
@@ -170,5 +171,27 @@ const fn extend<S: ColorSpace, T: Copy + Debug + PartialEq>(array: Arr<S, T>, va
             i += 1;
         }
         return ret;
+    }
+}
+
+#[repr(transparent)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, PartialOrd)]
+pub struct AlphaWrap(pub f32);
+
+impl_from_inner!(f32, AlphaWrap);
+impl_typ_as_self!(AlphaWrap, f32);
+impl_typ_as_self!(AlphaWrap, NormF32);
+
+impl From<NormF32> for AlphaWrap {
+    #[inline]
+    fn from(value: NormF32) -> Self {
+        return Self(value.get());
+    }
+}
+
+impl From<AlphaWrap> for NormF32 {
+    #[inline]
+    fn from(value: AlphaWrap) -> Self {
+        return NormF32::new(value.0);
     }
 }

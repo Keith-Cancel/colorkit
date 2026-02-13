@@ -109,6 +109,12 @@ macro_rules! alpha_traits {
             const CHANNEL_MIN: &'static [BoundF32] = { Self::MIN_MAX.0.split_at(Self::Channels::N).0 };
         }
 
+        impl<S: ColorSpace> ColorNew for $name<S> {
+            fn from_fn<F: FnMut(usize) -> f32>(fun: F) -> Self {
+                return Self(ArrInc::<S>::from_fn(fun));
+            }
+        }
+
         impl<S: ColorSpace> ColorSlice for $name<S> {}
     };
 }

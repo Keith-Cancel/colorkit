@@ -55,7 +55,7 @@ impl<T: Copy + Debug + PartialEq, const N: usize> NumArray<T> for [T; N] {
 /// Create a `NumArray<T>` as a const_fn by repeatedly writing the provided value.
 ///
 /// Safety: This should only be called on an array type or a type that is
-/// is basically a transparent `NumArray<T>`.
+/// is basically a transparent wrapper of an array, and implements [`NumArray`].
 ///
 /// An array from [`Number`] will meet this require due to it being a sealed
 /// trait so no other impls exist.

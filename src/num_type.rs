@@ -70,15 +70,16 @@ pub(crate) const unsafe fn narr_repeat<T: Copy + Debug + PartialEq, A: NumArray<
     let mut arr: MaybeUninit<A> = MaybeUninit::uninit();
     let ptr = &mut arr as *mut _ as *mut T;
     let mut i = 0;
-    while i < A::LEN {
-        // Safety:
-        // The caller has made sure that this called only on a NumArray
-        // that is actaully an array.
-        unsafe { ptr.add(i).write(value) };
-        i += 1;
+    // Safety:
+    // The caller has made sure that this called on actaully an array
+    // and all array slots have been written too.
+    unsafe {
+        while i < A::LEN {
+            ptr.add(i).write(value);
+            i += 1;
+        }
+        return arr.assume_init();
     }
-    // Safety: All array slots have been written too.
-    return unsafe { arr.assume_init() };
 }
 
 /// Get [`NumArray`] as a slice, but as a constant fn.

@@ -90,6 +90,11 @@ macro_rules! alpha_methods {
                 // The inner type is an Number::Arr or a type const array.
                 return unsafe { narr_as_mut_slice(&mut self.0) };
             }
+            /// Set the colors alpha channel, leaving all other channels uneffected.
+            #[inline]
+            pub const fn set_alpha(&mut self, alpha: f32) {
+                self.as_mut_slice()[Self::ALPHA_INDEX] = alpha;
+            }
         }
     };
 }

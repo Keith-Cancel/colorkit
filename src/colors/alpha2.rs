@@ -22,6 +22,7 @@ type ArrInc<S, T> = <<<S as ColorData>::Channels as Number>::Inc as Number>::Arr
 pub struct Alpha<S: ColorSpace>(ArrInc<S, f32>);
 
 impl<S: ColorSpace> Alpha<S> {
+    /// Create a new Alpha color with a color and alpha channel value.
     pub fn new(color: S, alpha: f32) -> Self {
         return Self(ArrInc::<S, f32>::from_fn(|i| {
             if i >= S::Channels::N { alpha } else { color[i] }
@@ -39,6 +40,7 @@ impl_self_index!(Alpha<S: ColorSpace>);
 pub struct AlphaPre<S: ColorSpace>(ArrInc<S, f32>);
 
 impl<S: ColorSpace> AlphaPre<S> {
+    /// Create a new premultiplied Alpha color with a color and alpha channel value.
     pub fn new(color: S, alpha: f32) -> Self {
         return Self(ArrInc::<S, f32>::from_fn(|i| {
             if i >= S::Channels::N {

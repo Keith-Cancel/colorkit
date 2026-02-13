@@ -1,5 +1,3 @@
-use core::mem::MaybeUninit;
-
 use colorkit::math::BoundF32;
 use colorkit::num_type::*;
 use colorkit::space::*;
@@ -22,23 +20,10 @@ type ArrInc<S> = <<<S as ColorData>::Channels as Number>::Inc as Number>::Arr<f3
 pub struct Alpha<S: ColorSpace>(ArrInc<S>);
 
 impl<S: ColorSpace> Alpha<S> {
-    /// Create the inner array filled with ones.
-    const fn inner_new() -> ArrInc<S> {
-        // Can't really a better way to to create this
-        // type as a const since const traits are unstable.
-        let mut def: MaybeUninit<ArrInc<S>> = MaybeUninit::uninit();
-        let ptr = &mut def as *mut _ as *mut f32;
-        let mut i = 0;
-        while i < ArrInc::<S>::LEN {
-            // Safety:
-            // Number is a sealed trait so the only type that ArrInc
-            // could be is an Array, and the length is set correctly.
-            unsafe { ptr.add(i).write(1.0) };
-            i += 1;
-        }
-        // Safety:
-        // Entire array was written to.
-        return unsafe { def.assume_init() };
+    pub fn new(color: S, alpha: f32) -> Self {
+        return Self(ArrInc::<S>::from_fn(|i| {
+            if i >= S::Channels::N { alpha } else { color[i] }
+        }));
     }
 }
 
@@ -50,6 +35,18 @@ impl_self_index!(Alpha<S: ColorSpace>);
 #[repr(transparent)]
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct AlphaPre<S: ColorSpace>(ArrInc<S>);
+
+impl<S: ColorSpace> AlphaPre<S> {
+    pub fn new(color: S, alpha: f32) -> Self {
+        return Self(ArrInc::<S>::from_fn(|i| {
+            if i >= S::Channels::N {
+                alpha
+            } else {
+                color[i] * alpha
+            }
+        }));
+    }
+}
 
 alpha_methods!(AlphaPre);
 alpha_traits!(AlphaPre);
@@ -95,7 +92,7 @@ macro_rules! alpha_traits {
 
         impl<S: ColorSpace> Default for $name<S> {
             fn default() -> Self {
-                todo!();
+                return Self::new(S::default(), 1.0);
             }
         }
 
@@ -105,7 +102,6 @@ macro_rules! alpha_traits {
             const LINEAR: bool = S::LINEAR;
             const CHANNEL_MAX: &'static [BoundF32] = { Self::MIN_MAX.1.split_at(Self::Channels::N).0 };
             const CHANNEL_MIN: &'static [BoundF32] = { Self::MIN_MAX.0.split_at(Self::Channels::N).0 };
-            const DEFAULT: Self = todo!();
         }
 
         impl<S: ColorSpace> ColorSlice for $name<S> {}

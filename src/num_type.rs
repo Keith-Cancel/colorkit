@@ -4,6 +4,7 @@ use core::fmt::Debug;
 use core::mem::MaybeUninit;
 use core::ops::Index;
 use core::ops::IndexMut;
+use core::slice;
 
 mod private {
     pub trait NumberSealed {}
@@ -65,7 +66,7 @@ impl<T: Copy + Debug + PartialEq, const N: usize> NumArray<T> for [T; N] {
 ///
 /// Would have prefered something like from_fn, but can't call closures or
 /// function pointers in stable either.
-pub(crate) const unsafe fn num_array_repeat<T: Copy + Debug + PartialEq, A: NumArray<T>>(value: T) -> A {
+pub(crate) const unsafe fn num_arr_repeat<T: Copy + Debug + PartialEq, A: NumArray<T>>(value: T) -> A {
     let mut arr: MaybeUninit<A> = MaybeUninit::uninit();
     let ptr = &mut arr as *mut _ as *mut T;
     let mut i = 0;
@@ -80,23 +81,30 @@ pub(crate) const unsafe fn num_array_repeat<T: Copy + Debug + PartialEq, A: NumA
     return unsafe { arr.assume_init() };
 }
 
-/// Set the value of a [`NumArray`] at the given index, but as a constant.
+/// Get [`NumArray`] as a slice, but as a constant fn.
 ///
-/// Safety: Same as [`num_array_repeat`]
-pub(crate) const unsafe fn num_array_set<T: Copy + Debug + PartialEq, A: NumArray<T>>(
-    array: &mut A,
-    index: usize,
-    value: T,
-) {
-    if index >= A::LEN {
-        panic!("index is out of bounds");
-    }
+/// Safety: Same as [`num_arr_repeat`], plus the index must be in bounds.
+pub(crate) const unsafe fn num_arr_as_slice<T: Copy + Debug + PartialEq, A: NumArray<T>>(
+    array: &A,
+) -> &[T] {
+    let ptr = array as *const _ as *const T;
+    // Safety:
+    // The caller has made sure that this called only on a NumArray
+    // that is actaully an array.
+    return unsafe { slice::from_raw_parts(ptr, A::LEN) };
+}
 
+/// Get [`NumArray`] as a mutable slice, but as a constant fn.
+///
+/// Safety: Same as [`num_arr_repeat`], plus the index must be in bounds.
+pub(crate) const unsafe fn num_arr_as_mut_slice<T: Copy + Debug + PartialEq, A: NumArray<T>>(
+    array: &mut A,
+) -> &mut [T] {
     let ptr = array as *mut _ as *mut T;
     // Safety:
     // The caller has made sure that this called only on a NumArray
     // that is actaully an array.
-    unsafe { ptr.add(index).write(value) };
+    return unsafe { slice::from_raw_parts_mut(ptr, A::LEN) };
 }
 
 /// This allows me to work with numbers, as types albeit up to a limited N

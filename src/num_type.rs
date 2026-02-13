@@ -40,10 +40,12 @@ pub trait NumArray<T>:
     + IndexMut<usize, Output = T>
     + PartialEq
 {
+    const LEN: usize;
     fn from_fn<F: FnMut(usize) -> T>(f: F) -> Self;
 }
 
 impl<T: Copy + Debug + PartialEq, const N: usize> NumArray<T> for [T; N] {
+    const LEN: usize = N;
     fn from_fn<F: FnMut(usize) -> T>(f: F) -> Self {
         return from_fn(f);
     }

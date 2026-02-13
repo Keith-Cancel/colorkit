@@ -43,7 +43,13 @@ pub trait Number: NumberSealed + Copy {
     /// Number decreased by 1
     type Dec: Number<Inc = Self>;
     /// Array the same length as the number.
-    type Arr<T>: AsRef<[T]> + AsMut<[T]> + Index<usize, Output = T> + IndexMut<usize, Output = T>;
+    type Arr<T: Copy + Debug + PartialEq>: AsRef<[T]>
+        + AsMut<[T]>
+        + Copy
+        + Debug
+        + Index<usize, Output = T>
+        + IndexMut<usize, Output = T>
+        + PartialEq;
 
     fn value() -> usize {
         return Self::N;
@@ -78,7 +84,7 @@ macro_rules! impl_num {
         impl NumberSealed for $name {}
         impl Number for $name {
             type_const!(N : usize { $n } );
-            type Arr<T> = [T; $n];
+            type Arr<T: Copy + Debug + PartialEq> = [T; $n];
 
             type Inc = $inc;
             type Dec = $dec;

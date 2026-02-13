@@ -84,7 +84,7 @@ pub(crate) const unsafe fn narr_repeat<T: Copy + Debug + PartialEq, A: NumArray<
 
 /// Get [`NumArray`] as a slice, but as a constant fn.
 ///
-/// Safety: Same as [`narr_repeat`], plus the index must be in bounds.
+/// Safety: Same as [`narr_repeat`], plus the length must be in bounds.
 pub(crate) const unsafe fn narr_as_slice<T: Copy + Debug + PartialEq, A: NumArray<T>>(
     array: &A,
 ) -> &[T] {
@@ -97,7 +97,7 @@ pub(crate) const unsafe fn narr_as_slice<T: Copy + Debug + PartialEq, A: NumArra
 
 /// Get [`NumArray`] as a mutable slice, but as a constant fn.
 ///
-/// Safety: Same as [`narr_repeat`], plus the index must be in bounds.
+/// Safety: Same as [`narr_repeat`], plus the length must be in bounds.
 pub(crate) const unsafe fn narr_as_mut_slice<T: Copy + Debug + PartialEq, A: NumArray<T>>(
     array: &mut A,
 ) -> &mut [T] {

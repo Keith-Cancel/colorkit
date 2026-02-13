@@ -34,6 +34,17 @@ impl<S: ColorSpace> Alpha<S> {
     pub fn strip_alpha(self) -> S {
         return S::from_fn(|i| self[i]);
     }
+    /// Convert the alpha color to a pre-multiplied alpha color.
+    pub const fn premultiply(mut self) -> AlphaPre<S> {
+        let alpha = self.alpha();
+        let slc = self.as_mut_slice();
+        let mut i = 0;
+        while i < Self::INDEX {
+            slc[i] *= alpha;
+            i += 1;
+        }
+        return AlphaPre(self.0);
+    }
 }
 
 alpha_methods!(Alpha);

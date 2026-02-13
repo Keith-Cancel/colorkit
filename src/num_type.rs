@@ -1,6 +1,7 @@
 //! Marker types that act as a number, mainly used for [`Layout`](colorkit::layout::Layout).
 use core::array::from_fn;
 use core::fmt::Debug;
+use core::mem::MaybeUninit;
 use core::ops::Index;
 use core::ops::IndexMut;
 
@@ -49,6 +50,34 @@ impl<T: Copy + Debug + PartialEq, const N: usize> NumArray<T> for [T; N] {
     fn from_fn<F: FnMut(usize) -> T>(f: F) -> Self {
         return from_fn(f);
     }
+}
+
+/// Create a `NumArray<T>` as a const_fn by repeatedly writing the provided value.
+///
+/// Safety: This should only be called on an array type or a type that is
+/// is basically a transparent `NumArray<T>`.
+///
+/// An array from [`Number`] will meet this require due to it being a sealed
+/// trait so no other impls exist.
+///
+/// Mainly exists so I have a way to create generic length arrays as a const
+/// in stable. Will probably if min_const_generic_args is stabliized.
+///
+/// Would have prefered something like from_fn, but can't call closures or
+/// function pointers in stable either.
+pub(crate) const unsafe fn num_array_repeat<T: Copy + Debug + PartialEq, A: NumArray<T>>(value: T) -> A {
+    let mut arr: MaybeUninit<A> = MaybeUninit::uninit();
+    let ptr = &mut arr as *mut _ as *mut T;
+    let mut i = 0;
+    while i < A::LEN {
+        // Safety:
+        // The caller has made sure that this called only on a NumArray
+        // that is actaully an array.
+        unsafe { ptr.add(i).write(value) };
+        i += 1;
+    }
+    // Safety: All array slots have been written too.
+    return unsafe { arr.assume_init() };
 }
 
 /// This allows me to work with numbers, as types albeit up to a limited N

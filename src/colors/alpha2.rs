@@ -233,9 +233,20 @@ macro_rules! alpha_traits {
 pub(crate) use alpha_traits;
 
 const fn extend<S: ColorSpace, T: Copy + Debug + PartialEq>(array: Arr<S, T>, value: T) -> ArrInc<S, T> {
+    #[cfg(feature = "type_const")]
+    {
+        let mut ret = [value; <<S::Channels as Number>::Inc as Number>::N];
+        let mut i = 0;
+        while i < array.len() {
+            ret[i] = array[i];
+            i += 1;
+        }
+        return ret;
+    }
     // Safety:
     // Arr and ArrInc can only be a an array, either because
     // they are Number::Arr or a type const array.
+    #[cfg(not(feature = "type_const"))]
     unsafe {
         let mut ret: ArrInc<S, T> = narr_repeat(value);
         let dst = narr_as_mut_slice(&mut ret);
@@ -259,6 +270,7 @@ const fn repeat<S: ColorSpace, T: Copy + Debug + PartialEq>(value: T) -> ArrInc<
     return unsafe { narr_repeat(value) };
 }
 
+#[inline]
 const fn as_slice<S: ColorSpace, T: Copy + Debug + PartialEq>(array: &ArrInc<S, T>) -> &[T] {
     #[cfg(feature = "type_const")]
     return array;
@@ -268,6 +280,7 @@ const fn as_slice<S: ColorSpace, T: Copy + Debug + PartialEq>(array: &ArrInc<S, 
     return unsafe { narr_as_slice(array) };
 }
 
+#[inline]
 const fn as_mut_slice<S: ColorSpace, T: Copy + Debug + PartialEq>(array: &mut ArrInc<S, T>) -> &mut [T] {
     #[cfg(feature = "type_const")]
     return array;

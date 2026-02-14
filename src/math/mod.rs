@@ -175,6 +175,20 @@ impl BoundF32 {
         !matches!(max, BoundF32::Include(m) if value > m)
             && !matches!(min, BoundF32::Include(m) if value < m)
     }
+
+    pub const fn clamp(min: BoundF32, max: BoundF32, mut value: f32) -> f32 {
+        if let BoundF32::Include(min) = min
+            && value < min
+        {
+            value = min;
+        }
+        if let BoundF32::Include(max) = max
+            && value > max
+        {
+            value = max;
+        }
+        return value;
+    }
 }
 
 // TODO, maybe some inline asm or SSE intrinsics.

@@ -82,21 +82,23 @@ impl<S: ColorSpace + ColorTransmute> ColorBounds for Alpha<S> {
         }
         return self.0.is_channel_clamped(index);
     }
-    fn get_norm(&self, index: usize) -> NormF32 {
-        if index == S::Channels::N {
-            return NormF32::new(self.1);
-        }
-        return self.0.get_norm(index);
+}
+
+impl<S: ColorSpace + ColorTransmute> ColorNorm for Alpha<S> {
+    fn into_norm(self) -> ColorArray<Self, NormF32> {
+        let n = self.0.into_norm();
+        return ColorArray::<Self, NormF32>::from_fn(|i| {
+            if i == S::Channels::N {
+                return NormF32::new(self.1);
+            }
+            return n[i];
+        });
     }
-    fn get_norm_bounds(&self, index: usize) -> (f32, f32) {
-        if index == S::Channels::N {
-            return (0.0, 1.0);
-        }
-        return self.0.get_norm_bounds(index);
-    }
-    fn get_norm_bounded(&self, index: usize, min: f32, max: f32) -> NormF32 {
-        let value = self.as_slice()[index];
-        return NormF32::with_bounds(value, min, max);
+    fn from_norm<T: AsRef<[NormF32]>>(values: T) -> Self {
+        let v = values.as_ref();
+        let a = v[S::Channels::N].get();
+        let c = S::from_norm(&v[..v.len() - 1]);
+        return Self::new(c, a);
     }
 }
 
@@ -205,29 +207,14 @@ impl<S: ColorSpace + ColorTransmute> ColorBounds for AlphaPre<S> {
         }
         return true;
     }
-    fn get_norm(&self, index: usize) -> NormF32 {
-        if index == S::Channels::N {
-            return NormF32::new(self.1);
-        }
-        let b = self.get_norm_bounds(index);
-        return self.get_norm_bounded(index, b.0, b.1);
+}
+
+impl<S: ColorSpace + ColorTransmute> ColorNorm for AlphaPre<S> {
+    fn into_norm(self) -> ColorArray<Self, NormF32> {
+        return self.into_alpha().into_norm();
     }
-    fn get_norm_bounds(&self, index: usize) -> (f32, f32) {
-        if index == S::Channels::N {
-            return (0.0, 1.0);
-        }
-        return self.0.get_norm_bounds(index);
-    }
-    fn get_norm_bounded(&self, index: usize, min: f32, max: f32) -> NormF32 {
-        let mut value = self.as_slice()[index];
-        // Don't divide by zero.
-        if self.1 == 0.0 {
-            return NormF32::with_bounds(0.0, min, max);
-        }
-        if index != S::Channels::N {
-            value /= self.1;
-        }
-        return NormF32::with_bounds(value, min, max);
+    fn from_norm<T: AsRef<[NormF32]>>(values: T) -> Self {
+        return Alpha::<S>::from_norm(values).into_premul_alpha();
     }
 }
 
@@ -382,7 +369,8 @@ macro_rules! base_funcs {
 
             fn into_layout<L: Layout>(self, round: Rounding) -> L {
                 debug_assert!(<L::Channels as Number>::N == <Self as ColorData>::Channels::N);
-                return L::from_fn_norm(|i| self.get_norm(i), round);
+                let n = self.into_norm();
+                return L::from_fn_norm(|i| n[i], round);
             }
 
             fn into_layout_dither<L: Layout, D: crate::scalar::Dither>(
@@ -391,7 +379,8 @@ macro_rules! base_funcs {
                 dither: &mut D,
             ) -> L {
                 debug_assert!(<L::Channels as Number>::N == <Self as ColorData>::Channels::N);
-                return L::from_fn_norm_dither(|i| self.get_norm(i), round, dither);
+                let n = self.into_norm();
+                return L::from_fn_norm_dither(|i| n[i], round, dither);
             }
         }
 
@@ -545,10 +534,9 @@ mod test {
     fn get_norm() {
         let a0 = Alpha::new(Srgb::new_u8(64, 128, 192), 0.75);
         let a1 = a0.into_premul_alpha();
+        let n0 = a0.into_norm();
+        let n1 = a1.into_norm();
 
-        assert_eq!(a0.get_norm(3), a1.get_norm(3));
-        assert_eq!(a0.get_norm(0), a1.get_norm(0));
-        assert_eq!(a0.get_norm(1), a1.get_norm(1));
-        assert_eq!(a0.get_norm(2), a1.get_norm(2));
+        assert_eq!(n0, n1);
     }
 }

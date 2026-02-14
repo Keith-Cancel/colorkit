@@ -1,7 +1,6 @@
 //! Traits for uniformly working with color spaces, see [`ColorSpace`] for the primary API.
 use colorkit::colors::Xyz;
-use colorkit::convert::FromColorBoth;
-use colorkit::convert::IntoColor;
+use colorkit::convert::*;
 use colorkit::math::BoundF32;
 use colorkit::num_type::Number;
 use colorkit::wp::WhitePoint;
@@ -9,7 +8,6 @@ use colorkit::wp::WhitePoint;
 mod alpha;
 mod bounds;
 mod layout;
-mod norm;
 mod slice;
 mod wrapper;
 
@@ -69,7 +67,13 @@ pub trait ColorNew: ColorData + Sized {
 
 /// The main ColorSpace Trait
 pub trait ColorSpace:
-    AlphaMaybe + ColorNew + ColorSlice + ColorBounds + ColorLayout + FromColorBoth<Xyz<Self::WhitePoint>>
+    AlphaMaybe
+    + ColorBounds
+    + ColorLayout
+    + ColorNew
+    + ColorNorm
+    + ColorSlice
+    + FromColorBoth<Xyz<Self::WhitePoint>>
 {
     /// Create an instance of this color from a CIE XYZ color.
     fn from_xyz(color: Xyz<Self::WhitePoint>) -> Self {

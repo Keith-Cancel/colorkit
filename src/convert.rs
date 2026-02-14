@@ -3,6 +3,7 @@ use colorkit::colors::Xyz;
 use colorkit::math::matrix_3x3_vec3_mul;
 use colorkit::num_type::N3;
 use colorkit::num_type::Number;
+use colorkit::scalar::NormF32;
 use colorkit::space::*;
 
 // Traits for converting between different color spaces.
@@ -31,7 +32,10 @@ pub trait IntoColor<C> {
 }
 
 /// Marker trait stating conversion from `Self` <-> `C` exists both ways.
-pub trait FromColorBoth<C>: FromColor<C> + private::FromBound<C, Other: FromColor<Self>, Other = C> {}
+pub trait FromColorBoth<C>:
+    FromColor<C> + private::FromBound<C, Other: FromColor<Self>, Other = C>
+{
+}
 
 /// Transformation Matrices to go between and from CIE XYZ
 ///
@@ -121,6 +125,32 @@ pub trait AsColorMut<C: ColorData> {
     ///
     /// If self can't be viewed as the color returns [`None`]
     fn as_mut_color(&mut self) -> Option<&mut C>;
+}
+
+/// Normalization and denormalization conversion of a color space.
+pub trait ColorNorm: ColorData {
+    /// Converts the channels normalized to the range `[0.0, 1.0]`
+    ///
+    /// The normalization process is color-space specific - see the particular
+    /// color space's documentation for details.
+    ///
+    /// Further, not all color spaces are bounded on every channel. So
+    /// implementations may pick practical bounds and return a best
+    /// effort normalization based on those.
+    fn into_norm(self) -> ColorArray<Self, NormF32>;
+    /// Constructs this color from channels normalized to `[0.0, 1.0]`.
+    ///
+    /// This should be the inverse of [`ColorNorm::into_norm`]. The
+    /// denormalization is color-space specific some color spaces may
+    /// not have bounded channels or be already normalized ect...
+    /// See the particular color space's documentation for details.
+    ///
+    /// Implementations should apply the inverse mapping used by `into_norm`
+    /// where practical.
+    ///
+    /// # Panics
+    /// May Panic if the slices length is less than number of channels.
+    fn from_norm<T: AsRef<[NormF32]>>(values: T) -> Self;
 }
 
 // Impls for arrays and slice types

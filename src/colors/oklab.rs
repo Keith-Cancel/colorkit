@@ -145,14 +145,6 @@ impl OkLab {
         }
         return lms;
     }
-
-    fn into_norm(self) -> [NormF32; 3] {
-        return [
-            NormF32::new(self.l()),
-            NormF32::new(self.a() + 0.5),
-            NormF32::new(self.b() + 0.5),
-        ];
-    }
 }
 
 impl_color_new!([f32; 3], OkLab);
@@ -194,19 +186,31 @@ impl ColorBounds for OkLab {
         let b = Self::BOUNDS[index];
         return c >= b.0 && c <= b.1;
     }
-    /// Return the channel at `index` normalized into `[0.0, 1.0]`.
+}
+
+impl ColorNorm for OkLab {
+    /// Get [`OkLab`] channels normalized into `[0.0, 1.0]`.
     ///
     /// Oklab `a` and `b` channels are theoretically unbounded, but for
     /// normalization a practical range of `[-0.5, 0.5]` is assumed.
-    fn get_norm(&self, index: usize) -> NormF32 {
-        let v = self.0[index] - Self::BOUNDS[index].0;
-        return NormF32::new(v);
+    ///
+    /// The lab channel is should be normalized already between `[0.0, 1.0]`
+    /// if it is currently outside that range it will be clamped.
+    fn into_norm(self) -> [NormF32; 3] {
+        return [
+            NormF32::new(self[0]),
+            NormF32::new(self[1] + 0.5),
+            NormF32::new(self[2] + 0.5),
+        ];
     }
-    fn get_norm_bounds(&self, index: usize) -> (f32, f32) {
-        return Self::BOUNDS[index];
-    }
-    fn get_norm_bounded(&self, index: usize, min: f32, max: f32) -> NormF32 {
-        return NormF32::with_bounds(self.0[index], min, max);
+    /// Create an [`OkLab`] from channels normalized into `[0.0, 1.0]`.
+    ///
+    /// Oklab `a` and `b` channels are theoretically unbounded, but for
+    /// denormalization a practical range of `[-0.5, 0.5]` is assumed.
+    #[inline]
+    fn from_norm<T: AsRef<[NormF32]>>(values: T) -> Self {
+        let v = values.as_ref();
+        return Self([v[0].get(), v[1] - 0.5, v[2] - 0.5]);
     }
 }
 

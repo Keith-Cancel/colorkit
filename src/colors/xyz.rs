@@ -1,6 +1,6 @@
 use core::marker::PhantomData;
 
-use colorkit::convert::ColorTransmute;
+use colorkit::convert::*;
 use colorkit::layout::Layout;
 use colorkit::math::BoundF32;
 use colorkit::num_type::N3;
@@ -110,7 +110,8 @@ impl<W: WhitePoint> ColorLayout for Xyz<W> {
     /// white point, any values larger are clamped.
     fn into_layout<L: Layout>(self, round: Rounding) -> L {
         debug_assert!(<L::Channels as Number>::N == 3);
-        return L::from_fn_norm(|i| self.get_norm(i), round);
+        let n = self.into_norm();
+        return L::from_fn_norm(|i| n[i], round);
     }
 
     /// Create a [`Layout`] from a CIE XYZ color and [`Dither`]
@@ -120,7 +121,8 @@ impl<W: WhitePoint> ColorLayout for Xyz<W> {
     /// white point, any values larger are clamped.
     fn into_layout_dither<L: Layout, D: Dither>(self, round: Rounding, dither: &mut D) -> L {
         debug_assert!(<L::Channels as Number>::N == 3);
-        return L::from_fn_norm_dither(|i| self.get_norm(i), round, dither);
+        let n = self.into_norm();
+        return L::from_fn_norm_dither(|i| n[i], round, dither);
     }
 }
 
@@ -147,28 +149,39 @@ impl<W: WhitePoint> ColorBounds for Xyz<W> {
     fn is_channel_clamped(&self, index: usize) -> bool {
         return self.0[index] >= 0.0;
     }
-    /// Return the channel at `index` normalized into `[0.0, 1.0]`.
+}
+
+impl<W: WhitePoint> ColorNorm for Xyz<W> {
+    /// Return the color normalized into `[0.0, 1.0]`.
     ///
     /// CIE XYZ channels are unbounded, so the `XYZ` values are
     /// normalized relative the white point, and then clamped to
     /// the normalized range.
     ///
-    /// The value is computed by dividing the tristimulus channel by
-    /// the reference white component (`X / W::X`, `Y / W::Y`, `Z / W::Z`).
-    #[inline]
-    fn get_norm(&self, index: usize) -> NormF32 {
-        let wp = [W::X, W::Y, W::Z];
-        let v = self.0[index] / wp[index];
-        return NormF32::new(v);
+    /// The value is computed by dividing the tristimulus channels by
+    /// the reference white component (`X / W::X`, `Y / W::Y`, `Z / W::Z`)
+    /// and then clamped.
+    fn into_norm(self) -> [NormF32; 3] {
+        let w = [W::X, W::Y, W::Z];
+        return [
+            NormF32::new(self[0] / w[0]),
+            NormF32::new(self[1] / w[1]),
+            NormF32::new(self[2] / w[2]),
+        ];
     }
+    /// Create an [`Xyz`] color from channels normalized into `[0.0, 1.0]`.
+    ///
+    /// CIE XYZ channels are unbounded, so the normalized `XYZ` values
+    /// as assumed to have normalized relative to the white point.
+    /// normalized relative the white point.
+    ///
+    /// The value is computed by mulitplying the tristimulus channels by
+    /// the reference white component (`X * W::X`, `Y * W::Y`, `Z * W::Z`).
     #[inline]
-    fn get_norm_bounds(&self, index: usize) -> (f32, f32) {
-        let wp = [W::X, W::Y, W::Z];
-        return (0.0, wp[index]);
-    }
-    #[inline]
-    fn get_norm_bounded(&self, index: usize, min: f32, max: f32) -> NormF32 {
-        return NormF32::with_bounds(self.0[index], min, max);
+    fn from_norm<T: AsRef<[NormF32]>>(values: T) -> Self {
+        let w = [W::X, W::Y, W::Z];
+        let v = values.as_ref();
+        return Self::new(v[0] * w[0], v[1] * w[1], v[2] * w[2]);
     }
 }
 

@@ -1,6 +1,4 @@
-use colorkit::convert::ColorTransmute;
-use colorkit::convert::FromColor;
-use colorkit::convert::XyzMatrices;
+use colorkit::convert::*;
 use colorkit::layout::Layout;
 use colorkit::math::BoundF32;
 use colorkit::math::cbrtf;
@@ -103,7 +101,7 @@ macro_rules! base_funcs {
 
             fn into_layout<L: Layout>(self, round: Rounding) -> L {
                 debug_assert!(<L::Channels as Number>::N == 3);
-                return L::from_fn_norm(|i| NormF32::new(self.0[i]), round);
+                return L::from_fn_norm(|i| NormF32::new(self[i]), round);
             }
 
             fn into_layout_dither<L: Layout, D: crate::scalar::Dither>(
@@ -112,7 +110,7 @@ macro_rules! base_funcs {
                 dither: &mut D,
             ) -> L {
                 debug_assert!(<L::Channels as Number>::N == 3);
-                return L::from_fn_norm_dither(|i| NormF32::new(self.0[i]), round, dither);
+                return L::from_fn_norm_dither(|i| NormF32::new(self[i]), round, dither);
             }
         }
 
@@ -138,17 +136,17 @@ macro_rules! base_funcs {
                 let c = self.0[index];
                 return c >= 0.0 && c <= 1.0;
             }
+        }
+
+        impl ColorNorm for $name {
             #[inline]
-            fn get_norm(&self, index: usize) -> NormF32 {
-                return NormF32::new(self.0[index]);
+            fn into_norm(self) -> [NormF32; 3] {
+                return self.0.map(|x| NormF32::new(x));
             }
             #[inline]
-            fn get_norm_bounds(&self, _: usize) -> (f32, f32) {
-                return (0.0, 1.0);
-            }
-            #[inline]
-            fn get_norm_bounded(&self, index: usize, min: f32, max: f32) -> NormF32 {
-                return NormF32::with_bounds(self.0[index], min, max);
+            fn from_norm<T: AsRef<[NormF32]>>(values: T) -> Self {
+                let v = values.as_ref();
+                return Self([v[0].get(), v[1].get(), v[2].get()]);
             }
         }
 

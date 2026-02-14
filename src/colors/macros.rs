@@ -1,29 +1,38 @@
 /// Implement ColorNew for $slf plus from_array and into_array on $slf directly.
 macro_rules! impl_color_new {
-    ($arr:ty, $slf:ident < $( $var:ident $(: $bound:ident $(+$bound_n:ident)* )? ),* > $(,$ext:expr)?) => {
+    ([$arr_t:ty; $n:expr], $slf:ident < $( $var:ident $(: $bound:ident $(+$bound_n:ident)* )? ),* > $(,$ext:expr)?) => {
         impl<$($var $(: $bound $(+$bound_n)*)?),*> colorkit::space::ColorNew for $slf<$($var),*> {
             #[inline]
             fn from_fn<F: FnMut(usize) -> f32>(f: F) -> Self {
-                let a: $arr = core::array::from_fn(f);
+                let a: [$arr_t; $n] = core::array::from_fn(f);
                 return Self(a $(, $ext)?);
+            }
+            #[inline]
+            fn repeat(value: f32) -> Self {
+                let arr = [value; $n];
+                return Self(arr $(, $ext)?);
+            }
+            #[inline]
+            fn from_array(values: [$arr_t; $n]) -> Self {
+                return Self(values $(, $ext)?);
             }
         }
 
         impl<$($var $(: $bound $(+$bound_n)*)?),*>  $slf<$($var),*> {
             /// Create a new instance of the color from an array
             #[inline]
-            pub const fn from_array(values: $arr) -> Self {
+            pub const fn from_array(values: [$arr_t; $n]) -> Self {
                 return Self(values $(, $ext)?);
             }
             /// Convert an instance of the color to an array.
             #[inline]
-            pub const fn into_array(self) -> $arr {
+            pub const fn into_array(self) -> [$arr_t; $n] {
                 return self.0;
             }
         }
     };
-    ($arr:ty, $slf:ident $(,$ext:expr)?) => {
-        impl_color_new!($arr, $slf<> $(,$ext)?);
+    ([$arr_t:ty; $n:expr], $slf:ident $(,$ext:expr)?) => {
+        impl_color_new!([$arr_t; $n], $slf<> $(,$ext)?);
     };
 }
 pub(crate) use impl_color_new;

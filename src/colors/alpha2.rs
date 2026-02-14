@@ -137,16 +137,12 @@ macro_rules! alpha_methods {
             /// View the alpha color as a slice reference.
             #[inline]
             pub const fn as_slice(&self) -> &[f32] {
-                // Safety:
-                // The inner type is an Number::Arr or a type const array.
-                return unsafe { narr_as_slice(&self.0) };
+                return as_slice::<S, _>(&self.0);
             }
             /// View the alpha color as a mutable slice
             #[inline]
             pub const fn as_mut_slice(&mut self) -> &mut [f32] {
-                // Safety:
-                // The inner type is an Number::Arr or a type const array.
-                return unsafe { narr_as_mut_slice(&mut self.0) };
+                return as_mut_slice::<S, _>(&mut self.0);
             }
             /// Set the colors alpha channel, leaving all other channels uneffected.
             #[inline]
@@ -261,6 +257,24 @@ const fn repeat<S: ColorSpace, T: Copy + Debug + PartialEq>(value: T) -> ArrInc<
     // they are Number::Arr or a type const array.
     #[cfg(not(feature = "type_const"))]
     return unsafe { narr_repeat(value) };
+}
+
+const fn as_slice<S: ColorSpace, T: Copy + Debug + PartialEq>(array: &ArrInc<S, T>) -> &[T] {
+    #[cfg(feature = "type_const")]
+    return array;
+    // Safety:
+    // The inner type is an Number::Arr or a type const array
+    #[cfg(not(feature = "type_const"))]
+    return unsafe { narr_as_slice(array) };
+}
+
+const fn as_mut_slice<S: ColorSpace, T: Copy + Debug + PartialEq>(array: &mut ArrInc<S, T>) -> &mut [T] {
+    #[cfg(feature = "type_const")]
+    return array;
+    // Safety:
+    // The inner type is an Number::Arr or a type const array
+    #[cfg(not(feature = "type_const"))]
+    return unsafe { narr_as_mut_slice(array) };
 }
 
 /// Implements [`ColorWrap`] for [`Alpha`] and [`AlphaPre`]

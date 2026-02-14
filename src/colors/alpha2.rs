@@ -22,6 +22,10 @@ type ArrInc<S, T> = <<<S as ColorData>::Channels as Number>::Inc as Number>::Arr
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Alpha<S: ColorSpace>(ArrInc<S, f32>);
 
+alpha_methods!(Alpha);
+alpha_traits!(Alpha);
+impl_self_index!(Alpha<S: ColorSpace>);
+
 impl<S: ColorSpace> Alpha<S> {
     const KIND: AlphaKind = AlphaKind::Normal;
     /// Create a new Alpha color with a color and alpha channel value.
@@ -47,9 +51,14 @@ impl<S: ColorSpace> Alpha<S> {
     }
 }
 
-alpha_methods!(Alpha);
-alpha_traits!(Alpha);
-impl_self_index!(Alpha<S: ColorSpace>);
+impl<S: ColorSpace> ColorBounds for Alpha<S> {
+    fn get_norm(&self, index: usize) -> NormF32 {
+        if index == Self::INDEX {
+            return NormF32::new(self.alpha());
+        }
+        todo!("hmm");
+    }
+}
 
 /// A color with it's alpha premultiplied on all other channels.
 #[repr(transparent)]

@@ -8,11 +8,6 @@ use colorkit::space::*;
 use super::macros::*;
 
 #[cfg(feature = "type_const")]
-type Arr<S, T> = [T; <<S as ColorData>::Channels as Number>::N];
-#[cfg(not(feature = "type_const"))]
-type Arr<S, T> = <<S as ColorData>::Channels as Number>::Arr<T>;
-
-#[cfg(feature = "type_const")]
 type ArrInc<S, T> = [T; <<<S as ColorData>::Channels as Number>::Inc as Number>::N];
 #[cfg(not(feature = "type_const"))]
 type ArrInc<S, T> = <<<S as ColorData>::Channels as Number>::Inc as Number>::Arr<T>;
@@ -51,6 +46,7 @@ impl<S: ColorSpace> Alpha<S> {
     }
 }
 
+/*
 impl<S: ColorSpace> ColorBounds for Alpha<S> {
     fn clamp(mut self) -> Self {
         for i in 0..Self::INDEX {
@@ -91,10 +87,21 @@ impl<S: ColorSpace> ColorBounds for Alpha<S> {
         if index == Self::INDEX {
             return NormF32::new(self.alpha());
         }
-        // hmm...
-        return S::from_fn(|i| self[i]).get_norm(index);
+        let b = S::get_norm_bounds(index);
+        return NormF32::with_bounds(self[index], b.0, b.1);
     }
-}
+
+    fn get_norm_bounds(index: usize) -> (f32, f32) {
+        if index == Self::INDEX {
+            return (0.0, 1.0);
+        }
+        return S::get_norm_bounds(index);
+    }
+
+    fn get_norm_bounded(&self, index: usize, min: f32, max: f32) -> NormF32 {
+        return NormF32::with_bounds(self[index], min, max);
+    }
+}*/
 
 /// A color with it's alpha premultiplied on all other channels.
 #[repr(transparent)]
@@ -277,7 +284,10 @@ macro_rules! alpha_traits {
 }
 pub(crate) use alpha_traits;
 
-const fn extend<S: ColorSpace, T: Copy + Debug + PartialEq>(array: Arr<S, T>, value: T) -> ArrInc<S, T> {
+const fn extend<S: ColorSpace, T: Copy + Debug + PartialEq>(
+    array: ColorArray<S, T>,
+    value: T,
+) -> ArrInc<S, T> {
     #[cfg(feature = "type_const")]
     {
         let mut ret = [value; <<S::Channels as Number>::Inc as Number>::N];

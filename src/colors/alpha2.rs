@@ -52,11 +52,47 @@ impl<S: ColorSpace> Alpha<S> {
 }
 
 impl<S: ColorSpace> ColorBounds for Alpha<S> {
+    fn clamp(mut self) -> Self {
+        for i in 0..Self::INDEX {
+            self[i] = BoundF32::clamp(S::CHANNEL_MAX[i], S::CHANNEL_MAX[i], self[i]);
+        }
+        self[Self::INDEX] = self[Self::INDEX].clamp(0.0, 1.0);
+        return self;
+    }
+
+    fn clamp_channel(mut self, index: usize) -> Self {
+        if index == Self::INDEX {
+            self[Self::INDEX] = self[Self::INDEX].clamp(0.0, 1.0);
+            return self;
+        }
+        return self;
+    }
+
+    fn is_clamped(&self) -> bool {
+        for i in 0..Self::INDEX {
+            if BoundF32::in_bounds(S::CHANNEL_MIN[i], S::CHANNEL_MAX[i], self[i]) {
+                return false;
+            }
+        }
+        if self[Self::INDEX] < 0.0 || self[Self::INDEX] > 1.0 {
+            return false;
+        }
+        return true;
+    }
+
+    fn is_channel_clamped(&self, index: usize) -> bool {
+        if index == Self::INDEX {
+            return self[Self::INDEX] >= 0.0 && self[Self::INDEX] <= 1.0;
+        }
+        return BoundF32::in_bounds(S::CHANNEL_MIN[index], S::CHANNEL_MAX[index], self[index]);
+    }
+
     fn get_norm(&self, index: usize) -> NormF32 {
         if index == Self::INDEX {
             return NormF32::new(self.alpha());
         }
-        todo!("hmm");
+        // hmm...
+        return S::from_fn(|i| self[i]).get_norm(index);
     }
 }
 

@@ -9,6 +9,7 @@ use colorkit::wp::WhitePoint;
 mod alpha;
 mod bounds;
 mod layout;
+mod norm;
 mod slice;
 mod wrapper;
 
@@ -21,6 +22,11 @@ pub use slice::ColorSlice;
 pub use wrapper::ColorWrap;
 pub use wrapper::WrapIdentity;
 
+#[cfg(feature = "type_const")]
+pub type ColorArray<C, T> = [T; <<C as ColorData>::Channels as Number>::N];
+#[cfg(not(feature = "type_const"))]
+pub type ColorArray<C, T> = <<C as ColorData>::Channels as Number>::Arr<T>;
+
 /// Information about a Color Space
 pub trait ColorData: Default {
     /// Number of channels or also should be the length of the array.
@@ -29,21 +35,10 @@ pub trait ColorData: Default {
     type WhitePoint: WhitePoint;
     /// Are the Channels Linear
     const LINEAR: bool;
-
     /// Upper or maximum bound of each channel.
-    #[cfg(feature = "type_const")]
-    const CHANNEL_MAX: [BoundF32; <Self::Channels as Number>::N];
-    /// Upper or maximum bound of each channel.
-    #[cfg(not(feature = "type_const"))]
-    const CHANNEL_MAX: <Self::Channels as Number>::Arr<BoundF32>;
-
+    const CHANNEL_MAX: ColorArray<Self, BoundF32>;
     /// Lower or mininum bound of each channel.
-    #[cfg(feature = "type_const")]
-    const CHANNEL_MIN: [BoundF32; <Self::Channels as Number>::N];
-    /// Lower or mininum bound of each channel.
-    #[cfg(not(feature = "type_const"))]
-    const CHANNEL_MIN: <Self::Channels as Number>::Arr<BoundF32>;
-
+    const CHANNEL_MIN: ColorArray<Self, BoundF32>;
     // what else to add?
     // primaries?
 
@@ -60,12 +55,7 @@ pub trait ColorNew: ColorData + Sized {
     /// (same semantics as [`core::array::from_fn`]).
     fn from_fn<F: FnMut(usize) -> f32>(fun: F) -> Self;
     /// Construct the color from an array.
-    #[cfg(feature = "type_const")]
-    fn from_array(array: [f32; <Self::Channels as Number>::N]) -> Self {
-        return Self::from_fn(|i| array[i]);
-    }
-    #[cfg(not(feature = "type_const"))]
-    fn from_array(array: <Self::Channels as Number>::Arr<f32>) -> Self {
+    fn from_array(array: ColorArray<Self, f32>) -> Self {
         return Self::from_fn(|i| array[i]);
     }
     /// Creates a color by repeatedly copying the value to each channel.

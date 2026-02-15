@@ -1,9 +1,10 @@
 use core::fmt::Debug;
 
 use colorkit::convert::ColorNorm;
+use colorkit::layout::*;
 use colorkit::math::BoundF32;
 use colorkit::num_type::*;
-use colorkit::scalar::NormF32;
+use colorkit::scalar::*;
 use colorkit::space::*;
 
 use super::macros::*;
@@ -323,6 +324,26 @@ macro_rules! alpha_traits {
             }
             fn from_inner(self, inner: S) -> $name<S> {
                 return $name::<S>::new(inner, self.0);
+            }
+        }
+
+        impl<S: ColorSpace> ColorLayout for $name<S> {
+            fn from_layout<L: Layout>(layout: L) -> Self {
+                let alpha = layout.get_norm(Self::INDEX).get();
+                let color = S::from_layout(layout);
+                return Self::new(color, alpha);
+            }
+            fn into_layout<L: Layout<Channels = Self::Channels>>(self, round: Rounding) -> L {
+                let n = self.into_norm();
+                return L::from_fn_norm(|i| n[i], round);
+            }
+            fn into_layout_dither<L: Layout<Channels = Self::Channels>, D: Dither>(
+                self,
+                round: Rounding,
+                dither: &mut D,
+            ) -> L {
+                let n = self.into_norm();
+                return L::from_fn_norm_dither(|i| n[i], round, dither);
             }
         }
 

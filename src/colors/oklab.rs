@@ -222,7 +222,7 @@ unsafe impl ColorTransmute for OkLab {}
 impl Default for OkLab {
     #[inline]
     fn default() -> Self {
-        Self([0.0, 0.0, 0.0])
+        return Self([0.0, 0.0, 0.0]);
     }
 }
 

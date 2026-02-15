@@ -10,6 +10,7 @@
 // to use like generics instead of just an f32. Also the compiler
 // should round things correctly anyways.
 #![allow(clippy::excessive_precision)]
+//#![deny(clippy::implicit_return)] // effects closures too =(
 
 pub extern crate self as colorkit;
 

@@ -2,6 +2,15 @@
 #![cfg_attr(feature = "type_const", allow(incomplete_features))]
 #![cfg_attr(feature = "type_const", feature(min_generic_const_args, register_tool))]
 #![cfg_attr(feature = "type_const", register_tool(type_const))] // Make rust analyzer not show this an error.
+
+// Clippy Config
+#![allow(clippy::needless_return)]
+// While this lib uses f32 for most everything, I intentially want
+// consts that could be used for f64 if I ever change the code
+// to use like generics instead of just an f32. Also the compiler
+// should round things correctly anyways.
+#![allow(clippy::excessive_precision)]
+
 pub extern crate self as colorkit;
 
 #[rustfmt::skip]

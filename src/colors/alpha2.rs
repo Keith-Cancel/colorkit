@@ -1,5 +1,6 @@
 use core::fmt::Debug;
 
+use colorkit::convert::ColorNorm;
 use colorkit::math::BoundF32;
 use colorkit::num_type::*;
 use colorkit::scalar::NormF32;
@@ -14,7 +15,7 @@ type ArrInc<S, T> = <<<S as ColorData>::Channels as Number>::Inc as Number>::Arr
 
 /// Wraps a color space with Alpha channel for transparency.
 #[repr(transparent)]
-#[derive(Copy, Clone, Debug, PartialEq)]
+#[derive(Debug, PartialEq)]
 pub struct Alpha<S: ColorSpace>(ArrInc<S, f32>);
 
 alpha_methods!(Alpha);
@@ -46,7 +47,6 @@ impl<S: ColorSpace> Alpha<S> {
     }
 }
 
-/*
 impl<S: ColorSpace> ColorBounds for Alpha<S> {
     fn clamp(mut self) -> Self {
         for i in 0..Self::INDEX {
@@ -82,31 +82,16 @@ impl<S: ColorSpace> ColorBounds for Alpha<S> {
         }
         return BoundF32::in_bounds(S::CHANNEL_MIN[index], S::CHANNEL_MAX[index], self[index]);
     }
-
-    fn get_norm(&self, index: usize) -> NormF32 {
-        if index == Self::INDEX {
-            return NormF32::new(self.alpha());
-        }
-        let b = S::get_norm_bounds(index);
-        return NormF32::with_bounds(self[index], b.0, b.1);
-    }
-
-    fn get_norm_bounds(index: usize) -> (f32, f32) {
-        if index == Self::INDEX {
-            return (0.0, 1.0);
-        }
-        return S::get_norm_bounds(index);
-    }
-
-    fn get_norm_bounded(&self, index: usize, min: f32, max: f32) -> NormF32 {
-        return NormF32::with_bounds(self[index], min, max);
-    }
-}*/
+}
 
 /// A color with it's alpha premultiplied on all other channels.
 #[repr(transparent)]
-#[derive(Copy, Clone, Debug, PartialEq)]
+#[derive(Debug, PartialEq)]
 pub struct AlphaPre<S: ColorSpace>(ArrInc<S, f32>);
+
+alpha_methods!(AlphaPre);
+alpha_traits!(AlphaPre);
+impl_self_index!(AlphaPre<S: ColorSpace>);
 
 impl<S: ColorSpace> AlphaPre<S> {
     const KIND: AlphaKind = AlphaKind::PreMul;
@@ -162,9 +147,32 @@ impl<S: ColorSpace> AlphaPre<S> {
     }
 }
 
-alpha_methods!(AlphaPre);
-alpha_traits!(AlphaPre);
-impl_self_index!(AlphaPre<S: ColorSpace>);
+impl<S: ColorSpace> ColorBounds for AlphaPre<S> {
+    fn clamp(self) -> Self {
+        return self.into_alpha().clamp().premultiply();
+    }
+
+    fn clamp_channel(self, index: usize) -> Self {
+        return self.into_alpha().clamp_channel(index).premultiply();
+    }
+
+    fn is_clamped(&self) -> bool {
+        return self.into_alpha().is_clamped();
+    }
+
+    fn is_channel_clamped(&self, index: usize) -> bool {
+        let alpha = self.alpha();
+        if index == Self::INDEX {
+            return alpha >= 0.0 && alpha <= 1.0;
+        }
+        let value = if alpha == 0.0 {
+            self[index]
+        } else {
+            self[index] / alpha
+        };
+        return BoundF32::in_bounds(S::CHANNEL_MIN[index], S::CHANNEL_MAX[index], value);
+    }
+}
 
 macro_rules! alpha_methods {
     ($name:ident) => {
@@ -213,6 +221,22 @@ pub(crate) use alpha_methods;
 
 macro_rules! alpha_traits {
     ($name:ident) => {
+        // derive copy and clone put a copy bound
+        // and clone bound on S, but unnessicaly
+        // restricts copy and clone
+        impl<S: ColorSpace> Copy for $name<S> {}
+
+        impl<S: ColorSpace> Clone for $name<S> {
+            #[inline]
+            fn clone(&self) -> Self {
+                return *self;
+            }
+            #[inline]
+            fn clone_from(&mut self, src: &Self) {
+                *self = *src;
+            }
+        }
+
         impl<S: ColorSpace> AsRef<[f32]> for $name<S> {
             #[inline]
             fn as_ref(&self) -> &[f32] {

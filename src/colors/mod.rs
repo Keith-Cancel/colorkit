@@ -1,5 +1,5 @@
 //! Colorspaces like [`Srgb`], [`OkLab`], [`Xyz`] ect...
-mod alpha2;
+mod alpha;
 mod oklab;
 mod rgb;
 mod xyz;
@@ -7,9 +7,9 @@ mod xyz;
 #[rustfmt::skip]
 pub(crate) mod macros;
 
-pub use alpha2::Alpha;
-pub use alpha2::AlphaPre;
-pub use alpha2::AlphaWrap;
+pub use alpha::Alpha;
+pub use alpha::AlphaPre;
+pub use alpha::AlphaWrap;
 pub use oklab::OkLab;
 pub use rgb::LinSrgb;
 pub use rgb::Srgb;

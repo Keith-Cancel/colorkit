@@ -2,7 +2,9 @@ use core::ops::Index;
 use core::ops::IndexMut;
 
 /// Trait to let Color Spaces be handled like slices.
-pub trait ColorSlice: AsRef<[f32]> + AsMut<[f32]> + Index<usize, Output = f32> + IndexMut<usize, Output = f32> {
+pub trait ColorSlice:
+    AsRef<[f32]> + AsMut<[f32]> + Index<usize, Output = f32> + IndexMut<usize, Output = f32>
+{
     /// View color as a slice reference.
     fn as_slice(&self) -> &[f32] {
         return self.as_ref();
@@ -26,6 +28,13 @@ pub trait ColorSlice: AsRef<[f32]> + AsMut<[f32]> + Index<usize, Output = f32> +
     /// Length of the slice
     fn len(&self) -> usize {
         return self.as_ref().len();
+    }
+    /// Returns true if `len()` is zero (e.g no channels)
+    ///
+    /// Probably, not really useful for any color space I can
+    /// think of... More of just of a connvention clippy suggests.
+    fn is_empty(&self) -> bool {
+        return self.as_ref().is_empty();
     }
     /// Try to get a reference as an array.
     ///

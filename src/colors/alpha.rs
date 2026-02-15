@@ -240,6 +240,16 @@ macro_rules! alpha_methods {
             pub const fn new_zeroed() -> Self {
                 return Self(repeat::<S, _>(0.0));
             }
+
+            /// Convert the wrapped color space while preserving the alpha channel.
+            pub fn into_color_alpha<S1: ColorSpace>(self) -> Alpha<S1>
+            where
+                S: IntoColor<S1>,
+            {
+                let alpha = self.alpha();
+                let color: S1 = self.strip_alpha().into_color();
+                return Alpha::<S1>::new(color, alpha);
+            }
         }
     };
 }
@@ -369,6 +379,18 @@ macro_rules! alpha_traits {
     };
 }
 pub(crate) use alpha_traits;
+
+impl<S: ColorSpace> FromColor<Alpha<S>> for AlphaPre<S> {
+    fn from_color(color: Alpha<S>) -> Self {
+        return color.premultiply();
+    }
+}
+
+impl<S: ColorSpace> FromColor<AlphaPre<S>> for Alpha<S> {
+    fn from_color(color: AlphaPre<S>) -> Self {
+        return color.into_alpha();
+    }
+}
 
 const fn extend<S: ColorSpace, T: Copy + Debug + PartialEq>(
     array: ColorArray<S, T>,

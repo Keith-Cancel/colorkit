@@ -252,6 +252,7 @@ macro_rules! alpha_traits {
         // restricts copy and clone
         impl<S: ColorSpace> Copy for $name<S> {}
 
+        #[allow(clippy::non_canonical_clone_impl)]
         impl<S: ColorSpace> Clone for $name<S> {
             #[inline]
             fn clone(&self) -> Self {

@@ -1,10 +1,8 @@
 //! Marker types that act as a number, mainly used for [`Layout`](colorkit::layout::Layout).
 use core::array::from_fn;
 use core::fmt::Debug;
-use core::mem::MaybeUninit;
 use core::ops::Index;
 use core::ops::IndexMut;
-use core::slice;
 
 mod private {
     pub trait NumberSealed {}
@@ -66,8 +64,9 @@ impl<T: Copy + Debug + PartialEq, const N: usize> NumArray<T> for [T; N] {
 ///
 /// Would have prefered something like from_fn, but can't call closures or
 /// function pointers in stable either.
+#[cfg(not(feature = "type_const"))]
 pub(crate) const unsafe fn narr_repeat<T: Copy + Debug + PartialEq, A: NumArray<T>>(value: T) -> A {
-    let mut arr: MaybeUninit<A> = MaybeUninit::uninit();
+    let mut arr: core::mem::MaybeUninit<A> = core::mem::MaybeUninit::uninit();
     let ptr = &mut arr as *mut _ as *mut T;
     let mut i = 0;
     // Safety:
@@ -86,6 +85,7 @@ pub(crate) const unsafe fn narr_repeat<T: Copy + Debug + PartialEq, A: NumArray<
 ///
 /// Safety: Same as [`narr_repeat`], plus the length must be in bounds.
 #[inline]
+#[cfg(not(feature = "type_const"))]
 pub(crate) const unsafe fn narr_as_slice<T: Copy + Debug + PartialEq, A: NumArray<T>>(
     array: &A,
 ) -> &[T] {
@@ -93,13 +93,14 @@ pub(crate) const unsafe fn narr_as_slice<T: Copy + Debug + PartialEq, A: NumArra
     // Safety:
     // The caller has made sure that this called only on a NumArray
     // that is actaully an array.
-    return unsafe { slice::from_raw_parts(ptr, A::LEN) };
+    return unsafe { core::slice::from_raw_parts(ptr, A::LEN) };
 }
 
 /// Get [`NumArray`] as a mutable slice, but as a constant fn.
 ///
 /// Safety: Same as [`narr_repeat`], plus the length must be in bounds.
 #[inline]
+#[cfg(not(feature = "type_const"))]
 pub(crate) const unsafe fn narr_as_mut_slice<T: Copy + Debug + PartialEq, A: NumArray<T>>(
     array: &mut A,
 ) -> &mut [T] {
@@ -107,7 +108,7 @@ pub(crate) const unsafe fn narr_as_mut_slice<T: Copy + Debug + PartialEq, A: Num
     // Safety:
     // The caller has made sure that this called only on a NumArray
     // that is actaully an array.
-    return unsafe { slice::from_raw_parts_mut(ptr, A::LEN) };
+    return unsafe { core::slice::from_raw_parts_mut(ptr, A::LEN) };
 }
 
 /// This allows me to work with numbers, as types albeit up to a limited N

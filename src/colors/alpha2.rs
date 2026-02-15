@@ -1,12 +1,13 @@
 use core::fmt::Debug;
 
-use colorkit::convert::ColorNorm;
+use colorkit::convert::*;
 use colorkit::layout::*;
 use colorkit::math::BoundF32;
 use colorkit::num_type::*;
 use colorkit::scalar::*;
 use colorkit::space::*;
 
+use super::Xyz;
 use super::macros::*;
 
 #[cfg(feature = "type_const")]
@@ -347,7 +348,22 @@ macro_rules! alpha_traits {
             }
         }
 
+        impl<S: ColorSpace> FromColor<Xyz<S::WhitePoint>> for $name<S> {
+            fn from_color(color: Xyz<S::WhitePoint>) -> Self {
+                let c: S = color.into_color();
+                return Self::new(c, 1.0);
+            }
+        }
+
+        impl<S: ColorSpace> FromColor<$name<S>> for Xyz<S::WhitePoint> {
+            fn from_color(color: $name<S>) -> Self {
+                let c = color.strip_alpha();
+                return c.into_color();
+            }
+        }
+
         impl<S: ColorSpace> ColorSlice for $name<S> {}
+        impl<S: ColorSpace> ColorSpace for $name<S> {}
     };
 }
 pub(crate) use alpha_traits;

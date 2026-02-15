@@ -263,16 +263,16 @@ impl ColorLayout for OkLab {
     /// This calls `get_norm()` on the layout and shifts value by `+0.5`
     fn from_layout<L: Layout>(layout: L) -> Self {
         debug_assert!(<L::Channels as Number>::N >= 3);
-        let l = layout.get_norm(0).get();
-        let a = layout.get_norm(1).get();
-        let b = layout.get_norm(2).get();
-        return Self([l, a, b]);
+        let l = layout.get_norm(0);
+        let a = layout.get_norm(1);
+        let b = layout.get_norm(2);
+        return Self::from_norm([l, a, b]);
     }
 
     fn into_layout<L: Layout>(self, round: Rounding) -> L {
         debug_assert!(<L::Channels as Number>::N == 3);
-        let a = self.into_norm();
-        return L::from_fn_norm(|i| a[i], round);
+        let n = self.into_norm();
+        return L::from_fn_norm(|i| n[i], round);
     }
 
     fn into_layout_dither<L: Layout, D: crate::scalar::Dither>(

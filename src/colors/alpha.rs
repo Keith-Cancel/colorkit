@@ -52,7 +52,7 @@ impl<S: ColorSpace> Alpha<S> {
 impl<S: ColorSpace> ColorBounds for Alpha<S> {
     fn clamp(mut self) -> Self {
         for i in 0..Self::INDEX {
-            self[i] = BoundF32::clamp(S::CHANNEL_MAX[i], S::CHANNEL_MAX[i], self[i]);
+            self[i] = BoundF32::clamp(S::CHANNEL_MIN[i], S::CHANNEL_MAX[i], self[i]);
         }
         self[Self::INDEX] = self[Self::INDEX].clamp(0.0, 1.0);
         return self;
@@ -63,12 +63,13 @@ impl<S: ColorSpace> ColorBounds for Alpha<S> {
             self[Self::INDEX] = self[Self::INDEX].clamp(0.0, 1.0);
             return self;
         }
+        self[index] = BoundF32::clamp(S::CHANNEL_MIN[index], S::CHANNEL_MAX[index], self[index]);
         return self;
     }
 
     fn is_clamped(&self) -> bool {
         for i in 0..Self::INDEX {
-            if BoundF32::in_bounds(S::CHANNEL_MIN[i], S::CHANNEL_MAX[i], self[i]) {
+            if !BoundF32::in_bounds(S::CHANNEL_MIN[i], S::CHANNEL_MAX[i], self[i]) {
                 return false;
             }
         }

@@ -467,7 +467,7 @@ const fn as_mut_slice<S: ColorSpace, T: Copy + Debug + PartialEq>(array: &mut Ar
 
 /// Implements [`ColorWrap`] for [`Alpha`] and [`AlphaPre`]
 ///
-/// The inner [`f32`] is used as the alpha channel for [`ColorWrap::from_inner`].
+/// The inner [`f32`] is used as the alpha channel for [`ColorWrap::wrap_inner`].
 #[repr(transparent)]
 #[derive(Clone, Copy, Debug, Default, PartialEq, PartialOrd)]
 pub struct AlphaWrap(pub f32);

@@ -1,15 +1,17 @@
-use core::f64::consts;
+use core::f64::consts::FRAC_PI_2;
 
 pub const fn atanf(x: f32) -> f32 {
-    let s = x < 0.0;
-    let x = x.abs() as f64;
-    let (pi, x) = if x > 1.0 { (true, 1.0 / x) } else { (false, x) };
+    let recip = x > 1.0 || x < -1.0;
+    let x = x as f64;
+    let pi = FRAC_PI_2.copysign(x);
+    let x = if recip { 1.0 / x } else { x };
 
     let x_2 = x * x;
     let x_4 = x_2 * x_2;
     let x_6 = x_4 * x_2;
 
     /*
+    atan(x) ~= x * (P(x^2) / Q(x^2)) for [0.0..=1.0]
     p0 = 19.818_45704_21239;
     p1 = 22.376_09645_14904;
     p2 = 5.6710_79451_63760;
@@ -24,8 +26,7 @@ pub const fn atanf(x: f32) -> f32 {
         + 22.376_09645_14904 * x_2
         + 19.818_45704_21239;
     let q = x_6 + 11.368_19042_96686 * x_4 + 28.982_24639_72206 * x_2 + 19.818_45705_95466;
-
-    let x = x * (p / q);
-    let x = if pi { consts::FRAC_PI_2 - x } else { x } as f32;
-    return if s { -x } else { x };
+    let r = x * (p / q);
+    let r = if recip { pi - r } else { r };
+    return r as f32;
 }

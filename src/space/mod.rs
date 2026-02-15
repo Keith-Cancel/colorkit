@@ -101,12 +101,12 @@ pub trait RgbLike: ColorSpace {
     /// Get the Color's blue channel value.
     #[inline]
     fn blue(&self) -> f32 {
-        return self[1];
+        return self[2];
     }
     /// Get the Color's green channel value.
     #[inline]
     fn green(&self) -> f32 {
-        return self[2];
+        return self[1];
     }
     /// Set the Color's red channel value.
     #[inline]
@@ -116,12 +116,12 @@ pub trait RgbLike: ColorSpace {
     /// Set the Color's blue channel value.
     #[inline]
     fn set_blue(&mut self, value: f32) {
-        self[1] = value;
+        self[2] = value;
     }
 
     /// Set the Color's green channel value.
     #[inline]
     fn set_green(&mut self, value: f32) {
-        self[2] = value;
+        self[1] = value;
     }
 }

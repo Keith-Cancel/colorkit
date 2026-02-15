@@ -29,7 +29,7 @@ impl<S: ColorSpace> Alpha<S> {
     /// Create a new Alpha color with a color and alpha channel value.
     pub fn new(color: S, alpha: f32) -> Self {
         return Self(ArrInc::<S, f32>::from_fn(|i| {
-            if i >= S::Channels::N { alpha } else { color[i] }
+            if i == Self::INDEX { alpha } else { color[i] }
         }));
     }
     /// Remove the alpha channel.
@@ -115,7 +115,7 @@ impl<S: ColorSpace> AlphaPre<S> {
     /// Create a new premultiplied Alpha color with a color and alpha channel value.
     pub fn new(color: S, alpha: f32) -> Self {
         return Self(ArrInc::<S, f32>::from_fn(|i| {
-            if i >= S::Channels::N {
+            if i == Self::INDEX {
                 alpha
             } else {
                 color[i] * alpha
@@ -205,6 +205,14 @@ macro_rules! alpha_methods {
         impl<S: ColorSpace> $name<S> {
             /// The index of the alpha channel.
             pub const INDEX: usize = S::Channels::N;
+
+            /// Create alpha color that is fully opaque.
+            pub fn new_opaque(color: S) -> Self {
+                return Self(ArrInc::<S, f32>::from_fn(|i| {
+                    if i == Self::INDEX { 1.0 } else { color[i] }
+                }));
+            }
+
             /// Get the colors alpha channel value.
             #[inline]
             pub const fn alpha(&self) -> f32 {

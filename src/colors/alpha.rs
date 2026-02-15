@@ -156,6 +156,7 @@ impl<S: ColorSpace + ColorTransmute> AlphaPre<S> {
         for v in self.0.as_mut_slice() {
             *v = (*v / self.1) * alpha;
         }
+        self.1 = alpha;
     }
     /// Convert to normal alpha with no premultiplication.
     pub fn into_alpha(self) -> Alpha<S> {
@@ -490,7 +491,7 @@ mod test {
         assert_eq!(a[0], 0.1875);
         assert_eq!(a[1], 0.125);
         assert_eq!(a[2], 0.0625);
-        assert_eq!(a[3], 0.5);
+        assert_eq!(a[3], 0.25);
     }
 
     #[test]

@@ -83,7 +83,6 @@ impl<C1: FromColor<C2>, C2: FromColor<C1>> FromColorBoth<C2> for C1 {}
 
 impl<C: ColorNew + XyzMatrices<Channels = N3>> FromColor<Xyz<C::WhitePoint>> for C {
     fn from_color(color: Xyz<C::WhitePoint>) -> Self {
-        debug_assert!(C::Channels::N == 3);
         let c = matrix_3x3_vec3_mul(&Self::FROM_XYZ, color.as_slice());
         return Self::from_fn(|i| c[i]);
     }
@@ -91,7 +90,6 @@ impl<C: ColorNew + XyzMatrices<Channels = N3>> FromColor<Xyz<C::WhitePoint>> for
 
 impl<C: ColorNew + ColorSlice + XyzMatrices<Channels = N3>> FromColor<C> for Xyz<C::WhitePoint> {
     fn from_color(color: C) -> Self {
-        debug_assert!(C::Channels::N == 3);
         return Xyz::from_array(matrix_3x3_vec3_mul(&C::INTO_XYZ, color.as_slice()));
     }
 }
@@ -102,6 +100,7 @@ impl<C: ColorNew + ColorSlice + XyzMatrices<Channels = N3>> FromColor<C> for Xyz
 /// This marker trait marks that a color can be transmuted
 /// into and from array of [f32; [`ColorData::Channels`]]
 ///
+/// # Safety
 /// Essentially `size_of::<Self>() / size_of::<f32>()` should
 /// equal [`ColorData::Channels`], plus other constraints like
 /// alignment ect...

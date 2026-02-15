@@ -59,9 +59,7 @@ pub struct RoundingIter(Option<Rounding>);
 impl Iterator for RoundingIter {
     type Item = Rounding;
     fn next(&mut self) -> Option<Self::Item> {
-        let Some(cur) = self.0 else {
-            return None;
-        };
+        let cur = self.0?;
         let next = match cur {
             Rounding::Nearest => Some(Rounding::Even),
             Rounding::Even => Some(Rounding::TowardZero),

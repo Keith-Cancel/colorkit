@@ -180,7 +180,7 @@ impl<S: ColorSpace> ColorBounds for AlphaPre<S> {
     fn is_channel_clamped(&self, index: usize) -> bool {
         let alpha = self.alpha();
         if index == Self::INDEX {
-            return alpha >= 0.0 && alpha <= 1.0;
+            return (0.0..=1.0).contains(&alpha);
         }
         let value = if alpha == 0.0 {
             self[index]

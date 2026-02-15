@@ -125,7 +125,7 @@ macro_rules! base_funcs {
             }
             fn is_clamped(&self) -> bool {
                 for v in self.0 {
-                    if v < 0.0 || v > 1.0 {
+                    if !(0.0..=1.0).contains(&v) {
                         return false;
                     }
                 }
@@ -133,8 +133,7 @@ macro_rules! base_funcs {
             }
             #[inline]
             fn is_channel_clamped(&self, index: usize) -> bool {
-                let c = self.0[index];
-                return c >= 0.0 && c <= 1.0;
+                return (0.0..=1.0).contains(&self[index]);
             }
         }
 

@@ -12,7 +12,7 @@ pub use uint_type::BitUintType;
 pub struct RangeError<T>(T);
 
 /// A variable bit-width unsigned integer.
-#[derive(Copy, Debug, Eq)]
+#[derive(Copy, Clone, Debug, Eq)]
 #[repr(transparent)]
 pub struct BitUint<const BITS: u32, T: BitUintType = u32>(T);
 
@@ -52,6 +52,11 @@ impl<const BITS: u32, T: BitUintType> BitUint<BITS, T> {
         return Self(value & Self::MAX.get());
     }
 
+    /// Create a new [`BitUint`], but the value is neither clamped
+    /// or masked.
+    ///
+    /// # Safety
+    /// Ensure that value is in the range of MIN and MAX.
     pub const unsafe fn new_unchecked(value: T) -> Self {
         return Self(value);
     }
@@ -90,18 +95,6 @@ impl<const BITS: u32, T: BitUintType> BitUint<BITS, T> {
 impl<T: BitUintType, const BITS: u32> Default for BitUint<BITS, T> {
     fn default() -> Self {
         return Self::DEFAULT;
-    }
-}
-
-impl<T: BitUintType, const BITS: u32> Clone for BitUint<BITS, T> {
-    #[inline(always)]
-    fn clone(&self) -> Self {
-        return *self;
-    }
-
-    #[inline(always)]
-    fn clone_from(&mut self, source: &Self) {
-        *self = *source;
     }
 }
 

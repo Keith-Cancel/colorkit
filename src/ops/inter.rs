@@ -35,7 +35,7 @@ impl<C: ColorSpace> Interpolation for C {
         let r = ratio.clamp(0.0, 1.0);
         // If the color type stores premultiplied channels naive lerp is correct.
         if matches!(Self::ALPHA_KIND, AlphaKind::PreMul) {
-            return C::lerp_naive(&self, other, r);
+            return C::lerp_naive(self, other, r);
         }
         // If there is no alpha channel, fall back to naive per-component lerp.
         let Some(a_idx) = Self::ALPHA_INDEX else {

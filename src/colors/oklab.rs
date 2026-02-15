@@ -158,9 +158,9 @@ impl_from_inner!([f32; 3], OkLab);
 impl ColorBounds for OkLab {
     fn clamp(self) -> Self {
         let mut a = self.0;
-        for i in 0..3 {
+        for (i, v) in a.iter_mut().enumerate() {
             let b = Self::BOUNDS[i];
-            a[i] = a[i].clamp(b.0, b.1);
+            *v = v.clamp(b.0, b.1);
         }
         return Self::from_array(a);
     }

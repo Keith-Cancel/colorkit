@@ -12,7 +12,7 @@ use super::Scalar;
 pub struct NotNormalized(pub f32);
 
 /// An f32 normalized between [0.0, 1.0]
-#[derive(Copy, Debug, Default)]
+#[derive(Clone, Copy, Debug, Default)]
 #[repr(transparent)]
 pub struct NormF32(f32);
 
@@ -54,6 +54,7 @@ impl NormF32 {
     /// Unchecked constructor - caller guarantees invariant
     /// that float is between `[0.0, 1.0]`.
     ///
+    /// # Safety
     /// (pattern similar to [`core::num::NonZero`] types).
     #[inline]
     pub const unsafe fn new_unchecked(value: f32) -> Self {
@@ -99,18 +100,6 @@ impl NormF32 {
     #[allow(unused_braces)]
     pub const fn to_ne_bytes(self) -> [u8; const { size_of::<Self>() }] {
         return self.0.to_ne_bytes();
-    }
-}
-
-impl Clone for NormF32 {
-    #[inline(always)]
-    fn clone(&self) -> Self {
-        return *self;
-    }
-
-    #[inline(always)]
-    fn clone_from(&mut self, source: &Self) {
-        *self = *source;
     }
 }
 

@@ -5,7 +5,7 @@ pub const fn ulp_int_diff_f32(a: f32, b: f32) -> u32 {
     }
     let a = a.to_bits();
     let b = b.to_bits();
-    return if a > b { a - b } else { b - a };
+    return a.abs_diff(b);
 }
 
 #[cfg(test)]

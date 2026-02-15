@@ -11,10 +11,6 @@ impl PartialEq for NormF32 {
     fn eq(&self, rhs: &NormF32) -> bool {
         return f32::eq(&self.0, &rhs.0);
     }
-    #[inline]
-    fn ne(&self, rhs: &NormF32) -> bool {
-        return f32::ne(&self.0, &rhs.0);
-    }
 }
 
 impl PartialEq<f32> for NormF32 {
@@ -22,20 +18,12 @@ impl PartialEq<f32> for NormF32 {
     fn eq(&self, rhs: &f32) -> bool {
         return f32::eq(&self.0, rhs);
     }
-    #[inline]
-    fn ne(&self, rhs: &f32) -> bool {
-        return f32::ne(&self.0, rhs);
-    }
 }
 
 impl PartialEq<NormF32> for f32 {
     #[inline]
     fn eq(&self, rhs: &NormF32) -> bool {
         return f32::eq(self, &rhs.0);
-    }
-    #[inline]
-    fn ne(&self, rhs: &NormF32) -> bool {
-        return f32::ne(self, &rhs.0);
     }
 }
 

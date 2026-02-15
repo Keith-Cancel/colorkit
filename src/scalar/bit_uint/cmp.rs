@@ -13,20 +13,12 @@ impl<T: BitUintType, const BITS: u32> PartialEq for BitUint<BITS, T> {
     fn eq(&self, rhs: &Self) -> bool {
         return T::eq(&self.0, &rhs.0);
     }
-    #[inline]
-    fn ne(&self, rhs: &Self) -> bool {
-        return T::ne(&self.0, &rhs.0);
-    }
 }
 
 impl<T: BitUintType, const BITS: u32> PartialEq<T> for BitUint<BITS, T> {
     #[inline]
     fn eq(&self, rhs: &T) -> bool {
         return T::eq(&self.0, rhs);
-    }
-    #[inline]
-    fn ne(&self, rhs: &T) -> bool {
-        return T::ne(&self.0, rhs);
     }
 }
 
@@ -36,10 +28,6 @@ macro_rules! impl_lhs_eq {
             #[inline]
             fn eq(&self, rhs: &BitUint<BITS, $typ>) -> bool {
                 return $typ::eq(self, &rhs.0);
-            }
-            #[inline]
-            fn ne(&self, rhs: &BitUint<BITS, $typ>) -> bool {
-                return $typ::ne(self, &rhs.0);
             }
         }
     };

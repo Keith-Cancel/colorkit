@@ -51,7 +51,7 @@ pub trait AlphaMaybe: ColorData {
     ///
     /// Otherwise this should just return `Self`
     fn strip_alpha(self) -> <Self::AlphaWrap as ColorWrap<Self>>::Inner {
-        return <Self::AlphaWrap as ColorWrap<Self>>::into_inner(self);
+        return <Self::AlphaWrap as ColorWrap<Self>>::unwrap_inner(self);
     }
     /// Try to use the alpha channel if present, otherwise default to `1.0`
     /// for fully opaque.

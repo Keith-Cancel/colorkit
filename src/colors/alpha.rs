@@ -322,10 +322,10 @@ macro_rules! alpha_traits {
 
         impl<S: ColorSpace> ColorWrap<$name<S>> for AlphaWrap {
             type Inner = S;
-            fn into_inner(wrapper: $name<S>) -> S {
+            fn unwrap_inner(wrapper: $name<S>) -> S {
                 return wrapper.strip_alpha();
             }
-            fn from_inner(self, inner: S) -> $name<S> {
+            fn wrap_inner(self, inner: S) -> $name<S> {
                 return $name::<S>::new(inner, self.0);
             }
         }

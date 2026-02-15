@@ -1,9 +1,11 @@
+mod atan;
 mod cbrt;
 mod quirt;
 mod rounding;
 mod sqrt;
 mod ulp;
 
+pub use atan::atanf;
 pub use cbrt::cbrtf;
 pub use quirt::quirtf;
 pub use rounding::ceilf;

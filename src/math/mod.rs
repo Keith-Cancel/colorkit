@@ -12,6 +12,7 @@ mod universal;
 // at the time of writing this sighs....
 // I guess in the mean time just add const version that
 // that calls the universal implementation.
+pub use universal::atanf;
 pub use universal::cbrtf;
 pub use universal::quirtf;
 pub use universal::roundf;

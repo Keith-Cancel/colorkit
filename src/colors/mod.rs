@@ -8,8 +8,9 @@ mod xyz;
 #[rustfmt::skip]
 pub(crate) mod macros;
 
-pub use alpha::Alpha;
-pub use alpha::AlphaPre;
+pub use alpha2::Alpha;
+pub use alpha2::AlphaPre;
+pub use alpha2::AlphaWrap;
 pub use oklab::OkLab;
 pub use rgb::LinSrgb;
 pub use rgb::Srgb;

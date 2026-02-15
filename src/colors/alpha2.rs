@@ -84,6 +84,20 @@ impl<S: ColorSpace> ColorBounds for Alpha<S> {
     }
 }
 
+impl<S: ColorSpace> ColorNorm for Alpha<S> {
+    fn into_norm(self) -> ColorArray<Self, NormF32> {
+        let a = self.alpha();
+        let c = self.strip_alpha().into_norm();
+        return extend::<S, _>(c, NormF32::new(a));
+    }
+    fn from_norm<T: AsRef<[NormF32]>>(values: T) -> Self {
+        let v = values.as_ref();
+        let a = v[Self::INDEX].get();
+        let c = S::from_norm(&v[..v.len() - 1]);
+        return Self::new(c, a);
+    }
+}
+
 /// A color with it's alpha premultiplied on all other channels.
 #[repr(transparent)]
 #[derive(Debug, PartialEq)]
@@ -171,6 +185,15 @@ impl<S: ColorSpace> ColorBounds for AlphaPre<S> {
             self[index] / alpha
         };
         return BoundF32::in_bounds(S::CHANNEL_MIN[index], S::CHANNEL_MAX[index], value);
+    }
+}
+
+impl<S: ColorSpace> ColorNorm for AlphaPre<S> {
+    fn into_norm(self) -> ColorArray<Self, NormF32> {
+        return self.into_alpha().into_norm();
+    }
+    fn from_norm<T: AsRef<[NormF32]>>(values: T) -> Self {
+        return Alpha::<S>::from_norm(values).premultiply();
     }
 }
 

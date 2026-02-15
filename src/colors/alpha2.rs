@@ -453,3 +453,78 @@ impl From<AlphaWrap> for NormF32 {
         return NormF32::new(value.0);
     }
 }
+
+#[cfg(test)]
+mod test {
+    use colorkit::colors::OkLab;
+    use colorkit::colors::Srgb;
+    use colorkit::colors::Xyz;
+    use colorkit::wp::D65;
+
+    use super::*;
+
+    #[test]
+    fn alpha_pre() {
+        // All fraction powers of 2 so results should be exact.
+        let mut a = AlphaPre::new(Srgb::new(0.75, 0.5, 0.25), 0.5);
+        assert_eq!(a[0], 0.375);
+        assert_eq!(a[1], 0.25);
+        assert_eq!(a[2], 0.125);
+        assert_eq!(a[3], 0.5);
+
+        let b = a.into_alpha();
+        assert_eq!(b[0], 0.75);
+        assert_eq!(b[1], 0.5);
+        assert_eq!(b[2], 0.25);
+        assert_eq!(b[3], 0.5);
+
+        a.update_alpha(0.25);
+        assert_eq!(a[0], 0.1875);
+        assert_eq!(a[1], 0.125);
+        assert_eq!(a[2], 0.0625);
+        assert_eq!(a[3], 0.25);
+    }
+
+    #[test]
+    fn min_max() {
+        assert_eq!(<Alpha<Srgb>>::CHANNEL_MAX.len(), 4);
+        assert_eq!(<Alpha<Srgb>>::CHANNEL_MIN.len(), 4);
+
+        assert_eq!(<Alpha<Xyz<D65>>>::CHANNEL_MAX.len(), 4);
+        assert_eq!(<Alpha<Xyz<D65>>>::CHANNEL_MAX[0], BoundF32::Unbounded);
+        assert_eq!(<Alpha<Xyz<D65>>>::CHANNEL_MAX[1], BoundF32::Unbounded);
+        assert_eq!(<Alpha<Xyz<D65>>>::CHANNEL_MAX[2], BoundF32::Unbounded);
+        assert_eq!(<Alpha<Xyz<D65>>>::CHANNEL_MAX[3], BoundF32::Include(1.0));
+
+        assert_eq!(<Alpha<OkLab>>::CHANNEL_MAX.len(), 4);
+        assert_eq!(<Alpha<OkLab>>::CHANNEL_MAX[0], BoundF32::Include(1.0));
+        assert_eq!(<Alpha<OkLab>>::CHANNEL_MAX[1], BoundF32::Include(0.5));
+        assert_eq!(<Alpha<OkLab>>::CHANNEL_MAX[2], BoundF32::Include(0.5));
+        assert_eq!(<Alpha<OkLab>>::CHANNEL_MAX[3], BoundF32::Include(1.0));
+
+        assert_eq!(<Alpha<OkLab>>::CHANNEL_MIN[0], BoundF32::Include(0.0));
+        assert_eq!(<Alpha<OkLab>>::CHANNEL_MIN[1], BoundF32::Include(-0.5));
+        assert_eq!(<Alpha<OkLab>>::CHANNEL_MIN[2], BoundF32::Include(-0.5));
+        assert_eq!(<Alpha<OkLab>>::CHANNEL_MIN[3], BoundF32::Include(0.0));
+    }
+
+    #[test]
+    fn from_fn() {
+        let arr = [0.125f32, 0.25, 0.375, 0.5];
+        let c = <Alpha<Srgb>>::from_fn(|i| arr[i]);
+        assert_eq!(c[0], 0.125);
+        assert_eq!(c[1], 0.25);
+        assert_eq!(c[2], 0.375);
+        assert_eq!(c[3], 0.5);
+    }
+
+    #[test]
+    fn get_norm() {
+        let a0 = Alpha::new(Srgb::new_u8(64, 128, 192), 0.75);
+        let a1 = a0.premultiply();
+        let n0 = a0.into_norm();
+        let n1 = a1.into_norm();
+
+        assert_eq!(n0, n1);
+    }
+}

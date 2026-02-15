@@ -106,7 +106,7 @@ impl OkLab {
     /// Set the Color's the `a` channel's value.
     #[inline]
     pub const fn set_a(&mut self, value: f32) {
-        self.0[0] = value;
+        self.0[1] = value;
     }
     /// Set the Color's the `b` channel's value.
     #[inline]
@@ -405,5 +405,17 @@ mod test {
         assert!(lab[0].almost_eq(0.702, 1e-3));
         assert!(lab[1].almost_eq(0.275, 1e-3));
         assert!(lab[2].almost_eq(-0.169, 1e-3));
+    }
+
+    #[test]
+    fn set_get() {
+        let mut c = OkLab::new(0.1, 0.2, 0.3);
+        c.set_l(0.25);
+        c.set_a(0.5);
+        c.set_b(0.75);
+        assert_eq!(c.into_array(), [0.25, 0.5, 0.75]);
+        assert_eq!(c.l(), 0.25);
+        assert_eq!(c.a(), 0.5);
+        assert_eq!(c.b(), 0.75);
     }
 }

@@ -212,7 +212,11 @@ macro_rules! alpha_methods {
                     if i == Self::INDEX { 1.0 } else { color[i] }
                 }));
             }
-
+            /// Split/break the alpha color into two parts.
+            pub fn into_parts(self) -> (S, f32) {
+                let a = self.alpha();
+                return (self.strip_alpha(), a);
+            }
             /// Get the colors alpha channel value.
             #[inline]
             pub const fn alpha(&self) -> f32 {

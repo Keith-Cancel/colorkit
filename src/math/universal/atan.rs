@@ -9,7 +9,7 @@ const fn mul_add(x: f64, a: f64, b: f64) -> f64 {
 #[cfg(not(target_arch = "x86_64"))]
 #[inline(always)]
 const fn mul_add(x: f64, a: f64, b: f64) -> f64 {
-    return x * a + c;
+    return x * a + b;
 }
 
 const fn atan_poly(x: f64) -> f64 {

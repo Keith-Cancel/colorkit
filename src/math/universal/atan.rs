@@ -27,16 +27,30 @@ const fn atan_poly(x: f64) -> f64 {
     return p / q;
 }
 
-pub const fn atanf2(x: f32) -> f32 {
+pub const fn atanf(x: f32) -> f32 {
     let mut x_1 = x as f64;
     let mut f = 0.0;
+    let x = x.abs();
 
-    if x.abs() > 1.0 {
-        f = FRAC_PI_2.copysign(x_1);
-        x_1 = -x_1.recip();
+    if x > 6.0 {
+        let x_2 = x_1 * x_1;
+        let p = mul_add(x_2, 1155.0, 1190.0);
+        let p = mul_add(x_2, p, 231.0);
+
+        let q = mul_add(x_2, 1155.0, 1575.0);
+        let q = mul_add(x_2, q, 525.0);
+        let q = mul_add(x_2, q, 25.0);
+
+        let r = x_1 * (p / q);
+
+        return (FRAC_PI_2.copysign(x_1) - r) as f32;
     }
 
-    if x.abs() >= 0.30209234 {
+    if x >= 1.05 {
+        let c = (1.0 / 0.48f64).copysign(x_1);
+        f += 1.1232763516377267f64.copysign(x_1); // ~= arctan(c);
+        x_1 = (x_1 - c) / mul_add(x_1, c, 1.0);
+    } else if x >= 0.30209234 {
         let c = (1.0 / 1.67f64).copysign(x_1);
         f += 0.5395384432298387f64.copysign(x_1); // ~= arctan(c);
         x_1 = (x_1 - c) / mul_add(x_1, c, 1.0);
@@ -46,7 +60,7 @@ pub const fn atanf2(x: f32) -> f32 {
     return r as f32;
 }
 
-pub const fn atanf(x: f32) -> f32 {
+pub const fn atanf2(x: f32) -> f32 {
     let recip = x > 1.0 || x < -1.0;
     let x = x as f64;
     let pi = FRAC_PI_2.copysign(x);

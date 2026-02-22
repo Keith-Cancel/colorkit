@@ -1,4 +1,6 @@
-use core::f32;
+use core::f32::consts::FRAC_PI_2;
+use core::f32::consts::FRAC_PI_4;
+use core::f32::consts::PI;
 use core::f64;
 
 use colorkit::math::fma_inner;
@@ -28,7 +30,7 @@ pub fn atanf(x: f32) -> f32 {
     // As x gets larger it eventually
     // just become PI/2
     if x_pos >= 62919776.0 {
-        return f32::consts::FRAC_PI_2.copysign(x);
+        return FRAC_PI_2.copysign(x);
     }
 
     let mut x_1 = x as f64;
@@ -67,18 +69,28 @@ pub fn atan2f(y: f32, x: f32) -> f32 {
         return x + y; // {any} + NaN = NaN
     }
 
+    let x_i = x.to_bits();
+    let y_i = y.to_bits();
+    let x_a = x_i & 0x7fff_ffff; // abs(x)
+    let y_a = y_i & 0x7fff_ffff; // abs(y)
+
     if x == 0.0 {
-        let neg = x.to_bits() == 0x8000_0000;
-        let r = if neg { f32::consts::PI } else { 0.0 };
+        let r = if x_i == 0x8000_0000 { PI } else { 0.0 };
         return r.copysign(y);
     }
+    // x is +-infinity and y is +-infinity
+    if x_a == 0x7f80_0000 && y_a == 0x7f80_0000 {
+        let r = if x_i == 0xff80_0000 {
+            3.0 * FRAC_PI_4
+        } else {
+            FRAC_PI_4
+        };
+        return r.copysign(y);
+    }
+
     let mut t = atanf(y / x);
     if x < 0.0 {
-        t += if y < 0.0 {
-            -f32::consts::PI
-        } else {
-            f32::consts::PI
-        };
+        t += if y < 0.0 { -PI } else { PI };
     }
     return t;
 }
@@ -102,6 +114,11 @@ mod test {
         assert_eq!(atan2f(inf, -f32::MAX), consts::FRAC_PI_2);
         assert_eq!(atan2f(ninf, f32::MAX), -consts::FRAC_PI_2);
         assert_eq!(atan2f(ninf, -f32::MAX), -consts::FRAC_PI_2);
+
+        assert_eq!(atan2f(inf, inf), consts::FRAC_PI_4);
+        assert_eq!(atan2f(inf, ninf), 3.0 * consts::FRAC_PI_4);
+        assert_eq!(atan2f(ninf, inf), -consts::FRAC_PI_4);
+        assert_eq!(atan2f(ninf, ninf), 3.0 * -consts::FRAC_PI_4);
     }
 }
 

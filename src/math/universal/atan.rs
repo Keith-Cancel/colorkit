@@ -68,14 +68,9 @@ pub fn atan2f(y: f32, x: f32) -> f32 {
     }
 
     if x == 0.0 {
-        if y == 0.0 {
-            return f32::NAN;
-        }
-        return if y < 0.0 {
-            -f32::consts::FRAC_PI_2
-        } else {
-            f32::consts::FRAC_PI_2
-        };
+        let neg = x.to_bits() == 0x8000_0000;
+        let r = if neg { f32::consts::PI } else { 0.0 };
+        return r.copysign(y);
     }
     let mut t = atanf(y / x);
     if x < 0.0 {
@@ -86,6 +81,21 @@ pub fn atan2f(y: f32, x: f32) -> f32 {
         };
     }
     return t;
+}
+
+#[cfg(test)]
+mod test {
+    use core::f32;
+
+    use super::*;
+    #[test]
+    fn atan2_f32() {
+        // Make sure all 4 zero cases match C's atanf
+        assert_eq!(atan2f(0.0, 0.0).to_bits(), 0);
+        assert_eq!(atan2f(0.0, -0.0), f32::consts::PI);
+        assert_eq!(atan2f(-0.0, 0.0).to_bits(), 0x8000_0000);
+        assert_eq!(atan2f(-0.0, -0.0), -f32::consts::PI);
+    }
 }
 
 /*

@@ -110,6 +110,7 @@ mod test {
         assert_eq!(atan2f(-0.0, 0.0).to_bits(), 0x8000_0000);
         assert_eq!(atan2f(-0.0, -0.0), -PI);
 
+        // Make sure infinities match C's atanf.
         assert_eq!(atan2f(inf, f32::MAX), FRAC_PI_2);
         assert_eq!(atan2f(inf, -f32::MAX), FRAC_PI_2);
         assert_eq!(atan2f(ninf, f32::MAX), -FRAC_PI_2);

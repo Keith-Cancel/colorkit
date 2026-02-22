@@ -29,7 +29,8 @@ const fn atan_poly(x: f64) -> f64 {
 
 pub const fn atanf(x: f32) -> f32 {
     let x_pos = x.abs();
-    // When x is small enough it's just X.
+    // When x is small enough it's just x.
+    // Also preserves the sign of zero.
     if x_pos < 0.00035211173 {
         return x;
     }

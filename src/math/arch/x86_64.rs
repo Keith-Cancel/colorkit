@@ -81,10 +81,14 @@ pub fn fma(mut x: f64, a: f64, b: f64) -> f64 {
 
 #[cfg(all(test, not(miri)))]
 mod test {
+    #[allow(unused)]
     use super::*;
     #[test]
+    #[cfg(target_feature = "fma")]
     fn fma_f64() {
-        let x = fma(12.0, 3.0, 1.0);
-        assert_eq!(x, 37.0);
+        {
+            let x = fma(12.0, 3.0, 1.0);
+            assert_eq!(x, 37.0);
+        }
     }
 }

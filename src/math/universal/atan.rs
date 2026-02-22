@@ -116,6 +116,11 @@ mod test {
         assert_eq!(atan2f(ninf, f32::MAX), -FRAC_PI_2);
         assert_eq!(atan2f(ninf, -f32::MAX), -FRAC_PI_2);
 
+        assert_eq!(atan2f(f32::MAX, inf).to_bits(), 0);
+        assert_eq!(atan2f(-f32::MAX, inf).to_bits(), 0x8000_0000);
+        assert_eq!(atan2f(f32::MAX, ninf), PI);
+        assert_eq!(atan2f(-f32::MAX, ninf), -PI);
+
         assert_eq!(atan2f(inf, inf), FRAC_PI_4);
         assert_eq!(atan2f(inf, ninf), 3.0 * FRAC_PI_4);
         assert_eq!(atan2f(ninf, inf), -FRAC_PI_4);

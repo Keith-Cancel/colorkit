@@ -23,7 +23,7 @@ impl MathFn for Quirt {
     }
 
     fn rug_impl(prec: u32, x: f32) -> Float {
-        let neg = x < 0.0;
+        let neg = (x.to_bits() >> 31) == 1;
         let p = Float::with_val(prec, 5u32).recip();
         let x = Float::with_val(prec, x).abs().pow(p);
         return if neg { -x } else { x };

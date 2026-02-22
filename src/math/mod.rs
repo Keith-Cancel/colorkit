@@ -89,6 +89,8 @@ pub use universal::truncf as truncf_const;
 /// performance of these functions in the root of this repo
 /// called `test_math`
 pub trait MathFuncs: Sized {
+    /// Computes the arctangent.
+    fn atan(self) -> Self;
     /// Computes the square root
     fn sqrt(self) -> Self;
     /// Compute the cube root.
@@ -133,6 +135,10 @@ pub trait MathFuncs: Sized {
 }
 
 impl MathFuncs for f32 {
+    fn atan(self) -> f32 {
+        return atanf(self);
+    }
+
     fn sqrt(self) -> f32 {
         return sqrtf(self);
     }

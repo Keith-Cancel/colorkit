@@ -26,6 +26,7 @@ impl Relative {
     pub fn new() -> Self {
         let mut v = Vec::<f32>::with_capacity(2100);
         v.push(0.0);
+        v.push(-0.0);
         v.push(consts::E);
         v.push(consts::PI);
         v.push(consts::FRAC_1_PI);

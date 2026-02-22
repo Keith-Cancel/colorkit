@@ -97,7 +97,7 @@ pub fn atan2f(y: f32, x: f32) -> f32 {
 
 #[cfg(test)]
 mod test {
-    use core::f32::consts;
+    use core::f32::consts::*;
 
     use super::*;
     #[test]
@@ -106,19 +106,19 @@ mod test {
         let ninf = f32::NEG_INFINITY;
         // Make sure all 4 zero cases match C's atanf
         assert_eq!(atan2f(0.0, 0.0).to_bits(), 0);
-        assert_eq!(atan2f(0.0, -0.0), consts::PI);
+        assert_eq!(atan2f(0.0, -0.0), PI);
         assert_eq!(atan2f(-0.0, 0.0).to_bits(), 0x8000_0000);
-        assert_eq!(atan2f(-0.0, -0.0), -consts::PI);
+        assert_eq!(atan2f(-0.0, -0.0), -PI);
 
-        assert_eq!(atan2f(inf, f32::MAX), consts::FRAC_PI_2);
-        assert_eq!(atan2f(inf, -f32::MAX), consts::FRAC_PI_2);
-        assert_eq!(atan2f(ninf, f32::MAX), -consts::FRAC_PI_2);
-        assert_eq!(atan2f(ninf, -f32::MAX), -consts::FRAC_PI_2);
+        assert_eq!(atan2f(inf, f32::MAX), FRAC_PI_2);
+        assert_eq!(atan2f(inf, -f32::MAX), FRAC_PI_2);
+        assert_eq!(atan2f(ninf, f32::MAX), -FRAC_PI_2);
+        assert_eq!(atan2f(ninf, -f32::MAX), -FRAC_PI_2);
 
-        assert_eq!(atan2f(inf, inf), consts::FRAC_PI_4);
-        assert_eq!(atan2f(inf, ninf), 3.0 * consts::FRAC_PI_4);
-        assert_eq!(atan2f(ninf, inf), -consts::FRAC_PI_4);
-        assert_eq!(atan2f(ninf, ninf), 3.0 * -consts::FRAC_PI_4);
+        assert_eq!(atan2f(inf, inf), FRAC_PI_4);
+        assert_eq!(atan2f(inf, ninf), 3.0 * FRAC_PI_4);
+        assert_eq!(atan2f(ninf, inf), -FRAC_PI_4);
+        assert_eq!(atan2f(ninf, ninf), 3.0 * -FRAC_PI_4);
     }
 }
 

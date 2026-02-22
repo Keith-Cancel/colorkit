@@ -92,6 +92,8 @@ pub use universal::truncf as truncf_const;
 pub trait MathFuncs: Sized {
     /// Computes the arctangent.
     fn atan(self) -> Self;
+    // Computes arctan(self / x).
+    fn atan2(self, x: Self) -> Self;
     /// Computes the square root
     fn sqrt(self) -> Self;
     /// Compute the cube root.
@@ -138,6 +140,10 @@ pub trait MathFuncs: Sized {
 impl MathFuncs for f32 {
     fn atan(self) -> f32 {
         return atanf(self);
+    }
+
+    fn atan2(self, x: f32) -> f32 {
+        return atan2f(self, x);
     }
 
     fn sqrt(self) -> f32 {

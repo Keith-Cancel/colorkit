@@ -5,6 +5,7 @@ mod rounding;
 mod sqrt;
 mod ulp;
 
+pub use atan::atan2f;
 pub use atan::atanf;
 pub use cbrt::cbrtf;
 pub use quirt::quirtf;

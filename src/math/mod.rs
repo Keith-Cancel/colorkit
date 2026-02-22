@@ -60,6 +60,17 @@ pub fn floorf(x: f32) -> f32 {
     return universal::floorf(x);
 }
 
+/// Inner fma to used by internal routines mainly to get access to the
+/// hardware FMA instructions.
+/// # Note
+/// Generic impl does not provide the extra precision.
+#[inline(always)]
+pub(crate) fn fma_inner(x: f64, a: f64, b: f64) -> f64 {
+    arch::arch_fn!(name: fma, args: x, a, b);
+    #[allow(unused)]
+    return x * a + b;
+}
+
 // Const functions
 #[rustfmt::skip]
 pub use universal::ceilf as ceilf_const;

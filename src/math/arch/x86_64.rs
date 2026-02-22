@@ -64,3 +64,27 @@ pub fn roundevenf(mut x: f32) -> f32 {
     };
     return x;
 }
+
+#[inline(always)]
+pub fn fma(mut x: f64, a: f64, b: f64) -> f64 {
+    unsafe {
+        asm!(
+            "vfmadd132sd {x}, {b}, {a}",
+            x = inout(xmm_reg) x,
+            a = in(xmm_reg) a,
+            b = in(xmm_reg) b,
+            options(nomem, nostack, pure),
+        );
+    }
+    return x;
+}
+
+#[cfg(all(test, not(miri)))]
+mod test {
+    use super::*;
+    #[test]
+    fn fma_f64() {
+        let x = fma(12.0, 3.0, 1.0);
+        assert_eq!(x, 37.0);
+    }
+}

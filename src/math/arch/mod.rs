@@ -1,5 +1,8 @@
+// if a function is not used because of a feature check that is fine.
+#![allow(unused)]
+
 cfg_items!(
-    #[cfg(target_feature = "sse2")] => {
+    #[cfg(target_arch = "x86_64")] => {
         mod x86_64;
         pub use x86_64::ceilf;
         pub use x86_64::floorf;

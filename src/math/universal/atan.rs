@@ -1,4 +1,5 @@
-use core::f64::consts::FRAC_PI_2;
+use core::f32;
+use core::f64;
 
 #[cfg(target_arch = "x86_64")]
 #[inline(always)]
@@ -34,6 +35,12 @@ pub const fn atanf(x: f32) -> f32 {
     if x_pos < 0.00035211173 {
         return x;
     }
+    // As x gets larger it eventually
+    // just become PI/2
+    if x_pos >= 62919776.0 {
+        return f32::consts::FRAC_PI_2.copysign(x);
+    }
+
     let mut x_1 = x as f64;
     let mut f = 0.0;
 
@@ -48,7 +55,7 @@ pub const fn atanf(x: f32) -> f32 {
 
         let r = x_1 * (p / q);
 
-        return (FRAC_PI_2.copysign(x_1) - r) as f32;
+        return (f64::consts::FRAC_PI_2.copysign(x_1) - r) as f32;
     }
 
     if x_pos >= 1.05 {
@@ -65,6 +72,7 @@ pub const fn atanf(x: f32) -> f32 {
     return r as f32;
 }
 
+/*
 pub const fn atanf2(x: f32) -> f32 {
     let recip = x > 1.0 || x < -1.0;
     let x = x as f64;
@@ -94,4 +102,4 @@ pub const fn atanf2(x: f32) -> f32 {
     let r = x * (p / q);
     let r = if recip { pi - r } else { r };
     return r as f32;
-}
+}*/

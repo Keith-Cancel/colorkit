@@ -28,11 +28,15 @@ const fn atan_poly(x: f64) -> f64 {
 }
 
 pub const fn atanf(x: f32) -> f32 {
+    let x_pos = x.abs();
+    // When x is small enough it's just X.
+    if x_pos < 0.00035211173 {
+        return x;
+    }
     let mut x_1 = x as f64;
     let mut f = 0.0;
-    let x = x.abs();
 
-    if x > 6.0 {
+    if x_pos > 6.0 {
         let x_2 = x_1 * x_1;
         let p = mul_add(x_2, 1155.0, 1190.0);
         let p = mul_add(x_2, p, 231.0);
@@ -46,11 +50,11 @@ pub const fn atanf(x: f32) -> f32 {
         return (FRAC_PI_2.copysign(x_1) - r) as f32;
     }
 
-    if x >= 1.05 {
+    if x_pos >= 1.05 {
         let c = (1.0 / 0.48f64).copysign(x_1);
         f += 1.1232763516377267f64.copysign(x_1); // ~= arctan(c);
         x_1 = (x_1 - c) / mul_add(x_1, c, 1.0);
-    } else if x >= 0.30209234 {
+    } else if x_pos >= 0.30209234 {
         let c = (1.0 / 1.67f64).copysign(x_1);
         f += 0.5395384432298387f64.copysign(x_1); // ~= arctan(c);
         x_1 = (x_1 - c) / mul_add(x_1, c, 1.0);

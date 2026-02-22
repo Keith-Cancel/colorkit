@@ -62,6 +62,32 @@ pub fn atanf(x: f32) -> f32 {
     return r as f32;
 }
 
+pub fn atan2f(y: f32, x: f32) -> f32 {
+    if x.is_nan() || y.is_nan() {
+        return x + y; // {any} + NaN = NaN
+    }
+
+    if x == 0.0 {
+        if y == 0.0 {
+            return f32::NAN;
+        }
+        return if y < 0.0 {
+            -f32::consts::FRAC_PI_2
+        } else {
+            f32::consts::FRAC_PI_2
+        };
+    }
+    let mut t = atanf(y / x);
+    if x < 0.0 {
+        t += if y < 0.0 {
+            -f32::consts::PI
+        } else {
+            f32::consts::PI
+        };
+    }
+    return t;
+}
+
 /*
 pub const fn atanf2(x: f32) -> f32 {
     let recip = x > 1.0 || x < -1.0;

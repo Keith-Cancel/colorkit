@@ -6,6 +6,7 @@ cfg_items!(
         pub use x86_64::roundevenf;
         pub use x86_64::sqrtf;
         pub use x86_64::truncf;
+        pub use x86_64::fma;
     }
 );
 
@@ -13,6 +14,7 @@ cfg_items!(
     #[cfg(all(target_arch = "aarch64", target_feature = "neon"))] => {
         mod arm64;
         pub use arm64::sqrtf;
+        pub use arm64::fma;
     }
 );
 
@@ -26,6 +28,14 @@ macro_rules! arch_fn {
         )))]
         return colorkit::math::arch::ceilf($($arg),+);
     };
+    (@inner fma, $($arg:expr),+) => {
+        #[cfg(all(not(miri), any(
+            target_feature = "fma",
+            all(target_arch = "aarch64", target_feature = "neon")
+        )))]
+        return colorkit::math::arch::fma($($arg),+);
+    };
+
     (@inner floorf, $($arg:expr),+) => {
         #[cfg(all(not(miri), any(
             target_feature = "sse2",

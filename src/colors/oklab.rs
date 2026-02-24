@@ -15,7 +15,7 @@ use super::Srgb;
 use super::Xyz;
 use super::macros::*;
 
-/// Represention of an OkLab color using [`f32`] values.
+/// Representation of an OkLab color using [`f32`] values.
 ///
 /// Oklab's `a` and `b` channels are unbounded in theory, but
 /// some operations require bounds. So any operations that

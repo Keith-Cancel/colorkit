@@ -33,7 +33,7 @@ fn tan_rational_poly(x_1: f64) -> (f64, f64) {
 }
 
 /// Evaluate `cos(x)` for x in [-pi, pi] (radians)
-pub fn cos_on_pi(x: f32) -> f32 {
+pub fn cosf_on_pi(x: f32) -> f32 {
     debug_assert!(x >= -PI_32 && x <= PI_32);
     let x = x.abs();
     let flip = x > 1.72;

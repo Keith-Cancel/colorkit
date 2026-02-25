@@ -1,5 +1,6 @@
 mod atan;
 mod cbrt;
+mod cos_sin;
 mod quirt;
 mod rounding;
 mod sqrt;

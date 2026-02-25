@@ -9,7 +9,7 @@ use super::MathFn;
 pub struct Cos;
 
 impl MathFn for Cos {
-    const NAME: &'static str = "cos(x)";
+    const NAME: &'static str = "cos_on_pi(x)";
     const ALLOW_NEG: bool = true;
     const ALLOW_ZERO: bool = true;
     const MAX: f32 = PI;

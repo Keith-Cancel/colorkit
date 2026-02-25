@@ -19,6 +19,10 @@ pub trait MathFn {
     const ALLOW_NEG: bool;
     /// Whether or not the function allows zero.
     const ALLOW_ZERO: bool;
+    /// Maximum allowed value.
+    const MAX: f32;
+    /// Minimum allowed value.
+    const MIN: f32;
     /// Implementation to be tested.
     fn test_f32_impl(x: f32) -> f32;
     /// Stdlib for upperbound reference

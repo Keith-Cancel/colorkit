@@ -10,6 +10,9 @@ impl MathFn for Cbrt {
     const NAME: &'static str = "3rd Root (Cubic Root)";
     const ALLOW_NEG: bool = true;
     const ALLOW_ZERO: bool = true;
+    const MAX: f32 = f32::INFINITY;
+    const MIN: f32 = f32::NEG_INFINITY;
+
     fn test_f32_impl(x: f32) -> f32 {
         return cbrtf(x);
     }

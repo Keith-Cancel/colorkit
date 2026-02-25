@@ -10,6 +10,8 @@ impl MathFn for Atan {
     const NAME: &'static str = "arctan(x)";
     const ALLOW_NEG: bool = true;
     const ALLOW_ZERO: bool = true;
+    const MAX: f32 = f32::INFINITY;
+    const MIN: f32 = f32::NEG_INFINITY;
 
     fn test_f32_impl(x: f32) -> f32 {
         return atanf(x);

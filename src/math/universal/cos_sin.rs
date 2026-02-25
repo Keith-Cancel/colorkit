@@ -37,13 +37,13 @@ pub fn cosf_on_pi(x: f32) -> f32 {
     debug_assert!(x >= -PI_32 && x <= PI_32);
     let x = x.abs();
     let flip = x > 1.72;
+    let x = x as f64;
+    let x = if flip { PI_64 - x } else { x };
 
-    let w = if flip { PI_64 - (x as f64) } else { x as f64 };
-
-    let (p, q) = tan_rational_poly(w * 0.5);
+    let (p, q) = tan_rational_poly(x * 0.5);
     let p = p * p;
     let q = fma_inner(q, q, p);
-    let r = 1.0 - ((2.0 * p) / q);
+    let r = fma_inner(p / q, -2.0, 1.0);
 
     let r = if flip { -r } else { r };
     return r as f32;

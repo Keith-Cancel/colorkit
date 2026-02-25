@@ -78,6 +78,10 @@ impl Relative {
             }
             let x = if !F::ALLOW_NEG && x < 0.0 { x.abs() } else { x };
 
+            if x > F::MAX || x < F::MIN {
+                continue;
+            }
+
             let rug = F::rug_impl(Self::PREC, x);
             let std = F::std_f32_impl(x) as f64;
             let fun = F::test_f32_impl(x) as f64;

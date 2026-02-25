@@ -145,6 +145,10 @@ impl Ulp {
             }
             let x = if !F::ALLOW_NEG && x < 0.0 { x.abs() } else { x };
 
+            if x > F::MAX || x < F::MIN {
+                continue;
+            }
+
             let rug = F::rug_impl(Self::PREC, x).to_f64();
 
             // It's not resentable as a f32 so does not

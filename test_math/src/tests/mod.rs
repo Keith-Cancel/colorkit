@@ -1,5 +1,6 @@
 mod atan;
 mod cbrt;
+mod cos;
 mod quirt;
 mod sqrt;
 
@@ -8,6 +9,7 @@ use rug::Float;
 #[rustfmt::skip]
 pub use atan::Atan;
 pub use cbrt::Cbrt;
+pub use cos::Cos;
 pub use quirt::Quirt;
 pub use sqrt::Sqrt;
 

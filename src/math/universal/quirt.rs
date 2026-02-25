@@ -12,7 +12,7 @@ pub const fn quirtf(x: f32) -> f32 {
     let neg = bits & 0x80000000;
     let abs = bits & 0x7fffffff;
 
-    // Either inifnity or NaN
+    // Either infinity or NaN
     if abs >= F32_MSK_EXP {
         return x;
     }
@@ -60,5 +60,3 @@ pub const fn quirtf(x: f32) -> f32 {
     //}
     return x as f32;
 }
-
-

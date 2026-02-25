@@ -13,8 +13,8 @@ impl MathFn for Sqrt {
     const MAX: f32 = f32::INFINITY;
     const MIN: f32 = f32::NEG_INFINITY;
     fn test_f32_impl(x: f32) -> f32 {
-        // Test the universal implentation
-        // otherwise we might be testing hardware implentations.
+        // Test the universal implementation
+        // otherwise we might be testing hardware implementations.
         return sqrtf_const(x);
     }
 

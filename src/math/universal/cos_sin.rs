@@ -6,11 +6,10 @@ use colorkit::math::fma_inner;
 /// approximates tan(x) via P/Q for x in range 0.0..0.86345325
 #[inline(always)]
 fn tan_rational_poly(x_1: f64) -> (f64, f64) {
-    const C0: f64 = 0.5033867350352298; // ~= tan(0.466353325)
-    let shift = x_1 >= 0.466353325;
+    let shift = x_1 >= 0.4636476090008061; // ~= tan(0.4636476090008061) ~= 0.5
 
     // Take advantage of a tan identity to double the range.
-    let x_1 = if shift { x_1 - 0.466353325 } else { x_1 };
+    let x_1 = if shift { x_1 - 0.4636476090008061 } else { x_1 };
     let x_2 = x_1 * x_1;
 
     // 10395x - 1260x^3 + 21x^5
@@ -27,7 +26,7 @@ fn tan_rational_poly(x_1: f64) -> (f64, f64) {
     // use the identity: tan(a + b) = (tan(a) + tan(b))/(1 - tan(a)*tan(b))
     // basically add the C0 back to x_1
     if shift {
-        return (fma_inner(q, C0, p), fma_inner(p, -C0, q));
+        return (fma_inner(q, 0.5, p), fma_inner(p, -0.5, q));
     };
     return (p, q);
 }

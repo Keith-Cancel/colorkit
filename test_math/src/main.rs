@@ -21,6 +21,7 @@ fn main() {
     run::<Quirt>(&p, &r, &u);
     run::<Atan>(&p, &r, &u);
     run::<Cos>(&p, &r, &u);
+    run::<Sin>(&p, &r, &u);
 
     println!("{}", 32.0.quirt());
     println!("{}", 243.0.quirt());

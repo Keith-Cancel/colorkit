@@ -4,6 +4,7 @@ use core::f64::consts::PI as PI_64;
 use colorkit::math::fma_inner;
 
 /// approximates tan(x) via P/Q
+#[inline(always)]
 fn tan_rational_poly(x_1: f64) -> (f64, f64) {
     let x_2 = x_1 * x_1;
     // 10395x - 1260x^3 + 21x^5
@@ -38,11 +39,13 @@ pub fn cosf_on_pi(x: f32) -> f32 {
         tan_rational_poly(x * 0.5)
     };
 
-    let p = p * p;
-    let q = fma_inner(q, q, p);
-    let r = fma_inner(p / q, -2.0, 1.0);
+    // Use identity:
+    // cos(x) = (1 - tan(x)^2)/(1 + tan(x)^2)
+    let p2 = p * p;
+    let q2 = q * q;
 
-    let r = if flip { -r } else { r };
+    let r = (q2 - p2) / (q2 + p2);
+    let r = if flip { -r } else { r }; // Flip sign if needed.
     return r as f32;
 }
 

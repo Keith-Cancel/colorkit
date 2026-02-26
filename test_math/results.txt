@@ -1,102 +1,122 @@
 
-=== [1mPerf[0m: [36mSquare Root[0m | elements = [1m52148[0m, runs = [1m3530[0m ===
+=== [1mPerf[0m: [36mSquare Root[0m | elements = [1m50148[0m, runs = [1m353[0m ===
 Case       [34m   Mean µs  Per-call ns     Min µs     Max µs     Std µs[0m
-[1mBaseline  [0m     74.450        1.428     68.654    527.824     32.719
-[1mReference [0m     70.815        1.358     68.837    580.098     16.376
-[1mCandidate [0m    247.368        4.744    238.076    708.174     32.674
-    [2mCanidate vs Reference:[0m [31m+249.31%[0m Delta
+[1mBaseline  [0m     97.801        1.950     66.015    514.721     83.785
+[1mReference [0m     86.580        1.726     66.194    702.349     68.744
+[1mCandidate [0m    267.493        5.334    229.032    654.447     84.491
+    [2mCanidate vs Reference:[0m [31m+208.95%[0m Delta
 
 =========== [1mRelative Error[0m: [36mSquare Root[0m | Samples = [1m39397[0m ===========
 Case        [34m Mean Err   Min Err   Max Err   Std Dev       p50       p90       p99[0m
 [1mImpl => Std[0m   0.000e0   0.000e0   0.000e0   0.000e0   0.000e0   0.000e0   0.000e0
-[1mImpl => Ref[0m  2.011e-8   0.000e0  5.960e-8  1.349e-8  1.907e-8  3.891e-8  5.195e-8
-[1mStd  => Ref[0m  2.011e-8   0.000e0  5.960e-8  1.349e-8  1.907e-8  3.891e-8  5.195e-8
+[1mImpl => Ref[0m  2.007e-8   0.000e0  5.941e-8  1.350e-8  1.908e-8  3.885e-8  5.208e-8
+[1mStd  => Ref[0m  2.007e-8   0.000e0  5.941e-8  1.350e-8  1.908e-8  3.885e-8  5.208e-8
 
-===== [1mULP Difference[0m: [36mSquare Root[0m | Samples = [1m1502504[0m =====
+===== [1mULP Difference[0m: [36mSquare Root[0m | Samples = [1m152504[0m =====
 Case        [34mMean ULP  Max ULP   Max Value [0m
-[1mImpl ULP   [0m    0.250    0.500  0x687ffff9 (4.83570e24)
-[1mStd  ULP   [0m    0.250    0.500  0x687ffff9 (4.83570e24)
-[2mImpl ULP Sums:[0m 752335 <= .25, 750169 <= .5,     0 <= 1,     0 <= 2,     0 <= 4,     0 > 4
-[2mStd  ULP Sums:[0m 752335 <= .25, 750169 <= .5,     0 <= 1,     0 <= 2,     0 <= 4,     0 > 4
+[1mImpl ULP   [0m    0.250    0.500  0x45cd8800 (6.57700e3)
+[1mStd  ULP   [0m    0.250    0.500  0x45cd8800 (6.57700e3)
+[2mImpl ULP Sums:[0m 76335 <= .25, 76169 <= .5,     0 <= 1,     0 <= 2,     0 <= 4,     0 > 4
+[2mStd  ULP Sums:[0m 76335 <= .25, 76169 <= .5,     0 <= 1,     0 <= 2,     0 <= 4,     0 > 4
 
-=== [1mPerf[0m: [36m3rd Root (Cubic Root)[0m | elements = [1m52148[0m, runs = [1m3530[0m ===
+=== [1mPerf[0m: [36m3rd Root (Cubic Root)[0m | elements = [1m50148[0m, runs = [1m353[0m ===
 Case       [34m   Mean µs  Per-call ns     Min µs     Max µs     Std µs[0m
-[1mBaseline  [0m     84.318        1.617     68.655    821.170     63.897
-[1mReference [0m    301.226        5.776    284.304   1083.997     64.811
-[1mCandidate [0m    285.765        5.480    279.324    661.802     21.797
-    [2mCanidate vs Reference:[0m [32m-5.13%[0m Delta
+[1mBaseline  [0m     90.127        1.797     66.016    544.178     79.196
+[1mReference [0m    298.030        5.943    274.634   1147.280     88.400
+[1mCandidate [0m    276.371        5.511    270.327    504.975     21.274
+    [2mCanidate vs Reference:[0m [32m-7.27%[0m Delta
 
 =========== [1mRelative Error[0m: [36m3rd Root (Cubic Root)[0m | Samples = [1m39397[0m ===========
 Case        [34m Mean Err   Min Err   Max Err   Std Dev       p50       p90       p99[0m
 [1mImpl => Std[0m   0.000e0   0.000e0   0.000e0   0.000e0   0.000e0   0.000e0   0.000e0
-[1mImpl => Ref[0m  2.071e-8   0.000e0  5.957e-8  1.347e-8  1.960e-8  3.959e-8  5.251e-8
-[1mStd  => Ref[0m  2.071e-8   0.000e0  5.957e-8  1.347e-8  1.960e-8  3.959e-8  5.251e-8
+[1mImpl => Ref[0m  2.063e-8   0.000e0  5.957e-8  1.341e-8  1.963e-8  3.943e-8  5.232e-8
+[1mStd  => Ref[0m  2.063e-8   0.000e0  5.957e-8  1.341e-8  1.963e-8  3.943e-8  5.232e-8
 
-===== [1mULP Difference[0m: [36m3rd Root (Cubic Root)[0m | Samples = [1m1502504[0m =====
+===== [1mULP Difference[0m: [36m3rd Root (Cubic Root)[0m | Samples = [1m152504[0m =====
 Case        [34mMean ULP  Max ULP   Max Value [0m
-[1mImpl ULP   [0m    0.250    0.500  0x5471c1d1 (4.15336e12)
-[1mStd  ULP   [0m    0.250    0.500  0x5471c1d1 (4.15336e12)
-[2mImpl ULP Sums:[0m 751724 <= .25, 750780 <= .5,     0 <= 1,     0 <= 2,     0 <= 4,     0 > 4
-[2mStd  ULP Sums:[0m 751724 <= .25, 750780 <= .5,     0 <= 1,     0 <= 2,     0 <= 4,     0 > 4
+[1mImpl ULP   [0m    0.250    0.500  0xe3543747 (-3.91469e21)
+[1mStd  ULP   [0m    0.250    0.500  0xe3543747 (-3.91469e21)
+[2mImpl ULP Sums:[0m 76387 <= .25, 76117 <= .5,     0 <= 1,     0 <= 2,     0 <= 4,     0 > 4
+[2mStd  ULP Sums:[0m 76387 <= .25, 76117 <= .5,     0 <= 1,     0 <= 2,     0 <= 4,     0 > 4
 
-=== [1mPerf[0m: [36m5th Root (Quintic Root)[0m | elements = [1m52148[0m, runs = [1m3530[0m ===
+=== [1mPerf[0m: [36m5th Root (Quintic Root)[0m | elements = [1m50148[0m, runs = [1m353[0m ===
 Case       [34m   Mean µs  Per-call ns     Min µs     Max µs     Std µs[0m
-[1mBaseline  [0m     70.838        1.358     68.654    163.527      8.507
-[1mReference [0m    448.681        8.604    368.484   1238.529    141.729
-[1mCandidate [0m    382.594        7.337    326.054    940.942     93.355
-    [2mCanidate vs Reference:[0m [32m-14.73%[0m Delta
+[1mBaseline  [0m     69.657        1.389     66.013    158.969     12.034
+[1mReference [0m    502.443       10.019    356.017   1282.803    209.104
+[1mCandidate [0m    367.787        7.334    322.142    710.827     77.858
+    [2mCanidate vs Reference:[0m [32m-26.80%[0m Delta
 
 =========== [1mRelative Error[0m: [36m5th Root (Quintic Root)[0m | Samples = [1m39397[0m ===========
 Case        [34m Mean Err   Min Err   Max Err   Std Dev       p50       p90       p99[0m
-[1mImpl => Std[0m  1.042e-7   0.000e0  3.564e-7  8.129e-8  9.355e-8  2.216e-7  2.936e-7
-[1mImpl => Ref[0m  2.087e-8   0.000e0  5.954e-8  1.344e-8  1.980e-8  3.968e-8  5.286e-8
-[1mStd  => Ref[0m  1.055e-7   0.000e0  3.153e-7  7.539e-8  8.896e-8  2.221e-7  2.791e-7
+[1mImpl => Std[0m  1.044e-7   0.000e0  3.573e-7  8.160e-8  9.337e-8  2.227e-7  2.936e-7
+[1mImpl => Ref[0m  2.093e-8   0.000e0  5.954e-8  1.341e-8  1.992e-8  3.961e-8  5.266e-8
+[1mStd  => Ref[0m  1.058e-7   0.000e0  3.154e-7  7.566e-8  8.941e-8  2.230e-7  2.794e-7
 
-===== [1mULP Difference[0m: [36m5th Root (Quintic Root)[0m | Samples = [1m1502504[0m =====
+===== [1mULP Difference[0m: [36m5th Root (Quintic Root)[0m | Samples = [1m152504[0m =====
 Case        [34mMean ULP  Max ULP   Max Value [0m
-[1mImpl ULP   [0m    0.250    0.500  0x457b83d5 (4.02424e3)
-[1mStd  ULP   [0m    1.616    4.931  0x8007dbc6 (-7.21688e-40)
-[2mImpl ULP Sums:[0m 751414 <= .25, 751077 <= .5,    13 <= 1,     0 <= 2,     0 <= 4,     0 > 4
-[2mStd  ULP Sums:[0m 122565 <= .25, 121982 <= .5, 244042 <= 1, 484841 <= 2, 511736 <= 4, 17338 > 4
+[1mImpl ULP   [0m    0.249    0.500  0x7f610f30 (2.99155e38)
+[1mStd  ULP   [0m    1.602    4.830  0x00071725 (6.51151e-40)
+[2mImpl ULP Sums:[0m 76693 <= .25, 75810 <= .5,     1 <= 1,     0 <= 2,     0 <= 4,     0 > 4
+[2mStd  ULP Sums:[0m 13206 <= .25, 12659 <= .5, 25010 <= 1, 48401 <= 2, 51464 <= 4,  1764 > 4
 
-=== [1mPerf[0m: [36marctan(x)[0m | elements = [1m52148[0m, runs = [1m3530[0m ===
+=== [1mPerf[0m: [36marctan(x)[0m | elements = [1m50148[0m, runs = [1m353[0m ===
 Case       [34m   Mean µs  Per-call ns     Min µs     Max µs     Std µs[0m
-[1mBaseline  [0m     72.352        1.387     68.655    351.022     14.762
-[1mReference [0m    278.949        5.349    256.162   1136.042     54.545
-[1mCandidate [0m    181.338        3.477    158.321    689.939     54.344
-    [2mCanidate vs Reference:[0m [32m-34.99%[0m Delta
+[1mBaseline  [0m     76.396        1.523     66.013    388.428     30.482
+[1mReference [0m    368.455        7.347    291.516   1067.953    149.363
+[1mCandidate [0m    184.998        3.689    154.706    664.881     80.839
+    [2mCanidate vs Reference:[0m [32m-49.79%[0m Delta
 
 =========== [1mRelative Error[0m: [36marctan(x)[0m | Samples = [1m39397[0m ===========
 Case        [34m Mean Err   Min Err   Max Err   Std Dev       p50       p90       p99[0m
 [1mImpl => Std[0m   0.000e0   0.000e0   0.000e0   0.000e0   0.000e0   0.000e0   0.000e0
-[1mImpl => Ref[0m  1.451e-8   0.000e0  5.726e-8  1.378e-8  1.425e-8  2.811e-8  3.773e-8
-[1mStd  => Ref[0m  1.451e-8   0.000e0  5.726e-8  1.378e-8  1.425e-8  2.811e-8  3.773e-8
+[1mImpl => Ref[0m  1.450e-8   0.000e0  5.726e-8  1.377e-8  1.426e-8  2.811e-8  3.773e-8
+[1mStd  => Ref[0m  1.450e-8   0.000e0  5.726e-8  1.377e-8  1.426e-8  2.811e-8  3.773e-8
 
-===== [1mULP Difference[0m: [36marctan(x)[0m | Samples = [1m1502504[0m =====
+===== [1mULP Difference[0m: [36marctan(x)[0m | Samples = [1m152504[0m =====
 Case        [34mMean ULP  Max ULP   Max Value [0m
-[1mImpl ULP   [0m    0.186    0.500  0x4c7005f8 (6.29207e7)
-[1mStd  ULP   [0m    0.186    0.500  0x4c7005f8 (6.29207e7)
-[2mImpl ULP Sums:[0m 786443 <= .25, 716061 <= .5,     0 <= 1,     0 <= 2,     0 <= 4,     0 > 4
-[2mStd  ULP Sums:[0m 786443 <= .25, 716061 <= .5,     0 <= 1,     0 <= 2,     0 <= 4,     0 > 4
+[1mImpl ULP   [0m    0.187    0.500  0xb9b89c2b (-3.52116e-4)
+[1mStd  ULP   [0m    0.187    0.500  0xb9b89c2b (-3.52116e-4)
+[2mImpl ULP Sums:[0m 79576 <= .25, 72928 <= .5,     0 <= 1,     0 <= 2,     0 <= 4,     0 > 4
+[2mStd  ULP Sums:[0m 79576 <= .25, 72928 <= .5,     0 <= 1,     0 <= 2,     0 <= 4,     0 > 4
 
-=== [1mPerf[0m: [36mcos_on_pi(x)[0m | elements = [1m52148[0m, runs = [1m3530[0m ===
+=== [1mPerf[0m: [36mcos_on_pi(x)[0m | elements = [1m50148[0m, runs = [1m353[0m ===
 Case       [34m   Mean µs  Per-call ns     Min µs     Max µs     Std µs[0m
-[1mBaseline  [0m     76.353        1.464     68.663    518.275     35.277
-[1mReference [0m    252.598        4.844    241.183   1042.761     46.330
-[1mCandidate [0m    218.539        4.191    212.171    720.171     28.802
-    [2mCanidate vs Reference:[0m [32m-13.48%[0m Delta
+[1mBaseline  [0m     66.299        1.322     66.016     95.583      1.703
+[1mReference [0m    247.269        4.931    237.141    471.079     24.191
+[1mCandidate [0m    201.551        4.019    196.372    410.554     18.444
+    [2mCanidate vs Reference:[0m [32m-18.49%[0m Delta
 
-=========== [1mRelative Error[0m: [36mcos_on_pi(x)[0m | Samples = [1m18655[0m ===========
+=========== [1mRelative Error[0m: [36mcos_on_pi(x)[0m | Samples = [1m18814[0m ===========
 Case        [34m Mean Err   Min Err   Max Err   Std Dev       p50       p90       p99[0m
-[1mImpl => Std[0m 1.823e-11   0.000e0  1.034e-7  1.266e-9   0.000e0   0.000e0   0.000e0
-[1mImpl => Ref[0m  2.136e-9   0.000e0  5.415e-8  6.214e-9 1.081e-27  8.200e-9  2.821e-8
-[1mStd  => Ref[0m  2.137e-9   0.000e0  5.502e-8  6.219e-9 1.081e-27  8.200e-9  2.821e-8
+[1mImpl => Std[0m 2.242e-11   0.000e0  1.141e-7  1.420e-9   0.000e0   0.000e0   0.000e0
+[1mImpl => Ref[0m  2.204e-9   0.000e0  5.445e-8  6.354e-9 2.702e-28  8.763e-9  2.821e-8
+[1mStd  => Ref[0m  2.205e-9   0.000e0  5.968e-8  6.361e-9 2.702e-28  8.763e-9  2.821e-8
 
-===== [1mULP Difference[0m: [36mcos_on_pi(x)[0m | Samples = [1m756209[0m =====
+===== [1mULP Difference[0m: [36mcos_on_pi(x)[0m | Samples = [1m75865[0m =====
 Case        [34mMean ULP  Max ULP   Max Value [0m
 [1mImpl ULP   [0m    0.030    0.500  0x39800000 (2.44141e-4)
-[1mStd  ULP   [0m    0.030    0.559  0x3f863420 (1.04847e0)
-[2mImpl ULP Sums:[0m 712571 <= .25, 43638 <= .5,     0 <= 1,     0 <= 2,     0 <= 4,     0 > 4
-[2mStd  ULP Sums:[0m 712571 <= .25, 43387 <= .5,   251 <= 1,     0 <= 2,     0 <= 4,     0 > 4
+[1mStd  ULP   [0m    0.030    0.548  0xc0046be2 (-2.06908e0)
+[2mImpl ULP Sums:[0m 71465 <= .25,  4400 <= .5,     0 <= 1,     0 <= 2,     0 <= 4,     0 > 4
+[2mStd  ULP Sums:[0m 71465 <= .25,  4373 <= .5,    27 <= 1,     0 <= 2,     0 <= 4,     0 > 4
+
+=== [1mPerf[0m: [36msin_on_pi(x)[0m | elements = [1m50148[0m, runs = [1m353[0m ===
+Case       [34m   Mean µs  Per-call ns     Min µs     Max µs     Std µs[0m
+[1mBaseline  [0m     72.357        1.443     66.014    218.213     16.191
+[1mReference [0m    234.662        4.679    228.151    315.147      9.508
+[1mCandidate [0m    193.899        3.867    187.290    418.839     23.542
+    [2mCanidate vs Reference:[0m [32m-17.37%[0m Delta
+
+=========== [1mRelative Error[0m: [36msin_on_pi(x)[0m | Samples = [1m18908[0m ===========
+Case        [34m Mean Err   Min Err   Max Err   Std Dev       p50       p90       p99[0m
+[1mImpl => Std[0m 5.157e-11   0.000e0  1.100e-7  2.166e-9   0.000e0   0.000e0   0.000e0
+[1mImpl => Ref[0m  2.972e-9   0.000e0  5.816e-8  8.864e-9 1.545e-28  1.133e-8  4.331e-8
+[1mStd  => Ref[0m  2.974e-9   0.000e0  5.816e-8  8.870e-9 1.545e-28  1.133e-8  4.338e-8
+
+===== [1mULP Difference[0m: [36msin_on_pi(x)[0m | Samples = [1m75818[0m =====
+Case        [34mMean ULP  Max ULP   Max Value [0m
+[1mImpl ULP   [0m    0.028    0.500  0xc03706fa (-2.85980e0)
+[1mStd  ULP   [0m    0.028    0.547  0xbe63b2df (-2.22362e-1)
+[2mImpl ULP Sums:[0m 71709 <= .25,  4109 <= .5,     0 <= 1,     0 <= 2,     0 <= 4,     0 > 4
+[2mStd  ULP Sums:[0m 71709 <= .25,  4042 <= .5,    67 <= 1,     0 <= 2,     0 <= 4,     0 > 4
 2
 3

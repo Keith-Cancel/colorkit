@@ -18,6 +18,7 @@ pub use universal::cbrtf;
 pub use universal::cosf_on_pi;
 pub use universal::quirtf;
 pub use universal::roundf;
+pub use universal::sinf_on_pi;
 pub use universal::ulp_int_diff_f32;
 
 /// Computes the square root

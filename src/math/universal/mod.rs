@@ -10,6 +10,7 @@ pub use atan::atan2f;
 pub use atan::atanf;
 pub use cbrt::cbrtf;
 pub use cos_sin::cosf_on_pi;
+pub use cos_sin::sinf_on_pi;
 pub use quirt::quirtf;
 pub use rounding::ceilf;
 pub use rounding::floorf;

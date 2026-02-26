@@ -52,5 +52,20 @@ pub fn cosf_on_pi(x: f32) -> f32 {
 
 /// Evaluate `sin(x)` for x in [-pi, pi] (radians)
 pub fn sinf_on_pi(x: f32) -> f32 {
-    todo!();
+    let x = x as f64;
+    let (p, q) = tan_rational_poly(x * 0.5);
+
+    // sin(x) = cos(x - pi/2)
+    // So after feeding x/2 into tan we need to shift
+    // over pi/4. Nicely tan(pi/4) = 1.0
+    // So we can use the identity:
+    // tan(a +- b) = (tan(a) +- tan(b))/(1.0 -+ tan(a)*tan(b))
+    // making b = pi/4 we can can shift the poly over by pi/4
+    // With a little algebra we get tan(x/2 - pi/4) ~= (p - q)/(q + p)
+    // if then take the identity:
+    // sin(x) = (1 - tan(x/2 - pi/4)^2)/(1 + tan(x/2 - pi/4)^2)
+    // we can do a little more algerbra to get: (2*p*q)/(p^2 + q^2)
+    let p1 = 2.0 * p * q;
+    let q1 = fma_inner(q, q, p * p);
+    return (p1 / q1) as f32;
 }

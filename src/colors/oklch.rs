@@ -1,11 +1,13 @@
 use core::f32::consts::PI;
 
+use colorkit::convert::*;
 use colorkit::math::*;
 use colorkit::num_type::N3;
 use colorkit::space::*;
 use colorkit::wp::D65;
 
 use super::macros::*;
+use super::*;
 
 /// Representation of an OkLch color using [`f32`] values.
 #[repr(transparent)]
@@ -34,13 +36,32 @@ impl ColorData for OkLch {
 
     const CHANNEL_MAX: [BoundF32; 3] = [
         BoundF32::Include(1.0),
-        BoundF32::Include(PI),
+        BoundF32::Include(0.70710677),
         BoundF32::Include(PI),
     ];
 
     const CHANNEL_MIN: [BoundF32; 3] = [
         BoundF32::Include(0.0),
-        BoundF32::Include(-PI),
+        BoundF32::Include(0.0),
         BoundF32::Include(-PI),
     ];
+}
+
+impl FromColor<OkLab> for OkLch {
+    fn from_color(color: OkLab) -> Self {
+        let d = color.into_array();
+        let c = sqrtf(d[1] * d[1] + d[2] + d[2]);
+        let h = atan2f(d[2], d[1]);
+        return Self([d[0], c, h]);
+    }
+}
+
+impl FromColor<OkLch> for OkLab {
+    fn from_color(color: OkLch) -> Self {
+        let d = color.0;
+        let h = f32::clamp(d[2], -PI, PI);
+        let a = d[1] * cosf_on_pi(h);
+        let b = d[1] * sinf_on_pi(h);
+        return OkLab::new(d[0], a, b);
+    }
 }

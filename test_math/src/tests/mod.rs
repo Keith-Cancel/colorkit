@@ -2,6 +2,7 @@ mod atan;
 mod cbrt;
 mod cos;
 mod quirt;
+mod sin;
 mod sqrt;
 
 use rug::Float;
@@ -11,6 +12,7 @@ pub use atan::Atan;
 pub use cbrt::Cbrt;
 pub use cos::Cos;
 pub use quirt::Quirt;
+pub use sin::Sin;
 pub use sqrt::Sqrt;
 
 /// Single Agrument Math functions

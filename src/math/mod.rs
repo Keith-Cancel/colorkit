@@ -98,6 +98,8 @@ pub trait MathFuncs: Sized {
     fn atan2(self, x: Self) -> Self;
     /// Computes `cos(x)` for x in [-pi, pi] (radians)
     fn cos_on_pi(self) -> Self;
+    /// Computes `cos(x)` for x in [-pi, pi] (radians)
+    fn sin_on_pi(self) -> Self;
     /// Computes the square root
     fn sqrt(self) -> Self;
     /// Compute the cube root.
@@ -152,6 +154,10 @@ impl MathFuncs for f32 {
 
     fn cos_on_pi(self) -> f32 {
         return cosf_on_pi(self);
+    }
+
+    fn sin_on_pi(self) -> f32 {
+        return sinf_on_pi(self);
     }
 
     fn sqrt(self) -> f32 {

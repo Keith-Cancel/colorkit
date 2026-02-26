@@ -12,7 +12,7 @@ use super::macros::*;
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct OkLch([f32; 3]);
 
-//impl_color_new!([f32; 3], OkLch);
+impl_color_new!([f32; 3], OkLch);
 impl_self_index!(OkLch);
 impl_from_tup3!(OkLch);
 impl_typ_as_self!(OkLch, [f32; 3]);

@@ -65,3 +65,17 @@ impl FromColor<OkLch> for OkLab {
         return OkLab::new(d[0], a, b);
     }
 }
+
+impl FromColor<Xyz<D65>> for OkLch {
+    fn from_color(color: Xyz<D65>) -> Self {
+        let lab: OkLab = color.into_color();
+        return lab.into_color();
+    }
+}
+
+impl FromColor<OkLch> for Xyz<D65> {
+    fn from_color(color: OkLch) -> Self {
+        let lab: OkLab = color.into_color();
+        return lab.into_color();
+    }
+}

@@ -22,6 +22,29 @@ impl_self_as_typ!([f32], OkLch);
 impl_self_as_typ!([f32; 3], OkLch);
 impl_from_inner!([f32; 3], OkLch);
 
+impl OkLch {
+    const BOUNDS: [(f32, f32); 3] = [(0.0, 1.0), (0.0, 0.70710677), (-PI, PI)];
+    /// Create a new color from `LCh` values.
+    pub const fn new(l: f32, c: f32, h: f32) -> Self {
+        return Self([l, c, h]);
+    }
+    /// Get the Color's the `L` channel value.
+    #[inline]
+    pub const fn l(&self) -> f32 {
+        return self.0[0];
+    }
+    /// Get the Color's the `C` channel value.
+    #[inline]
+    pub const fn c(&self) -> f32 {
+        return self.0[1];
+    }
+    /// Get the Color's the `h` channel angle.
+    #[inline]
+    pub const fn b(&self) -> f32 {
+        return self.0[2];
+    }
+}
+
 impl Default for OkLch {
     fn default() -> Self {
         return Self([1.0, 0.0, 0.0]);
@@ -45,6 +68,39 @@ impl ColorData for OkLch {
         BoundF32::Include(0.0),
         BoundF32::Include(-PI),
     ];
+}
+
+impl ColorBounds for OkLch {
+    fn clamp(self) -> Self {
+        let mut a = self.0;
+        for (i, v) in a.iter_mut().enumerate() {
+            let b = Self::BOUNDS[i];
+            *v = v.clamp(b.0, b.1);
+        }
+        return Self::from_array(a);
+    }
+    fn clamp_channel(self, index: usize) -> Self {
+        let mut a = self.0;
+        let b = Self::BOUNDS[index];
+        a[index] = a[index].clamp(b.0, b.1);
+        return Self::from_array(a);
+    }
+    fn is_clamped(&self) -> bool {
+        for i in 0..3 {
+            let b = Self::BOUNDS[i];
+            let v = self.0[i];
+            if v < b.0 || v > b.1 {
+                return false;
+            }
+        }
+        return true;
+    }
+    #[inline]
+    fn is_channel_clamped(&self, index: usize) -> bool {
+        let c = self.0[index];
+        let b = Self::BOUNDS[index];
+        return c >= b.0 && c <= b.1;
+    }
 }
 
 impl FromColor<OkLab> for OkLch {

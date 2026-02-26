@@ -70,9 +70,11 @@ fn tan_rational_poly2(x_1: f64) -> (f64, f64) {
 
 /// Evaluate `sin(x)` for x in [-pi, pi] (radians)
 pub fn sinf_on_pi(x: f32) -> f32 {
+    let flip = x.abs() > 1.72;
     let x = x as f64;
-    let (p, q) = tan_rational_poly2(x * 0.5);
+    let x = if flip { x - PI_64.copysign(x) } else { x };
 
+    let (p, q) = tan_rational_poly2(x * 0.5);
     // sin(x) = cos(x - pi/2)
     // So after feeding x/2 into tan we need to shift
     // over pi/4. Nicely tan(pi/4) = 1.0
@@ -85,5 +87,7 @@ pub fn sinf_on_pi(x: f32) -> f32 {
     // we can do a little more algerbra to get: (2*p*q)/(p^2 + q^2)
     let p1 = 2.0 * p * q;
     let q1 = fma_inner(q, q, p * p);
-    return (p1 / q1) as f32;
+    let r = p1 / q1;
+    let r = if flip { -r } else { r }; // Flip sign if needed.
+    return r as f32;
 }

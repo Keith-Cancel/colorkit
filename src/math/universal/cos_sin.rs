@@ -50,10 +50,28 @@ pub fn cosf_on_pi(x: f32) -> f32 {
     return r as f32;
 }
 
+/// approximates tan(x) via P/Q
+#[inline(always)]
+fn tan_rational_poly2(x_1: f64) -> (f64, f64) {
+    let x_2 = x_1 * x_1;
+    // 135135x - 17325x^3 + 378x^5 - x^7
+    let p = 378.0 - x_2;
+    let p = fma_inner(x_2, p, -17325.0);
+    let p = fma_inner(x_2, p, 135135.0);
+    let p = x_1 * p;
+
+    // 135135 - 62370x^2 + 3150x^4 - 28x^6
+    let q = fma_inner(x_2, -28.0, 3150.0);
+    let q = fma_inner(x_2, q, -62370.0);
+    let q = fma_inner(x_2, q, 135135.0);
+
+    return (p, q);
+}
+
 /// Evaluate `sin(x)` for x in [-pi, pi] (radians)
 pub fn sinf_on_pi(x: f32) -> f32 {
     let x = x as f64;
-    let (p, q) = tan_rational_poly(x * 0.5);
+    let (p, q) = tan_rational_poly2(x * 0.5);
 
     // sin(x) = cos(x - pi/2)
     // So after feeding x/2 into tan we need to shift

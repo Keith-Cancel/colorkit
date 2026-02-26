@@ -40,8 +40,24 @@ impl OkLch {
     }
     /// Get the Color's the `h` channel angle.
     #[inline]
-    pub const fn b(&self) -> f32 {
+    pub const fn h(&self) -> f32 {
         return self.0[2];
+    }
+    /// Set the Color's the `L` channel's value.
+    #[inline]
+    pub const fn set_l(&mut self, value: f32) {
+        self.0[0] = value;
+    }
+    /// Set the Color's the `C` channel's value.
+    #[inline]
+    pub const fn set_c(&mut self, value: f32) {
+        self.0[1] = value;
+    }
+    /// Set the Color's the `h` channel angle.
+    #[inline]
+    pub const fn set_h(&mut self, value: f32) {
+        let value = value.clamp(-PI, PI);
+        self.0[2] = value;
     }
 }
 

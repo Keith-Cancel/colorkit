@@ -71,7 +71,14 @@ fn tan_rational_poly2(x_1: f64) -> (f64, f64) {
 /// Evaluate `sin(x)` for x in [-pi, pi] (radians)
 pub fn sinf_on_pi(x: f32) -> f32 {
     debug_assert!(x >= -PI_32 && x <= PI_32);
-    let flip = x.abs() > 1.72;
+    let x_a = x.abs();
+
+    // For x smaller than this we can just return x.
+    if x_a < 0.00044363298 {
+        return x;
+    }
+
+    let flip = x_a > 1.72;
     let x = x as f64;
     let x = if flip { x - PI_64.copysign(x) } else { x };
 

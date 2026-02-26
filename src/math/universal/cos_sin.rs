@@ -41,10 +41,11 @@ pub fn cosf_on_pi(x: f32) -> f32 {
 
     // Use identity:
     // cos(x) = (1 - tan(x)^2)/(1 + tan(x)^2)
+    // it's re-worked algrabraicly since tan(x) ~= p/q
     let p2 = p * p;
     let q2 = q * q;
-
     let r = (q2 - p2) / (q2 + p2);
+
     let r = if flip { -r } else { r }; // Flip sign if needed.
     return r as f32;
 }

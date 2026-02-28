@@ -25,7 +25,7 @@ pub mod scalar;
 pub mod space;
 pub mod wp;
 
-// Few exports at the top level for convience.
+// Few exports at the top level for convenience.
 pub use colors::Alpha;
 pub use colors::LinSrgb;
 pub use colors::OkLab;

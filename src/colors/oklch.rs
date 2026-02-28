@@ -3,9 +3,11 @@ use core::f32::consts::PI;
 use core::f32::consts::TAU;
 
 use colorkit::convert::*;
+use colorkit::layout::*;
 use colorkit::math::*;
 use colorkit::num_type::N3;
-use colorkit::scalar::NormF32;
+use colorkit::num_type::Number;
+use colorkit::scalar::*;
 use colorkit::space::*;
 use colorkit::wp::D65;
 
@@ -149,8 +151,32 @@ impl ColorNorm for OkLch {
     }
 }
 
+impl ColorLayout for OkLch {
+    fn from_layout<L: Layout>(layout: L) -> Self {
+        debug_assert!(<L::Channels as Number>::N >= 3);
+        let l = layout.get_norm(0);
+        let a = layout.get_norm(1);
+        let b = layout.get_norm(2);
+        return Self::from_norm([l, a, b]);
+    }
+
+    fn into_layout<L: Layout<Channels = Self::Channels>>(self, round: Rounding) -> L {
+        let n = self.into_norm();
+        return L::from_fn_norm(|i| n[i], round);
+    }
+
+    fn into_layout_dither<L: Layout<Channels = Self::Channels>, D: Dither>(
+        self,
+        round: Rounding,
+        dither: &mut D,
+    ) -> L {
+        let n = self.into_norm();
+        return L::from_fn_norm_dither(|i| n[i], round, dither);
+    }
+}
+
 impl AlphaNone for OkLch {}
-//impl ColorSpace for OkLch {}
+impl ColorSpace for OkLch {}
 impl ColorSlice for OkLch {}
 unsafe impl ColorTransmute for OkLch {}
 

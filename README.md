@@ -24,6 +24,7 @@ colorkit = "0.1.0"
 
 ## Quick Start
 
+### Conversion
 Convert between color spaces with `IntoColor`:
 
 ```rust

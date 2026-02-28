@@ -34,3 +34,16 @@ let srgb = Srgb::new_u8(255, 128, 32);
 let lab: OkLab = srgb.into_color();
 let srgb_roundtrip: Srgb = lab.into_color();
 ```
+
+#### Work in a Perctual color space and output in sRGB
+
+```rust
+let input = Srgb::new(0.15, 0.55, 0.85);
+let mut lab: OkLab = input.into_color();
+
+// Example adjustment in OkLab space:
+lab.set_l(lab.l() + 0.08);
+lab[2] += (lab[2] * 0.01); // Index access of `b` channel.
+
+let output: Srgb = lab.into_color();
+```

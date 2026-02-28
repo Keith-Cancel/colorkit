@@ -1,8 +1,11 @@
+use core::f32::consts::FRAC_1_SQRT_2;
 use core::f32::consts::PI;
+use core::f32::consts::TAU;
 
 use colorkit::convert::*;
 use colorkit::math::*;
 use colorkit::num_type::N3;
+use colorkit::scalar::NormF32;
 use colorkit::space::*;
 use colorkit::wp::D65;
 
@@ -23,7 +26,11 @@ impl_self_as_typ!([f32; 3], OkLch);
 impl_from_inner!([f32; 3], OkLch);
 
 impl OkLch {
-    const BOUNDS: [(f32, f32); 3] = [(0.0, 1.0), (0.0, 0.70710677), (-PI, PI)];
+    const BOUNDS: [(f32, f32); 3] = [
+        (0.0, 1.0),
+        (0.0, FRAC_1_SQRT_2),
+        (-PI, PI),
+    ];
     /// Create a new color from `LCh` values.
     pub const fn new(l: f32, c: f32, h: f32) -> Self {
         return Self([l, c, h]);
@@ -75,7 +82,7 @@ impl ColorData for OkLch {
 
     const CHANNEL_MAX: [BoundF32; 3] = [
         BoundF32::Include(1.0),
-        BoundF32::Include(0.70710677),
+        BoundF32::Include(FRAC_1_SQRT_2),
         BoundF32::Include(PI),
     ];
 
@@ -116,6 +123,29 @@ impl ColorBounds for OkLch {
         let c = self.0[index];
         let b = Self::BOUNDS[index];
         return c >= b.0 && c <= b.1;
+    }
+}
+
+impl ColorNorm for OkLch {
+    /// Get [`OkLch`] channels normalized into `[0.0, 1.0]`.
+    ///
+    /// Oklch `c` and `h` use the bounds of `[0.0, sqrt(.5)]`, and [-pi, pi]
+    fn into_norm(self) -> [NormF32; 3] {
+        let c = self[1] / FRAC_1_SQRT_2;
+        let h = (self[2] + PI) / TAU;
+        return [
+            NormF32::new(self[0]),
+            NormF32::new(c),
+            NormF32::new(h),
+        ];
+    }
+    /// Create an [`OkLch`] from channels normalized into `[0.0, 1.0]`.
+    #[inline]
+    fn from_norm<T: AsRef<[NormF32]>>(values: T) -> Self {
+        let v = values.as_ref();
+        let c = v[1] * FRAC_1_SQRT_2;
+        let h = (v[2] * TAU) - PI;
+        return Self([v[0].get(), c, h]);
     }
 }
 

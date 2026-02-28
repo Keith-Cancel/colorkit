@@ -21,3 +21,15 @@ Add `colorkit` to your `Cargo.toml`:
 [dependencies]
 colorkit = "0.1.0"
 ```
+
+## Quick Start
+
+Convert between color spaces with `IntoColor`:
+
+```rust
+use colorkit::{IntoColor, OkLab, Srgb};
+
+let srgb = Srgb::new_u8(255, 128, 32);
+let lab: OkLab = srgb.into_color();
+let srgb_roundtrip: Srgb = lab.into_color();
+```

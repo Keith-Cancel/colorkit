@@ -33,14 +33,14 @@ pub trait Interpolation {
 impl<C: ColorSpace> Interpolation for C {
     fn lerp(&self, other: &Self, ratio: f32) -> Self {
         let r = ratio.clamp(0.0, 1.0);
-        // If the color type stores premultiplied channels naive lerp is correct.
-        if matches!(Self::ALPHA_KIND, AlphaKind::PreMul) {
-            return C::lerp_naive(self, other, r);
-        }
         // If there is no alpha channel, fall back to naive per-component lerp.
         let Some(a_idx) = Self::ALPHA_INDEX else {
             return C::lerp_naive(self, other, r);
         };
+        // If the color type stores premultiplied channels naive lerp is correct.
+        if matches!(Self::ALPHA_KIND, AlphaKind::PreMul) {
+            return C::lerp_naive(self, other, r);
+        }
         let alp_0 = self[a_idx];
         let alp_1 = other[a_idx];
         let alp_2 = alp_0 + r * (alp_1 - alp_0);

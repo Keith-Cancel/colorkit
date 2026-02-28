@@ -2,7 +2,7 @@
 
 `colorkit` is a lightweight `#[no_std]` color crate for Rust.
 
-It provides an easy to use and strongly typed conversions between color spaces. Color Kit also provides layout and quantization tools for working with with pixel data.
+It provides an easy to use and strongly typed conversions between color spaces. Color Kit also provides layout and quantization tools for working with with pixel data. One can also implement additional/custom color spaces and layouts.
 
 ## Color Kit Overview
 

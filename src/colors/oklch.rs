@@ -212,3 +212,31 @@ impl FromColor<OkLch> for Xyz<D65> {
         return lab.into_color();
     }
 }
+
+impl FromColor<LinSrgb> for OkLch {
+    fn from_color(color: LinSrgb) -> Self {
+        let c: OkLab = color.into_color();
+        return c.into_color();
+    }
+}
+
+impl FromColor<OkLch> for LinSrgb {
+    fn from_color(color: OkLch) -> Self {
+        let c: OkLab = color.into_color();
+        return c.into_color();
+    }
+}
+
+impl FromColor<Srgb> for OkLch {
+    fn from_color(color: Srgb) -> Self {
+        let c: OkLab = color.into_color();
+        return c.into_color();
+    }
+}
+
+impl FromColor<OkLch> for Srgb {
+    fn from_color(color: OkLch) -> Self {
+        let c: OkLab = color.into_color();
+        return c.into_color();
+    }
+}

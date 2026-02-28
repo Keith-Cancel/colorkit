@@ -124,7 +124,13 @@ impl Layout for Packed565 {
         self.set(index, val);
     }
 
-    fn set_norm_dither<D: Dither>(&mut self, value: NormF32, index: usize, round: Rounding, dither: &mut D) {
+    fn set_norm_dither<D: Dither>(
+        &mut self,
+        value: NormF32,
+        index: usize,
+        round: Rounding,
+        dither: &mut D,
+    ) {
         let val = if index == 1 {
             BitUint::<6, u16>::from_norm_dither(value, round, dither).get()
         } else {
@@ -142,7 +148,11 @@ impl Layout for Packed565 {
         return ret;
     }
 
-    fn from_fn_norm_dither<F: FnMut(usize) -> NormF32, D: Dither>(fun: F, round: Rounding, dither: &mut D) -> Self {
+    fn from_fn_norm_dither<F: FnMut(usize) -> NormF32, D: Dither>(
+        fun: F,
+        round: Rounding,
+        dither: &mut D,
+    ) -> Self {
         let mut fun = fun;
         let mut ret = Self(0);
         for i in 0..3 {

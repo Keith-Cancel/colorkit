@@ -58,7 +58,7 @@ pub trait LayoutStorage: Sized {
 // If `min_const_generic_args`` and/or `associated_const_equality`
 // are stabilized this trait can be made a little more ergonomic
 // or have better constraints on the methods, for example instead
-// maybe panicing on channel width difference in requantize I could
+// maybe panicking on channel width difference in requantize I could
 // use `associated_const_equality` to enforce a constraint.
 pub trait Layout: Copy + Default + LayoutStorage {
     /// Default Value
@@ -87,7 +87,11 @@ pub trait Layout: Copy + Default + LayoutStorage {
 
     /// Create a layout by calling `fun` for each channel from the returned
     /// [`NormF32`] and given rounding and dither.
-    fn from_fn_norm_dither<F: FnMut(usize) -> NormF32, D: Dither>(fun: F, round: Rounding, dither: &mut D) -> Self;
+    fn from_fn_norm_dither<F: FnMut(usize) -> NormF32, D: Dither>(
+        fun: F,
+        round: Rounding,
+        dither: &mut D,
+    ) -> Self;
 
     /// Return the value at channel `index` as a [`NormF32`]
     ///
@@ -107,7 +111,13 @@ pub trait Layout: Copy + Default + LayoutStorage {
     ///
     /// # Panics
     /// May Panic if `index` >= [`Layout::Channels`]
-    fn set_norm_dither<D: Dither>(&mut self, value: NormF32, index: usize, round: Rounding, dither: &mut D);
+    fn set_norm_dither<D: Dither>(
+        &mut self,
+        value: NormF32,
+        index: usize,
+        round: Rounding,
+        dither: &mut D,
+    );
 
     /// Return the raw value at `index`.
     ///
@@ -126,7 +136,11 @@ pub trait Layout: Copy + Default + LayoutStorage {
     }
 
     /// Like [`Layout::requantize`], but applies dithering.
-    fn requantize_dither<L: Layout<Channels = Self::Channels>, D: Dither>(self, round: Rounding, dither: &mut D) -> L {
+    fn requantize_dither<L: Layout<Channels = Self::Channels>, D: Dither>(
+        self,
+        round: Rounding,
+        dither: &mut D,
+    ) -> L {
         return L::from_fn_norm_dither(|i| self.get_norm(i), round, dither);
     }
 }

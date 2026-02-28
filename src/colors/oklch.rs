@@ -149,6 +149,11 @@ impl ColorNorm for OkLch {
     }
 }
 
+impl AlphaNone for OkLch {}
+//impl ColorSpace for OkLch {}
+impl ColorSlice for OkLch {}
+unsafe impl ColorTransmute for OkLch {}
+
 impl FromColor<OkLab> for OkLch {
     fn from_color(color: OkLab) -> Self {
         let d = color.into_array();

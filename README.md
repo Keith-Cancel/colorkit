@@ -12,3 +12,12 @@ It provides an easy to use and strongly typed conversions between color spaces. 
 - Alpha wrappers for normal and premultiplied color: `Alpha<T>`, `AlphaPre<T>`.
 - Layout and quantization primitives: `Planar`, `MappedLayout`, `Packed565`.
 - Built-in rounding and optional dithering hooks for scalar/layout conversions.
+
+## Getting Started
+
+Add `colorkit` to your `Cargo.toml`:
+
+```toml
+[dependencies]
+colorkit = "0.1.0"
+```

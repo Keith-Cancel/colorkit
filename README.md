@@ -10,6 +10,5 @@ It provides an easy to use and strongly typed conversions between color spaces. 
 - Typed color spaces: `Srgb`, `LinSrgb`, `OkLab`, `Xyz<WhitePoint>` etc...
 - Conversion API via `FromColor` / `IntoColor`.
 - Alpha wrappers for normal and premultiplied color: `Alpha<T>`, `AlphaPre<T>`.
-- Layout and quantization primitives:
-  `Planar`, `MappedLayout`, `Packed565`.
+- Layout and quantization primitives: `Planar`, `MappedLayout`, `Packed565`.
 - Built-in rounding and optional dithering hooks for scalar/layout conversions.

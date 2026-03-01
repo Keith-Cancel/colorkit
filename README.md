@@ -24,6 +24,8 @@ colorkit = "0.1.0"
 
 ## Quick Start
 
+Color spaces are simple types that implement the `ColorSpace` trait and it's super traits. Probably the most important super traits would be `ColorNew` and `ColorSlice` when working generically with color spaces. 
+
 ### Conversion
 Convert between color spaces with `IntoColor`:
 
@@ -37,9 +39,11 @@ let srgb_roundtrip: Srgb = lab.into_color();
 
 ### Modifying Channel Data
 
-This example first converts to OkLab Perceptual color space, makes a few changes and outputs into sRGB.
+This example first converts to the OkLab Perceptual color space, makes a few changes and outputs into sRGB.
 
 ```rust
+use colorkit::{IntoColor, OkLab, Srgb};
+
 let input = Srgb::new(0.15, 0.55, 0.85);
 let mut lab: OkLab = input.into_color();
 

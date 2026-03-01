@@ -56,9 +56,9 @@ pub trait ColorSlice:
     ///
     /// # Safety
     ///
-    /// Agruments `a` and `b` must with bounds. Failure to do so results
+    /// Arguments `a` and `b` must with bounds. Failure to do so results
     /// *undefined behavior*.
-    /// Esentially, `a < self.len()` and `b < self.len()` must be true
+    /// Essentially, `a < self.len()` and `b < self.len()` must be true
     unsafe fn swap_unchecked(&mut self, a: usize, b: usize) {
         let slc = self.as_mut();
         debug_assert!(a < slc.len() && b < slc.len());

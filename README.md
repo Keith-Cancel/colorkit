@@ -83,7 +83,7 @@ for (input, output) in chk_in.iter().zip(chk_out.iter_mut()) {
     *output = color.into_layout::<Planar<u8>>(Rounding::Nearest).into();
 }
 ```
-This image shows the starting color above and the result below:
+This image shows the starting color data above and the result below:
 
 ![The result the changes to the data.](./imgs/example_2.png)
 

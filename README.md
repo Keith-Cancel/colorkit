@@ -118,3 +118,8 @@ assert_eq!(color.alpha(), 0.8); // Do stuff with the color
 let out: [u16; 4] = color.into_layout::<Planar<u16, 4>>(Rounding::Nearest).into();
 assert_eq!(out, [0x9999, 0x3333, 0x6666, 0xcccc]); 
 ```
+
+## License
+
+Color Kit is licened the under following license:
+* MIT license ([LICENSE](./LICENSE) or <http://opensource.org/licenses/MIT>)

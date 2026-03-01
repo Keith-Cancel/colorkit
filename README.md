@@ -54,9 +54,13 @@ This image shows the starting color and the end result:
 
 ![The result the changes in OkLab colorspace.](./imgs/example_1.png)
 
-### Using Data Layout
+## Data Layouts
 
-This example shows how to use layouts to load quantized data to and from a color space.
+Color space types such `Srgb`, `OkLab` etc... use `f32` for channel data and have pre-defined channel order. Color data though likely is stored in other layouts. RGB data for example is very often stored as a bunch octets. Instead of trying to encode that potential complexity for channel order and type directly into each color space type. This may be handled by layouts instead. Layouts are types simply implement the `Layout` trait. For example the `Planar` layout is for array like data layouts. `MappedLayout` is a wrapper around a `Layout`, but allows one to change the channel order (e.g. ARGB, RGBA, ...) using a `LayoutMap`.
+
+### Basic Usage Example
+
+This example shows how to use layouts to load/quantize data to and from a color space.
 
 ```rust
 use colorkit::layout::Planar;

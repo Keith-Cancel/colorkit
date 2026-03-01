@@ -23,7 +23,7 @@ impl Scalar for u16 {
         return norm_to_u32(value, round, dither, Self::MAX.into()) as Self;
     }
 
-    /// Re-quantize a scalar to an other scalar with a specfic rounding choice.
+    /// Re-quantize a scalar to an other scalar with a specific rounding choice.
     fn requantize<T: Scalar>(self, rounding: Rounding) -> T {
         let any: &dyn Any = &self;
         // Just pass the value if T and Self are the same.

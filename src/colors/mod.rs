@@ -12,6 +12,7 @@ pub use alpha::Alpha;
 pub use alpha::AlphaPre;
 pub use alpha::AlphaWrap;
 pub use oklab::OkLab;
+pub use oklch::OkLch;
 pub use rgb::LinSrgb;
 pub use rgb::Srgb;
 pub use xyz::Xyz;

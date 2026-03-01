@@ -86,3 +86,26 @@ for (input, output) in chk_in.iter().zip(chk_out.iter_mut()) {
 This image shows the starting color above and the result below:
 
 ![The result the changes to the data.](./imgs/example_2.png)
+
+#### Load and Store in Different Channel Orders
+
+While the color spaces generally have a default order, data may or may not be stored in the default order. For example `Srgb` assumes red = 0, green = 1, blue = 2, but we may for example have data in the order AGBR ect...
+
+```rust
+use colorkit::layout::maps::Map4;
+use colorkit::layout::{MappedLayout, Planar};
+use colorkit::scalar::Rounding;
+use colorkit::space::ColorLayout;
+use colorkit::{Alpha, Srgb};
+
+// Load from AGBR Order
+let data: [u8; 4] = [0xcc, 0x33, 0x66, 0x99];
+let layout = MappedLayout::<Map4<3, 1, 2, 0>, Planar<u8, 4>>::as_mapped(data.as_ref());
+
+let color = Alpha::<Srgb>::from_layout(layout);
+assert_eq!(color.alpha(), 0.8); // Do stuff with the color
+
+// Quantize to u16 in RGBA order
+let out: [u16; 4] = color.into_layout::<Planar<u16, 4>>(Rounding::Nearest).into();
+assert_eq!(out, [0x9999, 0x3333, 0x6666, 0xcccc]); 
+```

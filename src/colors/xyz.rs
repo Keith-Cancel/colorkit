@@ -95,7 +95,7 @@ impl<W: WhitePoint> ColorLayout for Xyz<W> {
     ///
     /// This calls `get_norm()` on the layout and scales
     /// each channel by the white point.
-    fn from_layout<L: Layout>(layout: L) -> Self {
+    fn from_layout<L: Layout>(layout: &L) -> Self {
         debug_assert!(<L::Channels as Number>::N >= 3);
         let x = layout.get_norm(0) * W::X;
         let y = layout.get_norm(1) * W::Y;

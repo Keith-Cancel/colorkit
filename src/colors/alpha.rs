@@ -353,7 +353,7 @@ macro_rules! alpha_traits {
         }
 
         impl<S: ColorSpace> ColorLayout for $name<S> {
-            fn from_layout<L: Layout>(layout: L) -> Self {
+            fn from_layout<L: Layout>(layout: &L) -> Self {
                 let alpha = layout.get_norm(Self::INDEX).get();
                 let color = S::from_layout(layout);
                 return Self::new(color, alpha);

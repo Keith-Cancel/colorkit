@@ -152,7 +152,7 @@ impl ColorNorm for OkLch {
 }
 
 impl ColorLayout for OkLch {
-    fn from_layout<L: Layout>(layout: L) -> Self {
+    fn from_layout<L: Layout>(layout: &L) -> Self {
         debug_assert!(<L::Channels as Number>::N >= 3);
         let l = layout.get_norm(0);
         let a = layout.get_norm(1);

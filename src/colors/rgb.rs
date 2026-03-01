@@ -91,7 +91,7 @@ macro_rules! base_funcs {
         }
 
         impl ColorLayout for $name {
-            fn from_layout<L: Layout>(layout: L) -> Self {
+            fn from_layout<L: Layout>(layout: &L) -> Self {
                 debug_assert!(<L::Channels as Number>::N >= 3);
                 let r = layout.get_norm(0).get();
                 let g = layout.get_norm(1).get();

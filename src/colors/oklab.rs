@@ -261,7 +261,7 @@ impl ColorLayout for OkLab {
     /// different.
     ///
     /// This calls `get_norm()` on the layout and shifts value by `+0.5`
-    fn from_layout<L: Layout>(layout: L) -> Self {
+    fn from_layout<L: Layout>(layout: &L) -> Self {
         debug_assert!(<L::Channels as Number>::N >= 3);
         let l = layout.get_norm(0);
         let a = layout.get_norm(1);

@@ -43,7 +43,11 @@ let mut lab: OkLab = input.into_color();
 
 // Example adjustment in OkLab space:
 lab.set_l(lab.l() + 0.08);
-lab[1] += lab[1] * -2.0; // Index access of `a` channel.
+lab[1] += lab[1] * -2.5; // Index access of `a` channel.
 
 let output: Srgb = lab.into_color();
 ```
+
+This image shows the starting color and the end result:
+
+![The result the changes in OkLab colorspace.](./imgs/example_1.png)

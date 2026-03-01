@@ -21,7 +21,7 @@ fn tan_rational_poly(x_1: f64) -> (f64, f64) {
 
 /// Evaluate `cos(x)` for x in [-pi, pi] (radians)
 pub fn cosf_on_pi(x: f32) -> f32 {
-    debug_assert!(x >= -PI_32 && x <= PI_32);
+    debug_assert!((-PI_32..=PI_32).contains(&x));
     const C1: f64 = 0.4636476090008061; // tan(C1) ~= 0.5
     const C2: f64 = 0.9272952180016122;
     let x = x.abs();
@@ -70,7 +70,7 @@ fn tan_rational_poly2(x_1: f64) -> (f64, f64) {
 
 /// Evaluate `sin(x)` for x in [-pi, pi] (radians)
 pub fn sinf_on_pi(x: f32) -> f32 {
-    debug_assert!(x >= -PI_32 && x <= PI_32);
+    debug_assert!((-PI_32..=PI_32).contains(&x));
     let x_a = x.abs();
 
     // For x smaller than this we can just return x.

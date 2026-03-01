@@ -183,7 +183,7 @@ unsafe impl ColorTransmute for OkLch {}
 impl FromColor<OkLab> for OkLch {
     fn from_color(color: OkLab) -> Self {
         let d = color.into_array();
-        let c = sqrtf(d[1] * d[1] + d[2] + d[2]);
+        let c = sqrtf(d[1] * d[1] + d[2] * d[2]);
         let h = atan2f(d[2], d[1]);
         return Self([d[0], c, h]);
     }
@@ -238,5 +238,22 @@ impl FromColor<OkLch> for Srgb {
     fn from_color(color: OkLch) -> Self {
         let c: OkLab = color.into_color();
         return c.into_color();
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use crate::math::MathFuncs;
+
+    #[test]
+    fn oklab_oklch_roundtrip() {
+        let in_lab = OkLab::new(0.62, -0.11, 0.23);
+        let lch: OkLch = in_lab.into_color();
+        let out_lab: OkLab = lch.into_color();
+
+        assert_eq!(in_lab.l(), out_lab.l());
+        assert!(out_lab.a().almost_eq(in_lab.a(), 5e-8));
+        assert!(out_lab.b().almost_eq(in_lab.b(), 5e-8));
     }
 }

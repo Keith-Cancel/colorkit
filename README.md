@@ -119,6 +119,20 @@ let out: [u16; 4] = color.into_layout::<Planar<u16, 4>>(Rounding::Nearest).into(
 assert_eq!(out, [0x9999, 0x3333, 0x6666, 0xcccc]); 
 ```
 
+## Project Status
+
+`colorkit` is currently at `0.1.x`, so the focus has mostly been on a clean API for color conversions and layout handling.
+
+### Contributing
+
+Any PRs, Feedback and/or issues are welcome. Some things I definitely want are:
+* Improve documentation and create a collection of useful examples.
+* Add more commonly used Color Spaces
+* Add more color operations in the `./ops` directory (definitely needed)
+* Identify any common packed layouts and implement those.
+* Think about and implement SIMD acceleration.
+
+
 ## License
 
 Color Kit is licened the under following license:

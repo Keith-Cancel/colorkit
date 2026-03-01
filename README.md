@@ -54,6 +54,8 @@ This image shows the starting color and the end result:
 
 ### Using Data Layout
 
+This example shows how to use layouts to load quantized data to and from a color space.
+
 ```rust
 use colorkit::layout::Planar;
 use colorkit::scalar::Rounding;

@@ -28,6 +28,7 @@ impl<S: ColorSpace> Alpha<S> {
     const KIND: AlphaKind = AlphaKind::Normal;
     /// Create a new Alpha color with a color and alpha channel value.
     pub fn new(color: S, alpha: f32) -> Self {
+        Self::assert();
         return Self(ArrInc::<S, f32>::from_fn(|i| {
             if i == Self::INDEX { alpha } else { color[i] }
         }));
@@ -51,15 +52,12 @@ impl<S: ColorSpace> Alpha<S> {
 
 // Only implemented for alpha since for pre-multiplied would involve un-premultiplying.
 impl<S: ColorSpace> Alpha<S> {
-    // Make sure the channel numbers did not wrap around to zero.
-    const ASSERT: () = assert!(<<Self as ColorData>::Channels as Number>::N != 0);
     /// Get a reference to the inner color
     pub fn color_ref(&self) -> &S
     where
         ColorArray<S, f32>: AsRef<S>,
     {
-        #[allow(clippy::let_unit_value)] // This fine I am using as a compile time assert.
-        let _ = Self::ASSERT;
+        Self::assert();
         let ptr = (&self.0) as *const _ as *const ColorArray<S, f32>;
         // Safety:
         // We ensure that the channel number did not wrap around and therefore
@@ -72,8 +70,7 @@ impl<S: ColorSpace> Alpha<S> {
     where
         ColorArray<S, f32>: AsMut<S>,
     {
-        #[allow(clippy::let_unit_value)]
-        let _ = Self::ASSERT;
+        Self::assert();
         let ptr = (&mut self.0) as *mut _ as *mut ColorArray<S, f32>;
         // Safety:
         // We ensure that the channel number did not wrap around and therefore
@@ -147,6 +144,7 @@ impl<S: ColorSpace> AlphaPre<S> {
     const KIND: AlphaKind = AlphaKind::PreMul;
     /// Create a new premultiplied Alpha color with a color and alpha channel value.
     pub fn new(color: S, alpha: f32) -> Self {
+        Self::assert();
         return Self(ArrInc::<S, f32>::from_fn(|i| {
             if i == Self::INDEX {
                 alpha
@@ -241,6 +239,7 @@ macro_rules! alpha_methods {
 
             /// Create alpha color that is fully opaque.
             pub fn new_opaque(color: S) -> Self {
+                Self::assert();
                 return Self(ArrInc::<S, f32>::from_fn(|i| {
                     if i == Self::INDEX { 1.0 } else { color[i] }
                 }));
@@ -283,6 +282,7 @@ macro_rules! alpha_methods {
 
             /// Create the alpha color with all channels equal to `0.0`.
             pub const fn new_zeroed() -> Self {
+                Self::assert();
                 return Self(repeat::<S, _>(0.0));
             }
 
@@ -294,6 +294,19 @@ macro_rules! alpha_methods {
                 let alpha = self.alpha();
                 let color: S1 = self.strip_alpha().into_color();
                 return Alpha::<S1>::new(color, alpha);
+            }
+
+            // Make sure the channel numbers did not wrap around to zero.
+            const ASSERT_SIZE: () = const {
+                if <<Self as ColorData>::Channels as Number>::N == 0 {
+                    panic!("Alpha Color has a channel count of zero.");
+                }
+            };
+
+            #[inline(always)]
+            pub(crate) const fn assert() {
+                #[allow(clippy::let_unit_value)] // This fine I am using as a compile time assert.
+                let _ = Self::ASSERT_SIZE;
             }
         }
     };
@@ -435,6 +448,7 @@ macro_rules! alpha_traits {
 
         impl<S: ColorSpace> ColorNew for $name<S> {
             fn from_fn<F: FnMut(usize) -> f32>(fun: F) -> Self {
+                Self::assert();
                 return Self(ArrInc::<S, f32>::from_fn(fun));
             }
         }
@@ -451,6 +465,7 @@ macro_rules! alpha_traits {
 
         impl<S: ColorSpace> ColorLayout for $name<S> {
             fn from_layout<L: Layout>(layout: &L) -> Self {
+                Self::assert();
                 let alpha = layout.get_norm(Self::INDEX).get();
                 let color = S::from_layout(layout);
                 return Self::new(color, alpha);

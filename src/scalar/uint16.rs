@@ -61,6 +61,7 @@ mod test {
     use crate::scalar::NormF32;
 
     #[test]
+    #[cfg(not(miri))] // Quite slow under miri so don't run on miri.
     fn u16_check() {
         for i in 0..=u16::MAX {
             let norm = i.into_norm();

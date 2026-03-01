@@ -6,6 +6,13 @@ crate-type = ["lib"]
 authors = ["Keith Cancel <admin@keith.pro>"]
 readme = "README.md"
 license = "MIT"
+exclude = [
+    "imgs/*",
+    "test_math/*",
+    "tools/*",
+    ".gitignore",
+    ".gitattributes",
+]
 
 [dependencies]
 

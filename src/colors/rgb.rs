@@ -91,12 +91,11 @@ macro_rules! base_funcs {
         }
 
         impl ColorLayout for $name {
-            fn from_layout<L: Layout, T: AsRef<L>>(layout: &T) -> Self {
+            fn from_layout<L: Layout>(layout: &L) -> Self {
                 debug_assert!(<L::Channels as Number>::N >= 3);
-                let lay = layout.as_ref();
-                let r = lay.get_norm(0).get();
-                let g = lay.get_norm(1).get();
-                let b = lay.get_norm(2).get();
+                let r = layout.get_norm(0).get();
+                let g = layout.get_norm(1).get();
+                let b = layout.get_norm(2).get();
                 return Self([r, g, b]);
             }
 

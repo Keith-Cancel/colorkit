@@ -67,7 +67,7 @@ impl<S: ColorSpace> Alpha<S> {
     }
 
     /// Get a mutable reference to the inner color
-    pub fn color_mut(&mut self) -> &S
+    pub fn color_mut(&mut self) -> &mut S
     where
         ColorArray<S, f32>: AsMut<S>,
     {
@@ -327,6 +327,70 @@ macro_rules! alpha_traits {
             #[inline]
             fn as_mut(&mut self) -> &mut [f32] {
                 return (&mut self.0).as_mut();
+            }
+        }
+
+        impl<S: ColorSpace, const N: usize> AsRef<[f32; N]> for $name<S>
+        where
+            Num<N>: ToNumber,
+            $name<S>: ColorData<Channels = <Num<N> as ToNumber>::Number>,
+        {
+            #[inline]
+            fn as_ref(&self) -> &[f32; N] {
+                let ptr = (&self.0) as *const _ as *const [f32; N];
+                // Safety:
+                // ArrayInc is the exact same type as [f32; N], and since
+                // the number trait is sealed it can't be anything else.
+                // If min_const_generic_args is stabilized this can be reworked
+                // to get rid of the unsafe.
+                return unsafe { &*ptr };
+            }
+        }
+
+        impl<S: ColorSpace, const N: usize> AsRef<$name<S>> for [f32; N]
+        where
+            Num<N>: ToNumber,
+            $name<S>: ColorData<Channels = <Num<N> as ToNumber>::Number>,
+        {
+            #[inline]
+            fn as_ref(&self) -> &$name<S> {
+                let ptr = self as *const _ as *const $name<S>;
+                // Safety:
+                // ArrayInc is the exact same type as [f32; N], and since
+                // the number trait is sealed it can't be anything else.
+                return unsafe { &*ptr };
+            }
+        }
+
+        impl<S: ColorSpace, const N: usize> AsMut<[f32; N]> for $name<S>
+        where
+            Num<N>: ToNumber,
+            $name<S>: ColorData<Channels = <Num<N> as ToNumber>::Number>,
+        {
+            #[inline]
+            fn as_mut(&mut self) -> &mut [f32; N] {
+                let ptr = (&mut self.0) as *mut _ as *mut [f32; N];
+                // Safety:
+                // ArrayInc is the exact same type as [f32; N], and since
+                // the number trait is sealed it can't be anything else.
+                // If min_const_generic_args is stabilized this can be reworked
+                // to get rid of the unsafe.
+                return unsafe { &mut *ptr };
+            }
+        }
+
+        impl<S: ColorSpace, const N: usize> AsMut<$name<S>> for [f32; N]
+        where
+            Num<N>: ToNumber,
+            $name<S>: ColorData<Channels = <Num<N> as ToNumber>::Number>,
+        {
+            #[inline]
+            fn as_mut(&mut self) -> &mut $name<S> {
+                let ptr = self as *mut _ as *mut $name<S>;
+                // Safety:
+                // ArrayInc is the exact same type as [f32; N], and since
+                // the number trait is sealed it can't be anything else.
+                return unsafe { &mut *ptr };
             }
         }
 
@@ -593,5 +657,38 @@ mod test {
         let n1 = a1.into_norm();
 
         assert_eq!(n0, n1);
+    }
+
+    #[test]
+    fn as_ref() {
+        let a: &Alpha<Srgb> = [0.25, 0.5, 0.75, 0.125f32].as_ref();
+        assert_eq!(a.alpha(), 0.125);
+        assert_eq!(a[0], 0.25);
+        assert_eq!(a[1], 0.5);
+        assert_eq!(a[2], 0.75);
+
+        let c = a.color_ref();
+        assert_eq!(c.red(), 0.25);
+        assert_eq!(c.green(), 0.5);
+        assert_eq!(c.blue(), 0.75);
+    }
+
+    #[test]
+    fn as_mut() {
+        let mut data = [0.25, 0.5, 0.75, 0.125f32];
+        let a: &mut Alpha<Srgb> = data.as_mut();
+        assert_eq!(a.alpha(), 0.125);
+        assert_eq!(a[0], 0.25);
+        assert_eq!(a[1], 0.5);
+        assert_eq!(a[2], 0.75);
+        a.set_alpha(0.5);
+
+        assert_eq!(a.color_ref().red(), 0.25);
+        assert_eq!(a.color_ref().green(), 0.5);
+        assert_eq!(a.color_ref().blue(), 0.75);
+
+        a.color_mut().set_red(1.0);
+
+        assert_eq!(data, [1.0, 0.5, 0.75, 0.5])
     }
 }

@@ -10,7 +10,7 @@ pub trait ColorLayout: ColorData {
     ///
     /// Channel count of the the [`Layout::Channels`] should be greater
     /// than or equal to the color space channels.
-    fn from_layout<L: Layout>(layout: &L) -> Self;
+    fn from_layout<L: Layout, T: AsRef<L>>(layout: &T) -> Self;
     /// Construct a [`Layout`] from a given color.
     ///
     /// Channel count of the the [`Layout::Channels`] should

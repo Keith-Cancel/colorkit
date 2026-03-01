@@ -49,6 +49,37 @@ impl<S: ColorSpace> Alpha<S> {
     }
 }
 
+// Only implemented for alpha since for pre-multiplied would involve un-premultiplying.
+impl<S: ColorSpace> Alpha<S> {
+    // Make sure the channel numbers did not wrap around to zero.
+    const ASSERT: () = assert!(<<Self as ColorData>::Channels as Number>::N != 0);
+    /// Get a reference to the inner color
+    pub fn color_ref(&self) -> &S
+    where
+        ColorArray<S, f32>: AsRef<S>,
+    {
+        let _ = Self::ASSERT;
+        let ptr = (&self.0) as *const _ as *const ColorArray<S, f32>;
+        // Safety:
+        // We ensure that the channel number did not wrap around and therefore
+        // the IncArray will always be one larger than ColorArray.
+        return unsafe { &*ptr }.as_ref();
+    }
+
+    /// Get a mutable reference to the inner color
+    pub fn color_mut(&mut self) -> &S
+    where
+        ColorArray<S, f32>: AsMut<S>,
+    {
+        let _ = Self::ASSERT;
+        let ptr = (&mut self.0) as *mut _ as *mut ColorArray<S, f32>;
+        // Safety:
+        // We ensure that the channel number did not wrap around and therefore
+        // the IncArray will always be one larger than ColorArray.
+        return unsafe { &mut *ptr }.as_mut();
+    }
+}
+
 impl<S: ColorSpace> ColorBounds for Alpha<S> {
     fn clamp(mut self) -> Self {
         for i in 0..Self::INDEX {

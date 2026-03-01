@@ -35,7 +35,9 @@ let lab: OkLab = srgb.into_color();
 let srgb_roundtrip: Srgb = lab.into_color();
 ```
 
-#### Work in a Perctual color space and output in sRGB
+### Modifying Channel Data
+
+This example first converts to OkLab Perceptual color space, makes a few changes and outputs into sRGB.
 
 ```rust
 let input = Srgb::new(0.15, 0.55, 0.85);

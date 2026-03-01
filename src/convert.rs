@@ -207,7 +207,7 @@ impl<C: ColorData + ColorTransmute> AsColorMut<C> for [f32] {
         }
         let ptr = self.as_mut_ptr() as *mut C;
         // Safety:
-        // ColorTransmute was implemnted so it's safe
+        // ColorTransmute was implemented so it's safe
         // to treat a slice or array of the same length
         // as channels as an instance of that color.
         return Some(unsafe { &mut *ptr });

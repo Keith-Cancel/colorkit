@@ -33,4 +33,5 @@ pub use colors::Srgb;
 pub use colors::Xyz;
 pub use convert::FromColor;
 pub use convert::IntoColor;
+pub use space::ColorSlice;
 pub use space::ColorSpace;

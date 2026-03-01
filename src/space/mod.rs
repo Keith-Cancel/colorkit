@@ -35,7 +35,7 @@ pub trait ColorData: Default {
     const LINEAR: bool;
     /// Upper or maximum bound of each channel.
     const CHANNEL_MAX: ColorArray<Self, BoundF32>;
-    /// Lower or mininum bound of each channel.
+    /// Lower or minimum bound of each channel.
     const CHANNEL_MIN: ColorArray<Self, BoundF32>;
     // what else to add?
     // primaries?

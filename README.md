@@ -76,7 +76,7 @@ let chk_in = data_in.as_chunks::<3>().0;
 let chk_out = data_out.as_chunks_mut::<3>().0;
 for (input, output) in chk_in.iter().zip(chk_out.iter_mut()) {
     // Use Planar layout to load colors.
-    let mut color = Srgb::from_layout::<Planar<u8, 3>, _>(input);
+    let mut color = Srgb::from_layout::<Planar<u8, 3>>(input.as_ref());
     color.swap(1, 2); // Swap green and blue channels
     color[1] -= color.green() * 0.1; // Decrease green by 10%
     // Use Planar layout to store the color.

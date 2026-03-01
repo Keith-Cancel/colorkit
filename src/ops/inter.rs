@@ -1,5 +1,7 @@
 use colorkit::space::AlphaKind;
-use colorkit::space::ColorSpace;
+use colorkit::space::AlphaMaybe;
+use colorkit::space::ColorNew;
+use colorkit::space::ColorSlice;
 
 /// Extension trait for interpolation operations on colors
 pub trait Interpolation {
@@ -30,7 +32,7 @@ pub trait Interpolation {
     fn lerp_naive(&self, other: &Self, ratio: f32) -> Self;
 }
 
-impl<C: ColorSpace> Interpolation for C {
+impl<C: AlphaMaybe + ColorNew + ColorSlice> Interpolation for C {
     fn lerp(&self, other: &Self, ratio: f32) -> Self {
         let r = ratio.clamp(0.0, 1.0);
         // If there is no alpha channel, fall back to naive per-component lerp.

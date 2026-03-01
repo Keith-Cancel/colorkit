@@ -113,7 +113,8 @@ let layout = MappedLayout::<Map4<3, 1, 2, 0>, Planar<u8, 4>>::as_mapped(data.as_
 let color = Alpha::<Srgb>::from_layout(layout);
 assert_eq!(color.alpha(), 0.8); // Do stuff with the color
 
-// Quantize to u16 in RGBA order
+// Quantize to u16 in RGBA order, this is canonical channel order
+// for Alpha<Srgb> so there is no need for a Mapped layout here.
 let out: [u16; 4] = color.into_layout::<Planar<u16, 4>>(Rounding::Nearest).into();
 assert_eq!(out, [0x9999, 0x3333, 0x6666, 0xcccc]); 
 ```

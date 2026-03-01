@@ -58,6 +58,7 @@ impl<S: ColorSpace> Alpha<S> {
     where
         ColorArray<S, f32>: AsRef<S>,
     {
+        #[allow(clippy::let_unit_value)] // This fine I am using as a compile time assert.
         let _ = Self::ASSERT;
         let ptr = (&self.0) as *const _ as *const ColorArray<S, f32>;
         // Safety:
@@ -71,6 +72,7 @@ impl<S: ColorSpace> Alpha<S> {
     where
         ColorArray<S, f32>: AsMut<S>,
     {
+        #[allow(clippy::let_unit_value)]
         let _ = Self::ASSERT;
         let ptr = (&mut self.0) as *mut _ as *mut ColorArray<S, f32>;
         // Safety:

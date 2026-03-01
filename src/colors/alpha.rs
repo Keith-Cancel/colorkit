@@ -79,6 +79,24 @@ impl<S: ColorSpace> Alpha<S> {
     }
 }
 
+impl<S: ColorSpace> AsRef<S> for Alpha<S>
+where
+    ColorArray<S, f32>: AsRef<S>,
+{
+    fn as_ref(&self) -> &S {
+        return self.color_ref();
+    }
+}
+
+impl<S: ColorSpace> AsMut<S> for Alpha<S>
+where
+    ColorArray<S, f32>: AsMut<S>,
+{
+    fn as_mut(&mut self) -> &mut S {
+        return self.color_mut();
+    }
+}
+
 impl<S: ColorSpace> ColorBounds for Alpha<S> {
     fn clamp(mut self) -> Self {
         for i in 0..Self::INDEX {

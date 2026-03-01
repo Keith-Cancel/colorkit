@@ -7,10 +7,10 @@ It provides an easy to use and strongly typed conversions between color spaces. 
 ## Color Kit Overview
 
 - `#[no_std]` friendly and dependency-free.
-- Typed color spaces: `Srgb`, `LinSrgb`, `OkLab`, `Xyz<WhitePoint>` etc...
-- Conversion API via `FromColor` / `IntoColor`.
-- Alpha wrappers for normal and premultiplied color: `Alpha<T>`, `AlphaPre<T>`.
-- Layout and quantization primitives: `Planar`, `MappedLayout`, `Packed565`.
+- Typed color spaces: [`Srgb`], [`LinSrgb`], [`OkLab`], [`Xyz<WhitePoint>`] etc...
+- Conversion API via [`FromColor`] / [`IntoColor`].
+- Alpha wrappers for normal and premultiplied color: [`Alpha<S>`], [`AlphaPre<S>`](colorkit::colors::AlphaPre).
+- Layout and quantization primitives: [`Planar`](colorkit::layout::Planar), [`MappedLayout`](colorkit::layout::MappedLayout), [`Packed565`](colorkit::layout::Packed565).
 - Built-in rounding and optional dithering hooks for scalar/layout conversions.
 
 ## Getting Started
@@ -22,12 +22,12 @@ Add `colorkit` to your `Cargo.toml`:
 colorkit = "0.1.0"
 ```
 
-## Quick Start
+### Quick Start
 
-Color spaces are simple types that implement the `ColorSpace` trait and it's super traits. Probably the most important super traits would be `ColorNew` and `ColorSlice` when working generically with color spaces. 
+Color spaces are simple types that implement the [`ColorSpace`] trait and it's super traits. Probably the most important super traits would be [`ColorNew`] and [`ColorSlice`] when working generically with color spaces. 
 
-### Conversion
-Convert between color spaces with `IntoColor`:
+#### Conversion
+Convert between color spaces with [`IntoColor`]:
 
 ```rust
 use colorkit::{IntoColor, OkLab, Srgb};
@@ -37,7 +37,7 @@ let lab: OkLab = srgb.into_color();
 let srgb_roundtrip: Srgb = lab.into_color();
 ```
 
-### Modifying Channel Data
+#### Modifying Channel Data
 
 This example first converts to the OkLab Perceptual color space, makes a few changes and outputs back into sRGB.
 

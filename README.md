@@ -39,7 +39,7 @@ let srgb_roundtrip: Srgb = lab.into_color();
 
 ### Modifying Channel Data
 
-This example first converts to the OkLab Perceptual color space, makes a few changes and outputs into sRGB.
+This example first converts to the OkLab Perceptual color space, makes a few changes and outputs back into sRGB.
 
 ```rust
 use colorkit::{IntoColor, OkLab, Srgb};
@@ -56,7 +56,7 @@ let output: Srgb = lab.into_color();
 
 This image shows the starting color and the end result:
 
-![The result the changes in OkLab colorspace.](./imgs/example_1.png)
+![The result of the changes in OkLab colorspace.](./imgs/example_1.png)
 
 ## Data Layouts
 
@@ -76,7 +76,7 @@ let mut data_out = [0u8; 48];
 let data_in: [u8; 48] = [
     0xbf, 0xd5, 0xc5, 0xb0, 0xc8, 0xbb, 0xa2, 0xbb, 0xb0, 0x94, 0xae, 0xa6,
     0x86, 0xa1, 0x9c, 0x78, 0x95, 0x92, 0x6b, 0x88, 0x88, 0x5d, 0x7c, 0x7f,
-    0x50, 0x70, 0x75, 0x4b, 0x66, 0x70, 0x47, 0x5d, 0x6b, 0x42, 0x54, 0x65, 
+    0x50, 0x70, 0x75, 0x4b, 0x66, 0x70, 0x47, 0x5d, 0x6b, 0x42, 0x54, 0x65,
     0x3e, 0x4a, 0x60, 0x39, 0x41, 0x5b, 0x35, 0x38, 0x55, 0x30, 0x2f, 0x50,
 ];
 
@@ -135,5 +135,5 @@ Any PRs, Feedback and/or issues are welcome. Some things I definitely want are:
 
 ## License
 
-Color Kit is licened the under following license:
+Color Kit is licensed under the following license:
 * MIT license ([LICENSE](./LICENSE) or <http://opensource.org/licenses/MIT>)

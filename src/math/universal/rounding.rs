@@ -27,8 +27,8 @@ pub const fn truncf(x: f32) -> f32 {
 
 /// Rounds the integer less than or equal the provided value.
 ///
-/// Similar to [`truncf`], but instead of torwards zero, it's
-/// torwards negative infinity.
+/// Similar to [`truncf`], but instead of towards zero, it's
+/// towards negative infinity.
 pub const fn floorf(x: f32) -> f32 {
     let bits = x.to_bits();
     let exp = exponentf(bits);
@@ -63,8 +63,8 @@ pub const fn floorf(x: f32) -> f32 {
 
 /// Rounds the integer greater than or equal to the provided value.
 ///
-/// Similar to [`truncf`], but instead of torwards zero, it's
-/// torwards positive infinity.
+/// Similar to [`truncf`], but instead of towards zero, it's
+/// towards positive infinity.
 pub const fn ceilf(x: f32) -> f32 {
     let bits = x.to_bits();
     let exp = exponentf(bits);

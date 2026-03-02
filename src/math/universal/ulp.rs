@@ -14,8 +14,8 @@ mod test {
 
     #[test]
     fn ulp_check() {
-        // rust's f32::MIN_POSITIVE is not the true minium
-        // the true mininum is a subnormal value.
+        // rust's f32::MIN_POSITIVE is not the true minimum
+        // the true minimum is a subnormal value.
         let min = f32::from_bits(1);
 
         assert_eq!(ulp(1.0, 1.0f32.next_up()), 1);

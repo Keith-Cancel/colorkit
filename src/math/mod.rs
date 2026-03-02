@@ -1,4 +1,4 @@
-//! Floating point math functions. (e.g. [`sqrtf`], [`cbrtf`], [`quirtf`] ect..)
+//! Floating point math functions. (e.g. [`sqrtf`], [`cbrtf`], [`quirtf`] etc..)
 pub(crate) mod arch;
 mod universal;
 // TODO: arch and const fns
@@ -114,13 +114,13 @@ pub trait MathFuncs: Sized {
     fn trunc(self) -> Self;
     /// Rounds the integer greater than or equal to the provided value.
     ///
-    /// Similar to [`truncf`], but instead of torwards zero, it's
-    /// torwards positive infinity.
+    /// Similar to [`truncf`], but instead of towards zero, it's
+    /// towards positive infinity.
     fn ceil(self) -> Self;
     /// Rounds the integer less than or equal the provided value.
     ///
-    /// Similar to [`truncf`], but instead of torwards zero, it's
-    /// torwards negative infinity.
+    /// Similar to [`truncf`], but instead of towards zero, it's
+    /// towards negative infinity.
     fn floor(self) -> Self;
     /// Rounds to the nearest integer to the provided value.
     ///

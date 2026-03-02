@@ -35,7 +35,7 @@ pub const F32_BIAS: i32 = 127;
 const P24: f32 = f32::from_bits(0x4b800000); // the exponent is 24
 
 /// Compute the const to add the floating point number after dividing
-/// for the intial guess.
+/// for the initial guess.
 ///
 /// For example if we divid by 5 for the 5th root.
 /// * x = (e - 127)/5 + 127
@@ -45,7 +45,7 @@ const P24: f32 = f32::from_bits(0x4b800000); // the exponent is 24
 ///
 /// 508 / 5 ~= `0x65.999999` in a fixed point u32 with 24 bit fraction.
 /// Then shift right 1 and it's then `0x32cccccc`.
-/// Then add 1 acount for the shifted off bit.
+/// Then add 1 account for the shifted off bit.
 #[allow(unused)]
 const fn root_const(minuend: u32, subtrahend: u32, divisor: u32) -> u32 {
     let dif = ((minuend - subtrahend) as u64) << 32;
@@ -61,7 +61,7 @@ const fn root_const2(n: u32, shift: u32) -> u32 {
     const ONE: u64 = 1 << 32;
     const LN_2: u64 = 2_977_044_472; // ln(2) * 2^32
 
-    // Approximate 2^(1/n) can be aproximated with a Taylor series:
+    // Approximate 2^(1/n) can be approximated with a Taylor series:
     // 1 + ln(2)/n + ln^2(2)/2n^2 + ln^3(2)/6n^3 + ln^4(2)/24n^4 + ...
     let x1 = LN_2 / n as u64;
     let x2 = (x1 * x1) >> 32;

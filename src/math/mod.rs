@@ -46,8 +46,8 @@ pub fn truncf(x: f32) -> f32 {
 }
 /// Rounds the integer greater than or equal to the provided value.
 ///
-/// Similar to [`truncf`], but instead of torwards zero, it's
-/// torwards positive infinity.
+/// Similar to [`truncf`], but instead of towards zero, it's
+/// towards positive infinity.
 pub fn ceilf(x: f32) -> f32 {
     arch::arch_fn!(name: ceilf, args: x);
     #[allow(unused)]
@@ -55,8 +55,8 @@ pub fn ceilf(x: f32) -> f32 {
 }
 /// Rounds the integer less than or equal the provided value.
 ///
-/// Similar to [`truncf`], but instead of torwards zero, it's
-/// torwards negative infinity.
+/// Similar to [`truncf`], but instead of towards zero, it's
+/// towards negative infinity.
 pub fn floorf(x: f32) -> f32 {
     arch::arch_fn!(name: floorf, args: x);
     #[allow(unused)]

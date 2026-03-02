@@ -64,7 +64,7 @@ Color space types such `Srgb`, `OkLab` etc... use `f32` for channel data and hav
 
 ### Basic Usage Example
 
-This example shows how to use layouts to load/quantize data to and from a color space.
+This example shows how to use layouts to load/quantize data to and from a color space via the [`ColorLayout`](colorkit::space::ColorLayout) trait.
 
 ```rust
 use colorkit::layout::Planar;

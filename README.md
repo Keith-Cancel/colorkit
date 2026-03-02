@@ -2,7 +2,7 @@
 
 `colorkit` is a lightweight `#[no_std]` color crate for Rust.
 
-It provides an easy to use and strongly typed conversions between color spaces. Color Kit also provides layout and quantization tools for working with with pixel data. One can also implement additional/custom color spaces and layouts.
+It provides an easy to use and strongly typed conversions between color spaces. Color Kit also provides layout and quantization tools for working with pixel data. One can also implement additional/custom color spaces and layouts.
 
 ## Color Kit Overview
 
@@ -60,7 +60,7 @@ This image shows the starting color and the end result:
 
 ## Data Layouts
 
-Color space types such `Srgb`, `OkLab` etc... use `f32` for channel data and have pre-defined channel order. Color data though likely is stored in other layouts. RGB data for example is very often stored as a bunch octets. Instead of trying to encode that potential complexity for channel order and type directly into each color space type. This may be handled by layouts instead. Layouts are types simply implement the `Layout` trait. For example the `Planar` layout is for array like data layouts. `MappedLayout` is a wrapper around a `Layout`, but allows one to change the channel order (e.g. ARGB, RGBA, ...) using a `LayoutMap`.
+Color space types such `Srgb`, `OkLab` etc... use `f32` for channel data and have pre-defined channel order. Color data though likely is stored in other layouts. RGB data for example is very often stored as a bunch octets. Instead of trying to encode that potential complexity for channel order and type directly into each color space type. This may be handled by layouts instead. Layouts are types that simply implement the `Layout` trait. For example the `Planar` layout is for array like data layouts. `MappedLayout` is a wrapper around a `Layout`, but allows one to change the channel order (e.g. ARGB, RGBA, ...) using a `LayoutMap`.
 
 ### Basic Usage Example
 

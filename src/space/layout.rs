@@ -6,7 +6,7 @@ use super::ColorData;
 
 /// Allows a [`ColorSpace`](colorkit::space::ColorSpace) converted to and from various [`Layout`].
 pub trait ColorLayout: ColorData {
-    /// Construct a color from a [`Layout].
+    /// Construct a color from a [`Layout`].
     ///
     /// Channel count of the the [`Layout::Channels`] should be greater
     /// than or equal to the color space channels.

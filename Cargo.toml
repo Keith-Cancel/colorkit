@@ -6,6 +6,7 @@ crate-type = ["lib"]
 authors = ["Keith Cancel <admin@keith.pro>"]
 readme = "README.md"
 license = "MIT"
+homepage = "https://github.com/Keith-Cancel/colorkit"
 repository = "https://github.com/Keith-Cancel/colorkit"
 exclude = [
     "imgs/*",

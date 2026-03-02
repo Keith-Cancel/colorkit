@@ -15,6 +15,7 @@ exclude = [
     ".gitignore",
     ".gitattributes",
 ]
+documentation = "https://docs.rs/colorkit"
 description = "A #[no_std] library to convert and manipulate colors with an easy to use API."
 keywords = ["color", "rgb", "conversion", "graphics", "no-std"]
 categories = ["no-std", "graphics", "multimedia", "encoding", "multimedia::images"]

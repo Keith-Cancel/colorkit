@@ -1,6 +1,6 @@
 [package]
 name = "colorkit"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 crate-type = ["lib"]
 authors = ["Keith Cancel <admin@keith.pro>"]
